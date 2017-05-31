@@ -3,3 +3,5 @@ npm install
 
 Aby utuchomić:
 node server.js
+
+✨🐢🚀✨
