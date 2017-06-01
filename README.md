@@ -1,7 +1,7 @@
 Aby zainstalować wpisz:
 npm install
 
-Aby utuchomić:
+Aby uruchomić:
 node server.js
 
 Do uruchomienia bazy danych potrzebujemy XAMPP:
