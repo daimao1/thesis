@@ -13,6 +13,7 @@ app.use('/assets',express.static(__dirname + '/assets'));
 
 database.constructor(); // uruchamiam bazę danych
 
+
 app.get('/',function(req,res){
     res.sendFile(__dirname+'/index.html');
 });
