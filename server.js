@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
+
 var io = require('socket.io').listen(server);
 
 //resources
@@ -15,15 +16,15 @@ app.get('/',function(req,res){
 server.lastPlayderID = 0;
 server.playersList = [];
 
-server.listen(process.env.PORT || 8081,function(){
-    console.log('Nasłuchiwanie portu '+server.address().port);
+server.listen(process.env.PORT || 8081, function(){
+    console.log('Listening on *: '+server.address().port);
 });
 
 //połączenie
 io.on('connection',function(socket){
     //console.log('Dodanie nowego gracza (przeglądarka) nr '+server.lastPlayderID);
     socket.on('newplayer',function(){
-        console.log('Dodanie nowego gracza (przeglądarka) nr ' + server.lastPlayderID);
+        console.log('New browser, id: ' + server.lastPlayderID);
         socket.player = {
             id: server.lastPlayderID++,
         };
@@ -32,7 +33,7 @@ io.on('connection',function(socket){
 
         //rozłączenie
         socket.on('disconnect',function(){
-            console.log('Usunięto gracza nr '+socket.player.id);
+            console.log('Player ' + socket.player.id + " disconnected.");
             io.emit('remove',socket.player.id);
         });
     });
@@ -42,18 +43,18 @@ io.on('connection',function(socket){
     });
 
     socket.on('new_droid', function () {
-        console.log('New android device connected, id = ' + server.player.id)
+        console.log('New android device connected, id = ' + server.lastPlayderID)
         socket.player = {
             id: server.lastPlayderID++,
         };
         socket.emit('allplayers',getAllPlayers());
         socket.broadcast.emit('new_droid',socket.player);
 
-        //rozłączenie
-        socket.on('disconnect',function(){
-            console.log('Usunięto gracza nr '+socket.player.id);
-            io.emit('remove_droid',socket.player.id);
-        });
+        //rozłączenie TODO SPRAWDZIC CZY TO DZIALA
+        // socket.on('disconnect',function(){
+        //     console.log('Usunięto androida id ' + socket.player.id);
+        //     io.emit('remove_droid',socket.player.id);
+        // });
     });
 });
 
