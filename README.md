@@ -9,4 +9,6 @@ Do uruchomienia bazy danych potrzebujemy XAMPP:
 - włączamy serwer Apache i MySQL
 - Uruchamiamy server.js. Baza danych uruchomi się automatycznie na porcie 3000
 
+localhost:8081/stoptimegame  aby uruchomić minigrę
+
 ✨🐢🚀✨

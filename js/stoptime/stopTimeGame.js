@@ -8,6 +8,7 @@ var button_blue, button_yellow, button_green, button_red;
 var aftertime;
 var stop1_text, stop2_text, stop3_text, stop4_text;
 
+
 //loading assets
 StopTimeGame.preload = function () {
     stopTimeGame.load.spritesheet('button_blue', 'assets/buttons/circle_blue.png');
@@ -53,6 +54,7 @@ function goFullScreen() {
     stopTimeGame.scale.scaleMode = Phaser.ScaleManager.RESIZE;
 
 }
+
 
 function createButtons() {
     button_blue = stopTimeGame.add.button(iWidth * 0.12, iHeight * 0.57, 'button_blue');
