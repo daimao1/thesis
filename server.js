@@ -10,7 +10,9 @@ app.use('/css',express.static(__dirname + '/css'));
 app.use('/js',express.static(__dirname + '/js'));
 app.use('/assets',express.static(__dirname + '/assets'));
 
+
 database.constructor(); // uruchamiam bazę danych
+
 
 app.get('/',function(req,res){
     res.sendFile(__dirname + '/html/index.html');
@@ -21,7 +23,7 @@ app.get('/stoptimegame', function (req, res) {
 });
 
 
-server.lastPlayderID = 0;
+server.lastPlayerID = 0;
 server.playersList = [];
 
 server.listen(process.env.PORT || 8081, function () {
@@ -30,11 +32,11 @@ server.listen(process.env.PORT || 8081, function () {
 
 //połączenie
 io.on('connection',function(socket){
-    //console.log('Dodanie nowego gracza (przeglądarka) nr '+server.lastPlayderID);
+    //console.log('Dodanie nowego gracza (przeglądarka) nr '+server.lastPlayerID);
     socket.on('newplayer',function(){
-        console.log('New browser, id: ' + server.lastPlayderID);
+        console.log('New browser, id: ' + server.lastPlayerID);
         socket.player = {
-            id: server.lastPlayderID++,
+            id: server.lastPlayerID++,
         };
         socket.emit('allplayers',getAllPlayers());
         socket.broadcast.emit('newplayer',socket.player);
@@ -50,21 +52,28 @@ io.on('connection',function(socket){
         console.log('test received');
     });
 
-    socket.on('new_droid', function () {
-        console.log('New android device connected, id = ' + server.lastPlayderID)
+    socket.on('new_droid', function () {//odbiera socketa od androida
+        console.log('New android device connected, id = ' + server.lastPlayerID)
+
         socket.player = {
-            id: server.lastPlayderID++,
+            id: server.lastPlayerID++,
         };
-        socket.emit('allplayers',getAllPlayers());
+        socket.emit('allplayers', getAllPlayers()); //wysyła socketa do funkcji allplayers
         socket.broadcast.emit('new_droid',socket.player);
 
-        //rozłączenie TODO SPRAWDZIC CZY TO DZIALA
-        // socket.on('disconnect',function(){
-        //     console.log('Usunięto androida id ' + socket.player.id);
-        //     io.emit('remove_droid',socket.player.id);
-        // });
+        //rozłączenie
+        socket.on('disconnect', function () {
+            console.log('Deleted android device id: ' + socket.player.id);
+            io.emit('remove_droid', socket.player.id);
+        });
     });
+
+    socket.on('stopButton', function () {
+        //console.log('odebrano socketa z androida');
+        io.emit('stoptime');
+    })
 });
+
 
 function getAllPlayers(){
     var players = [];

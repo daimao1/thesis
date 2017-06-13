@@ -7,6 +7,13 @@ var iWidth;
 var button_blue, button_yellow, button_green, button_red;
 var aftertime;
 var stop1_text, stop2_text, stop3_text, stop4_text;
+var test;
+
+StopTimeGame.socket = io.connect();
+
+StopTimeGame.socket.on('stoptime', function () {
+    timer[1].pause();
+});
 
 
 //loading assets
@@ -112,7 +119,7 @@ function renderTime() {
 
     }
 
-    if (timer[1].ms > 20000) {
+    if (timer[1].ms > 20000 || timer[2].ms > 20000 || timer[3].ms > 20000 || timer[4].ms > 20000) {
         aftertime = true;
         this.endTimer();
 
