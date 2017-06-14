@@ -22,6 +22,6 @@ Client.socket.on('allplayers', function (data) {
     }
 });
 
-Client.socket.on('remove_droid', function (id) {
+Client.socket.on('remove_player', function (id) {
     Game.removePlayer(id);
 });

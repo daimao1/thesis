@@ -8,11 +8,15 @@ var button_blue, button_yellow, button_green, button_red;
 var aftertime;
 var stop1_text, stop2_text, stop3_text, stop4_text;
 var test;
+var random_number;
+var result = [];
 
 StopTimeGame.socket = io.connect();
 
-StopTimeGame.socket.on('stoptime', function () {
-    timer[1].pause();
+StopTimeGame.socket.on('stoptime', function (id) {
+    timer[id].pause();
+    result[id] = random_number - timer[id].ms;
+
 });
 
 
@@ -31,6 +35,7 @@ StopTimeGame.create = function () {
     goFullScreen();
     aftertime = false;
 
+
     //add buttons
     createButtons();
     //timer
@@ -43,7 +48,8 @@ StopTimeGame.create = function () {
             timer[i].start()//????????????????
     }, 6000);//start with delay
 
-    showTimeDestinationText();
+    random_number = randomInt(6, 16);
+    showTimeDestinationText(random_number);
 };
 
 StopTimeGame.update = function () {
@@ -79,8 +85,8 @@ function createButtons() {
     stop4_text.fill = '#ffffff';
 }
 
-function showTimeDestinationText() {
-    text = stopTimeGame.add.text(stopTimeGame.world.centerX, 100, 'Cel: 10 sekund');
+function showTimeDestinationText(random_number) {
+    text = stopTimeGame.add.text(stopTimeGame.world.centerX, 100, "Czas docelowy: " + random_number);
 
     //	Center align text
     text.anchor.set(0.5);
@@ -119,12 +125,6 @@ function renderTime() {
 
     }
 
-    if (timer[1].ms > 20000 || timer[2].ms > 20000 || timer[3].ms > 20000 || timer[4].ms > 20000) {
-        aftertime = true;
-        this.endTimer();
-
-    }
-
     if (timer[2].running) {
         stopTimeGame.debug.text(formatTime(Math.round((timer[2].ms) / 16.6666)), iWidth * 0.363, iHeight * 0.8, "#ff0");
     }
@@ -150,13 +150,19 @@ function renderTime() {
             stopTimeGame.debug.text("Przygotuj się!", iWidth * 0.78, iHeight * 0.8, "#ff0");
         }
     }
+
+    if (timer[1].ms > 20000 || timer[2].ms > 20000 || timer[3].ms > 20000 || timer[4].ms > 20000) {
+        aftertime = true;
+        this.endTimer();
+    }
 }
 StopTimeGame.render = function () {
     renderTime.call(this);
-
-
 };
 
+function randomInt(low, high) {
+    return Math.floor(Math.random() * (high - low) + low);
+}
 
 
 
