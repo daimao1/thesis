@@ -11,11 +11,22 @@ var test;
 var random_number;
 var result = [];
 
+//var music;
+
+var distance = 400;
+var speed = 2.7;
+var stars;
+
+var max = 130;
+var xx = [];
+var yy = [];
+var zz = [];
+
 StopTimeGame.socket = io.connect();
 
 StopTimeGame.socket.on('stoptime', function (id) {
     timer[id].pause();
-    result[id] = random_number - timer[id].ms;
+    result[id] = Math.abs(random_number - timer[id].ms); //obliczam wynik
 
 });
 
@@ -26,40 +37,62 @@ StopTimeGame.preload = function () {
     stopTimeGame.load.spritesheet('button_yellow', 'assets/buttons/circle_yellow.png');
     stopTimeGame.load.spritesheet('button_red', 'assets/buttons/circle_red.png');
     stopTimeGame.load.spritesheet('button_green', 'assets/buttons/circle_green.png');
+    stopTimeGame.load.spritesheet('wood', 'assets/buttons/wood.png');
+    stopTimeGame.load.image('star', 'assets/pictures/stoptime/star.png')
+
+   stopTimeGame.load.bitmapFont('desyrel-pink', 'assets/fonts/bitmapFonts/desyrel-pink.png', 'assets/fonts/bitmapFonts/desyrel-pink.xml');
+
+   //stopTimeGame.load.audio('intro','assets/audio/intro_stoptime.mp3');
 };
 
 
 StopTimeGame.create = function () {
     iHeight = window.innerHeight;
     iWidth = window.innerWidth;
+
+    generateBackgroundAnimation();
+    //tileSprite = stopTimeGame.add.tileSprite(0, 0, 1600, 900, 'starfield');
     goFullScreen();
     aftertime = false;
-
-
-    //add buttons
+    
     createButtons();
     //timer
-    for (i = 1; i <= 4; i++) {
-        timer[i] = stopTimeGame.time.create();
-        timer[i].add(Phaser.Timer.SECOND * 30 + Phaser.Timer * 100, this, this.endTimer);
-    }
-    setTimeout(function () {
-        for (i = 1; i <= 4; i++)
-            timer[i].start()//????????????????
-    }, 6000);//start with delay
+    timerInit();
 
-    random_number = randomInt(6, 16);
+    random_number = randomInt(6, 20);
     showTimeDestinationText(random_number);
 };
 
-StopTimeGame.update = function () {
 
+StopTimeGame.update = function () {
+for (var i = 0; i < max; i++)
+    {
+        stars[i].perspective = distance / (distance - zz[i]);
+        stars[i].x = stopTimeGame.world.centerX + xx[i] * stars[i].perspective;
+        stars[i].y = stopTimeGame.world.centerY + yy[i] * stars[i].perspective;
+
+        zz[i] += speed;
+
+        if (zz[i] > 290)
+        {
+            zz[i] -= 600;
+        }
+
+        stars[i].alpha = Math.min(stars[i].perspective / 2, 1);
+        stars[i].scale.set(stars[i].perspective / 2);
+        stars[i].rotation += 0.1;
+
+    }
+};
+
+StopTimeGame.render = function () {
+    renderTime.call(this);
 };
 
 
 function goFullScreen() {
     // setting a background color
-    stopTimeGame.stage.backgroundColor = "#555555";
+    //stopTimeGame.stage.backgroundColor = "#2F4F4F";
     stopTimeGame.scale.pageAlignHorizontally = true;
     stopTimeGame.scale.pageAlignVertically = true;
 
@@ -67,7 +100,6 @@ function goFullScreen() {
     stopTimeGame.scale.scaleMode = Phaser.ScaleManager.RESIZE;
 
 }
-
 
 function createButtons() {
     button_blue = stopTimeGame.add.button(iWidth * 0.12, iHeight * 0.57, 'button_blue');
@@ -85,22 +117,44 @@ function createButtons() {
     stop4_text.fill = '#ffffff';
 }
 
+function generateBackgroundAnimation(){
+if (stopTimeGame.renderType === Phaser.WEBGL) {
+        max = 2000;
+    }
+
+    var sprites = stopTimeGame.add.spriteBatch();
+
+    stars = [];
+
+    for (var i = 0; i < max; i++) {
+        xx[i] = Math.floor(Math.random() * 800) - 400;
+        yy[i] = Math.floor(Math.random() * 600) - 300;
+        zz[i] = Math.floor(Math.random() * 1700) - 100;
+
+        var star = stopTimeGame.make.sprite(0, 0, 'star');
+        star.anchor.set(0.5);
+
+        sprites.addChild(star);
+
+        stars.push(star);
+    }
+}
+
+function timerInit(){
+    for (i = 1; i <= 4; i++) {
+        timer[i] = stopTimeGame.time.create();
+        timer[i].add(Phaser.Timer.SECOND * 30 + Phaser.Timer * 100, this, this.endTimer);
+    }
+    setTimeout(function () {
+        for (i = 1; i <= 4; i++)
+            timer[i].start()//????????????????
+    }, 5000);//start with delay
+}
+
 function showTimeDestinationText(random_number) {
-    text = stopTimeGame.add.text(stopTimeGame.world.centerX, 100, "Czas docelowy: " + random_number);
+    text = stopTimeGame.add.bitmapText(stopTimeGame.world.centerX-iWidth*0.20, iHeight * 0.06, 
+    'desyrel-pink', "Traf w: " + random_number + " sekund", 80);
 
-    //	Center align text
-    text.anchor.set(0.5);
-    text.align = 'center';
-
-    //	Font style
-    text.font = 'Harrington';
-    text.fontSize = 50;
-    text.fontWeight = 'bold';
-
-    //	Stroke color and thickness
-    text.stroke = '#000000';
-    text.strokeThickness = 6;
-    text.fill = '#32c500';
 }
 
 function formatTime(s) {
@@ -151,14 +205,17 @@ function renderTime() {
         }
     }
 
-    if (timer[1].ms > 20000 || timer[2].ms > 20000 || timer[3].ms > 20000 || timer[4].ms > 20000) {
+    if (timer[1].ms > 30000 || timer[2].ms > 30000 || timer[3].ms > 30000 || timer[4].ms > 30000) {
         aftertime = true;
         this.endTimer();
     }
+
+    if(timer[1].ms > 4000){
+       // wood = stopTimeGame.add.button(iWidth * 0.135, iHeight * 0.75, 'wood');
+      //  wood.scale.setTo(0.15);
+    }
 }
-StopTimeGame.render = function () {
-    renderTime.call(this);
-};
+
 
 function randomInt(low, high) {
     return Math.floor(Math.random() * (high - low) + low);
