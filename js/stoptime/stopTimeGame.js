@@ -208,6 +208,7 @@ function renderTime() {
     if (timer[1].ms > 30000 || timer[2].ms > 30000 || timer[3].ms > 30000 || timer[4].ms > 30000) {
         aftertime = true;
         this.endTimer();
+        this.alpha = 0.5;
     }
 
     if(timer[1].ms > 4000){
