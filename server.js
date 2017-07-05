@@ -79,7 +79,6 @@ io.on('connection', function (socket) {
     })
 });
 
-
 function getAllPlayers() {
     var players = [];
     Object.keys(io.sockets.connected).forEach(function (socketID) {
