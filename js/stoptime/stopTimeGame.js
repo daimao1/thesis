@@ -167,7 +167,7 @@ StopTimeGame.endTimer = function () {
     for (i = 1; i <= 4; i++)
         timer[i].stop();
 };
-
+//
 function renderTime() {
     if (timer[1].running) {
         stopTimeGame.debug.text(formatTime(Math.round((timer[1].ms) / 16.6666)), iWidth * 0.142, iHeight * 0.8, "#ff0");
