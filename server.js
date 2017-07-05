@@ -10,10 +10,9 @@ app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
 app.use('/assets', express.static(__dirname + '/assets'));
 
-
 database.constructor(); // uruchamiam bazę danych
 
-
+//routes
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/html/index.html');
 });
@@ -22,14 +21,18 @@ app.get('/stoptimegame', function (req, res) {
     res.sendFile(__dirname + '/html/stoptimegame.html');
 });
 
-
-server.lastPlayerID = 1;
-server.browserID = 1;
-server.playersList = [];
+app.use(function (req, res, next){
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(404, 'Strony nie znaleziono');
+});
 
 server.listen(process.env.PORT || 8081, function () {
     console.log('Listening on *: ' + server.address().port);
 });
+
+server.lastPlayerID = 1;
+server.browserID = 1;
+server.playersList = [];
 
 //połączenie
 io.on('connection', function (socket) {
