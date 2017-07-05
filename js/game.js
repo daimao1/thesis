@@ -8,9 +8,9 @@ Game.init = function () {
 };
 
 Game.preload = function () {
-    game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.spritesheet('tileset', 'assets/map/tilesheet.png', 32, 32);
-    game.load.image('sprite', 'assets/sprites/sprite.png');
+    // game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
+    // game.load.spritesheet('tileset', 'assets/map/tilesheet.png', 32, 32);
+    // game.load.image('sprite', 'assets/sprites/sprite.png');
 };
 
 Game.create = function () {
@@ -32,6 +32,12 @@ Game.create = function () {
 
     game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
     game.input.onDown.add(gofull, this);
+};
+
+Game.update = function () {
+
+    text.x = Math.floor(sprite.x + sprite.width / 2);
+    text.y = Math.floor(sprite.y + sprite.height / 2);
 };
 
 function gofull() {
@@ -59,8 +65,3 @@ Game.removePlayer = function (id) {
     delete Game.playerMap[id];
 };
 
-Game.update = function () {
-
-    text.x = Math.floor(sprite.x + sprite.width / 2);
-    text.y = Math.floor(sprite.y + sprite.height / 2);
-}

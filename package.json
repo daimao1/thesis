@@ -1,8 +1,8 @@
 {
   "name": "thesis",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
   "main": "server.js",
+  "authors": "Tomasz Korga, Tobiasz Kaciuczyk, Damian Kozieł",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=dev DEBUG=* node server.js"
@@ -12,7 +12,8 @@
     "url": "git+https://github.com/daimao1/thesis.git"
   },
   "dependencies": {
-    "express": "^4.15.13",
-    "socket.io": "^2.0.1"
+    "express": "^4.15.3",
+    "socket.io": "^2.0.2",
+    "mysql": "^2.13.0"
   }
 }
