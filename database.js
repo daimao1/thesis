@@ -16,6 +16,16 @@ connection.connect(function (err) {
     }
 });
 
+exports.addNewUser = function(user) {
+    connection.query("INSERT INTO `users`(`username`, `password`) VALUES ('" + user.name + "', '" + user.password + "')", function (err) {
+        if(!err) {
+            console.log("User " + user.name + " has been successfully saved in database.");
+        } else {
+            console.log("Error while saving user in database: " + err.message);
+        }
+    });
+};
+
 app.get("/administrators", function (req, res) {
     connection.query('SELECT * from administrators', function (err, rows, fields) {
         if (!err)

@@ -11,6 +11,8 @@ Do uruchomienia bazy danych potrzebujemy XAMPP:
     password: '',
     database: 'pollub73'    
 - Uruchamiamy server.js. Baza danych uruchomi się automatycznie na porcie 3000
+- żeby dodać użytkownika w bazie musi być tabela users: id, username, password
+- /login - tymczasowo dodanie użytkownika
 
 localhost:8081/stoptimegame  aby uruchomić minigrę
 

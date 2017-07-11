@@ -48,6 +48,12 @@ function handleLoginForm(req, res) {
     var form = new formidable.IncomingForm();
 
     form.parse(req, function (err, fields) {
+
+        var user = {
+            name: fields.name,
+            password: fields.password
+        };
+        database.addNewUser(user);
         //TODO Store the data from the fields in your data store.
         res.writeHead(200, {
             'content-type': 'text/plain'
@@ -69,7 +75,7 @@ io.on('connection', function (socket) {
     socket.on('new_room', function () {
         console.log('New game room created, id: ' + server.lastRoomID);
         socket.room = {
-            id: server.lastRoomID++,
+            id: server.lastRoomID++
         };
         //socket.emit('allplayers', getAllPlayers()); //wysłanie do przeglądarki akutalnej listy graczy
         socket.broadcast.emit('new_room', socket.player); //powiadomienie wszystkich włączonych przeglądarek o nowym pokoju
@@ -88,7 +94,7 @@ io.on('connection', function (socket) {
     socket.on('new_droid', function () {  //łączy się z androidem
         console.log('New android device connected, id = ' + server.lastPlayerID);
         socket.player = {
-            id: server.lastPlayerID++,
+            id: server.lastPlayerID++
         };
         socket.emit('allplayers', getAllPlayers()); //wysyła socketa do funkcji allplayers
         socket.broadcast.emit('newplayer', socket.player);
