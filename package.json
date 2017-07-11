@@ -3,17 +3,22 @@
   "version": "0.1.0",
   "main": "server.js",
   "authors": "Tomasz Korga, Tobiasz Kaciuczyk, Damian Kozieł",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/abbassoftware/forms-in-nodejs/issues"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=dev DEBUG=* node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/daimao1/thesis.git"
+    "url": "https://github.com/daimao1/thesis.git"
   },
   "dependencies": {
     "express": "^4.15.3",
-    "socket.io": "^2.0.2",
-    "mysql": "^2.13.0"
+    "formidable": "^1.1.1",
+    "mysql": "^2.13.0",
+    "socket.io": "^2.0.2"
   }
 }

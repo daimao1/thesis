@@ -40,7 +40,7 @@ StopTimeGame.preload = function () {
     stopTimeGame.load.spritesheet('wood', 'assets/buttons/wood.png');
     stopTimeGame.load.image('star', 'assets/pictures/stoptime/star.png')
 
-   stopTimeGame.load.bitmapFont('desyrel-pink', 'assets/fonts/bitmapFonts/desyrel-pink.png', 'assets/fonts/bitmapFonts/desyrel-pink.xml');
+    stopTimeGame.load.bitmapFont('desyrel-pink', 'assets/fonts/bitmapFonts/desyrel-pink.png', 'assets/fonts/bitmapFonts/desyrel-pink.xml');
 
    //stopTimeGame.load.audio('intro','assets/audio/intro_stoptime.mp3');
 };
