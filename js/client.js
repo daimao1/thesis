@@ -8,10 +8,10 @@ Client.sendTest = function () {
 
 Client.askNewPlayer = function () {
     console.log("test askNewPlayer");
-    Client.socket.emit('newplayer');
+    Client.socket.emit('new_room');
 };
 
-Client.socket.on('newplayer', function (data) {
+Client.socket.on('new_room', function (data) {
     console.log("test newplayer");
     Game.addNewPlayer(data.id);
 });

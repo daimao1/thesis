@@ -17,48 +17,76 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/html/index.html');
 });
 
+app.use('/login', function (req, res) {
+
+    if (req.method.toLowerCase() == 'get') {
+        res.sendFile(__dirname + '/html/login.html');
+    } else if (req.method.toLowerCase() == 'post') {
+        handleLoginForm(req, res);
+    }
+});
+
 app.get('/stoptimegame', function (req, res) {
     res.sendFile(__dirname + '/html/stoptimegame.html');
 });
 
 app.use(function (req, res, next){
     res.setHeader('Content-Type', 'text/plain');
-    res.send(404, 'Strony nie znaleziono');
+    //res.send(404, 'Strony nie znaleziono'); //deprecated
+    res.status(404).send('Strony nie znaleziono');
 });
 
 server.listen(process.env.PORT || 8081, function () {
     console.log('Listening on *: ' + server.address().port);
 });
 
-server.lastPlayerID = 1;
-server.browserID = 1;
+//login form handling
+var formidable = require("formidable");
+var util = require('util');
+
+function handleLoginForm(req, res) {
+    var form = new formidable.IncomingForm();
+
+    form.parse(req, function (err, fields) {
+        //TODO Store the data from the fields in your data store.
+        res.writeHead(200, {
+            'content-type': 'text/plain'
+        });
+        res.write('received the data:\n\n');
+        res.end(util.inspect({
+            fields: fields
+        }));
+    });
+}
+
+server.lastPlayerID = 1; //TODO musi być osobna lista graczy dla każdego pokoju
+server.lastRoomID = 1;
 server.playersList = [];
 
 //połączenie
 io.on('connection', function (socket) {
-    //console.log('Dodanie nowego gracza (przeglądarka) nr '+server.lastPlayerID);
-    // socket.on('newplayer', function () {
-    //     console.log('New browser, id: ' + server.lastPlayerID);
-    //     socket.player = {
-    //         id: server.lastPlayerID++,
-    //     };
-    //     socket.emit('allplayers', getAllPlayers());
-    //     socket.broadcast.emit('newplayer', socket.player);
-    //
-    //     //rozłączenie
-    //     socket.on('disconnect', function () {
-    //         console.log('Player ' + socket.player.id + " disconnected.");
-    //         io.emit('remove', socket.player.id);
-    //     });
-    // });
+    console.log('Socket connection on.');
+    socket.on('new_room', function () {
+        console.log('New game room created, id: ' + server.lastRoomID);
+        socket.room = {
+            id: server.lastRoomID++,
+        };
+        //socket.emit('allplayers', getAllPlayers()); //wysłanie do przeglądarki akutalnej listy graczy
+        socket.broadcast.emit('new_room', socket.player); //powiadomienie wszystkich włączonych przeglądarek o nowym pokoju
 
-    socket.on('test', function () {
-        console.log('test received');
+        //rozłączenie
+        socket.on('disconnect', function () {
+            console.log('Browser with room id: ' + socket.client.id + ' disconnected. Room closed.');
+            io.emit('remove_room', socket.room.id);
+        });
     });
 
-    socket.on('new_droid', function () {//odbiera socketa od androida
-        console.log('New android device connected, id = ' + server.lastPlayerID)
+    socket.on('test', function () {
+        console.log('***Test received***');
+    });
 
+    socket.on('new_droid', function () {  //łączy się z androidem
+        console.log('New android device connected, id = ' + server.lastPlayerID);
         socket.player = {
             id: server.lastPlayerID++,
         };
