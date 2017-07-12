@@ -17,7 +17,8 @@ const url = {
 var connection = mysql.createConnection(url);
 connection.connect(function (err) {
     if (!err) {
-        console.log("Database is connected...");
+        console.log("Database is connected as id: " + connection.threadId);
+        console.log(connection.statistics());
     } else {
         console.log("Error connecting database...");
     }
