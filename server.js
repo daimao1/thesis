@@ -12,6 +12,8 @@ app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
 app.use('/assets', express.static(__dirname + '/assets'));
 
+app.use(express.static(__dirname + '/views'));
+
 app.use(morgan('dev')); //log every request to the console
 
 app.set('view engine', 'ejs'); // set up ejs for templating
@@ -24,6 +26,15 @@ app.get('/', function (req, res) {
     res.render('index.ejs'); // load the index.ejs file
     //res.sendFile(__dirname + '/views/index.html');
 });
+app.get('/', function (req, res) {
+    res.render('index.ejs'); // load the index.ejs file
+    //res.sendFile(__dirname + '/views/index.html');
+});
+app.get('/homepage', function (req, res) {
+    res.render('homepage.ejs'); // load the index.ejs file
+    //res.sendFile(__dirname + '/views/index.html');
+});
+
 //Login page
 app.get('/login', function (req, res) {
     //res.sendFile(__dirname + '/views/login.html');
