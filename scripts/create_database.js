@@ -21,7 +21,7 @@ connection.query('\
     UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
     UNIQUE INDEX `username_UNIQUE` (`username` ASC) \
 )');
-
+sleep(2000);
 console.log('Success: database created!')
 
 connection.end();
