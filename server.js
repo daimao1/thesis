@@ -5,6 +5,8 @@ var morgan = require('morgan');
 var session  = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var flash = require('connect-flash');
 
 var io = require('socket.io').listen(server);
 
@@ -21,7 +23,9 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 
 //database.constructor(); //uruchamiam bazę danych TODO działa bez tego, sprawdzic do czego to
 
-require('./app/routes.js')(app);
+require('./config/passport')(passport);
+
+require('./app/routes.js')(app, passport); //ROUTING
 
 server.listen(process.env.PORT || 8081, function () {
     console.log('Listening on *: ' + server.address().port);
