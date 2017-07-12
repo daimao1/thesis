@@ -1,11 +1,9 @@
+//nie używany - skopiowany w większości do config/dbconnection
+
 var express = require('express');
 var mysql = require('mysql');
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'pollub73'
-});
+var dbconfig = require('./config/database');
+var connection = mysql.createConnection(dbconfig.connection);
 var app = express();
 
 connection.connect(function (err) {
@@ -16,7 +14,7 @@ connection.connect(function (err) {
     }
 });
 
-exports.addNewUser = function(user) {
+module.exports.addNewUser = function(user) {
     connection.query("INSERT INTO `users`(`username`, `password`) VALUES ('" + user.name + "', '" + user.password + "')", function (err) {
         if(!err) {
             console.log("User " + user.name + " has been successfully saved in database.");

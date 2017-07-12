@@ -1,7 +1,9 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
-const database = require('./database');
+var morgan = require('morgan');
+const database = require('./config/dbconnection');
+const dbcon = database.connection;
 
 var io = require('socket.io').listen(server);
 
@@ -10,29 +12,29 @@ app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
 app.use('/assets', express.static(__dirname + '/assets'));
 
-database.constructor(); // uruchamiam bazę danych
+app.use(morgan('dev')); //log every request to the console
 
-//routes
+//database.constructor(); //uruchamiam bazę danych TODO działa bez tego, sprawdzic do czego to
+
+//ROUTES
+//Home page
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/html/index.html');
+    res.sendFile(__dirname + '/views/index.html');
 });
-
-app.use('/login', function (req, res) {
-
-    if (req.method.toLowerCase() == 'get') {
-        res.sendFile(__dirname + '/html/login.html');
-    } else if (req.method.toLowerCase() == 'post') {
-        handleLoginForm(req, res);
-    }
+//Login page
+app.get('/login', function (req, res) {
+    res.sendFile(__dirname + '/views/login.html');
 });
-
+app.post('/login', function (req, res) {
+    handleLoginForm(req, res);
+});
+//Stop-time minigame
 app.get('/stoptimegame', function (req, res) {
-    res.sendFile(__dirname + '/html/stoptimegame.html');
+    res.sendFile(__dirname + '/views/stoptimegame.html');
 });
-
-app.use(function (req, res, next){
+//404
+app.use(function (req, res){
     res.setHeader('Content-Type', 'text/plain');
-    //res.send(404, 'Strony nie znaleziono'); //deprecated
     res.status(404).send('Strony nie znaleziono');
 });
 
@@ -53,7 +55,14 @@ function handleLoginForm(req, res) {
             name: fields.name,
             password: fields.password
         };
-        database.addNewUser(user);
+        //database.addNewUser(user); //TODO przenieść poniższą funkcję do pliku modelu user
+        dbcon.query("INSERT INTO `users`(`username`, `password`) VALUES ('" + user.name + "', '" + user.password + "')", function (err) {
+            if(!err) {
+                console.log("User " + user.name + " has been successfully saved in database.");
+            } else {
+                console.log("Error while saving user in database: " + err.message);
+            }
+        });
         //TODO Store the data from the fields in your data store.
         res.writeHead(200, {
             'content-type': 'text/plain'
