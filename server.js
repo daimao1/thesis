@@ -7,30 +7,35 @@ const dbcon = database.connection;
 
 var io = require('socket.io').listen(server);
 
-//resources
+//resources TODO nie wiadomo czy nam to potrzebne
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
 app.use('/assets', express.static(__dirname + '/assets'));
 
 app.use(morgan('dev')); //log every request to the console
 
+app.set('view engine', 'ejs'); // set up ejs for templating
+
 //database.constructor(); //uruchamiam bazę danych TODO działa bez tego, sprawdzic do czego to
 
 //ROUTES
 //Home page
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/views/index.html');
+    res.render('index.ejs'); // load the index.ejs file
+    //res.sendFile(__dirname + '/views/index.html');
 });
 //Login page
 app.get('/login', function (req, res) {
-    res.sendFile(__dirname + '/views/login.html');
+    //res.sendFile(__dirname + '/views/login.html');
+    res.render('login.ejs');
 });
 app.post('/login', function (req, res) {
     handleLoginForm(req, res);
 });
 //Stop-time minigame
 app.get('/stoptimegame', function (req, res) {
-    res.sendFile(__dirname + '/views/stoptimegame.html');
+    //res.sendFile(__dirname + '/views/stoptimegame.html');
+    res.render('stoptimegame.ejs');
 });
 //404
 app.use(function (req, res){
