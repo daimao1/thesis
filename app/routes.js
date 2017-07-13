@@ -38,7 +38,8 @@ module.exports = function (app, passport) {
                 req.session.cookie.expires = false;
             }
             res.redirect('/');
-        });
+        }
+    );
 
     //Singup page
     // app.get('/singup', function (req, res) {
@@ -48,6 +49,30 @@ module.exports = function (app, passport) {
     // app.post('/singup', function (req, res) {
     //     handleLoginForm(req, res);
     // });
+
+    // show the signup form
+    app.get('/signup', function(req, res) {
+        // render the page and pass in any flash data if it exists
+        res.render('signup.ejs', { message: req.flash('signupMessage') });
+    });
+
+    // process the signup form
+    app.post('/signup', passport.authenticate('local-signup', {
+        successRedirect : '/profile', // redirect to the secure profile section
+        failureRedirect : '/signup', // redirect back to the signup page if there is an error
+        failureFlash : true // allow flash messages
+    }));
+
+    app.get('/profile', isLoggedIn, function(req, res) {
+        res.render('profile.ejs', {
+            user : req.user // get the user out of session and pass to template
+        });
+    });
+
+    app.get('/logout', function(req, res) {
+        req.logout();
+        res.redirect('/');
+    });
 
     //Stop-time minigame
     app.get('/stoptimegame', function (req, res) {
@@ -61,28 +86,13 @@ module.exports = function (app, passport) {
     });
 };
 
-//login form handling
-var formidable = require("formidable");
-var util = require('util');
+function isLoggedIn(req, res, next) {
 
-var userDB = require('./models/userDAO');
+    // if user is authenticated in the session, carry on
+    if (req.isAuthenticated())
+        return next();
 
-function handleLoginForm(req, res) {
-    var form = new formidable.IncomingForm();
-
-    form.parse(req, function (err, fields) {
-
-        var user = {
-            email: fields.email,
-            password: fields.password
-        };
-        userDB.add(user); //store to DB
-        res.writeHead(200, {
-            'content-type': 'text/plain'
-        });
-        res.write('received the data:\n\n');
-        res.end(util.inspect({
-            fields: fields
-        }));
-    });
+    // if they aren't redirect them to the home page
+    console.log("Access forbidden!"); //TODO zmienić to xD
+    res.redirect('/');
 }

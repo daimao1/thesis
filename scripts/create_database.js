@@ -19,9 +19,13 @@ connection.query('\
     `password` CHAR(60) NOT NULL, \
         PRIMARY KEY (`id`), \
     UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
-    UNIQUE INDEX `username_UNIQUE` (`username` ASC) \
-)');
-
-console.log('Success: database created!')
+    UNIQUE INDEX `email_UNIQUE` (`email` ASC) \
+    )',
+    function (err) {
+        if(err) {
+            console.log(err.message);
+        }
+        console.log('Success: database created!');
+});
 
 connection.end();

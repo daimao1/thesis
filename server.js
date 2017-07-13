@@ -21,9 +21,22 @@ app.use(morgan('dev')); //log every request to the console
 
 app.set('view engine', 'ejs'); // set up ejs for templating
 
-//database.constructor(); //uruchamiam bazę danych TODO działa bez tego, sprawdzic do czego to
+app.use(cookieParser()); // read cookies (needed for auth)
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
+// required for passport
 require('./config/passport')(passport);
+app.use(session({
+    secret: 'vidyapathaisalwaysrunning',
+    resave: true,
+    saveUninitialized: true
+} )); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
 
 require('./app/routes.js')(app, passport); //ROUTING
 

@@ -7,8 +7,11 @@
 </head>
 <body>
     <p>Podaj swoje dane, dzięki nim strona utrzymuje się bez reklam.</p>
+    <% if (message.length > 0) { %>
+    <div class="alert alert-danger"><%= message %></div>
+    <% } %>
     <form action="" method="post" id="login_form">
-        <input type="text" name="name" id="name" placeholder="Your username..." size="50" autofocus />
+        <input type="email" name="email" id="email" placeholder="Your email..." size="50" autofocus />
         <input type="password" name="password" id="password" placeholder="Your password..." size="50" autofocus />
         <input type="submit" id="confirm" value="Send" />
     </form>
