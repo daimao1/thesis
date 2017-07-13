@@ -2,8 +2,11 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var morgan = require('morgan');
-const database = require('./config/dbconnection');
-const dbcon = database.connection;
+var session  = require('express-session');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var passport = require('passport');
+var flash = require('connect-flash');
 
 var io = require('socket.io').listen(server);
 
@@ -18,77 +21,28 @@ app.use(morgan('dev')); //log every request to the console
 
 app.set('view engine', 'ejs'); // set up ejs for templating
 
-//database.constructor(); //uruchamiam bazę danych TODO działa bez tego, sprawdzic do czego to
+app.use(cookieParser()); // read cookies (needed for auth)
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
-//ROUTES
-//Home page
-app.get('/', function (req, res) {
-    res.render('index.ejs'); // load the index.ejs file
-    //res.sendFile(__dirname + '/views/index.html');
-});
-app.get('/', function (req, res) {
-    res.render('index.ejs'); // load the index.ejs file
-    //res.sendFile(__dirname + '/views/index.html');
-});
-app.get('/homepage', function (req, res) {
-    res.render('homepage.ejs'); // load the index.ejs file
-    //res.sendFile(__dirname + '/views/index.html');
-});
+// required for passport
+require('./config/passport')(passport);
+app.use(session({
+    secret: 'vidyapathaisalwaysrunning',
+    resave: true,
+    saveUninitialized: true
+} )); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
 
-//Login page
-app.get('/login', function (req, res) {
-    //res.sendFile(__dirname + '/views/login.html');
-    res.render('login.ejs');
-});
-app.post('/login', function (req, res) {
-    handleLoginForm(req, res);
-});
-//Stop-time minigame
-app.get('/stoptimegame', function (req, res) {
-    //res.sendFile(__dirname + '/views/stoptimegame.html');
-    res.render('stoptimegame.ejs');
-});
-//404
-app.use(function (req, res){
-    res.setHeader('Content-Type', 'text/plain');
-    res.status(404).send('Strony nie znaleziono');
-});
+require('./app/routes.js')(app, passport); //ROUTING
 
 server.listen(process.env.PORT || 8081, function () {
     console.log('Listening on *: ' + server.address().port);
 });
-
-//login form handling
-var formidable = require("formidable");
-var util = require('util');
-
-function handleLoginForm(req, res) {
-    var form = new formidable.IncomingForm();
-
-    form.parse(req, function (err, fields) {
-
-        var user = {
-            name: fields.name,
-            password: fields.password
-        };
-        //database.addNewUser(user); //TODO przenieść poniższą funkcję do pliku modelu user
-        dbcon.query("INSERT INTO `users`(`username`, `password`) VALUES ('" + user.name + "', '" + user.password + "')", function (err) {
-            if(!err) {
-                console.log("User " + user.name + " has been successfully saved in database.");
-            } else {
-                console.log("Error while saving user in database: " + err.message);
-            }
-        });
-        //TODO Store the data from the fields in your data store.
-        res.writeHead(200, {
-            'content-type': 'text/plain'
-        });
-        res.write('received the data:\n\n');
-        res.end(util.inspect({
-            fields: fields
-        }));
-    });
-}
 
 server.lastPlayerID = 1; //TODO musi być osobna lista graczy dla każdego pokoju
 server.lastRoomID = 1;

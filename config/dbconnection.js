@@ -3,10 +3,6 @@
  */
 var mysql = require('mysql');
 
-const config = {
-    database: 'pollub73',
-    users_table: 'users'
-};
 const url = {
     host     : 'localhost',
     user     : 'root',
@@ -17,7 +13,7 @@ const url = {
 var connection = mysql.createConnection(url);
 connection.connect(function (err) {
     if (!err) {
-        console.log("Database is connected...");
+        console.log("Database is connected as id: " + connection.threadId);
     } else {
         console.log("Error connecting database...");
     }
