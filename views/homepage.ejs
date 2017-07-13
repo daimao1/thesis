@@ -60,10 +60,16 @@
                             <div class="single_home_content wow zoomIn" data-wow-duration="1s">
 								<h1>Nazwa gry </h1>
 								<p class="bannerDescription">opis gry - Iolite is great new responsive app landing page template for your awesome app. This is freebie from uimint.com & you will get useful resources from there.</p>
-								<div class="button">
+
+                                <% if(isUserLogged) { %>
+                                    <p>Zalogowano: <%= user.email %></p>
+								    <a href="/logout" class="btn">Wyloguj</a>
+                                <% } else { %>
+                                <div class="button">
 									<a href="/signup" class="btn">Zarejestruj się</a>
 									<a href="/login" class="btn">Zaloguj się</a>
 								</div>
+                                <% } %>
 							</div>
                         </div>
 

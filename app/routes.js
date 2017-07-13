@@ -1,6 +1,3 @@
-/**
- * Created by Tobiasz on 2017-07-12.
- */
 
 //ROUTES
 
@@ -8,7 +5,7 @@ module.exports = function (app, passport) {
 
     //Home page
     app.get('/', function (req, res) {
-        res.render('homepage.ejs');
+        res.render('homepage.ejs', {user: req.user, isUserLogged: req.isAuthenticated()});
     });
 
     //phaser test
