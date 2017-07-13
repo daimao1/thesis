@@ -24,4 +24,5 @@ module.exports = { connection, url,
     admins_table: 'administrators',
     players_table: 'players',
     rooms_table: 'rooms',
-    quiz_table: 'quiz'};
+    quiz_table: 'quiz'
+};

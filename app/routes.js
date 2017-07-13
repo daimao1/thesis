@@ -5,23 +5,22 @@
 //ROUTES
 
 module.exports = function (app, passport) {
+
     //Home page
     app.get('/', function (req, res) {
         res.render('homepage.ejs');
     });
+
     //phaser test
     app.get('/test', function (req, res) {
         res.render('index.ejs');
     });
+
     //Login page
-    app.get('/login', function (req, res) {
+    app.get('/login', isNotLoggedIn, function (req, res) {
         //res.render('login.ejs');
         res.render('login.ejs', {message: req.flash('loginMessage')});
     });
-    // app.post('/login', function (req, res) {
-    //     handleLoginForm(req, res);
-    // });
-    // process the login form
     app.post(
         '/login',
         passport.authenticate('local-login', {
@@ -41,21 +40,11 @@ module.exports = function (app, passport) {
         }
     );
 
-    //Singup page
-    // app.get('/singup', function (req, res) {
-    //     //res.sendFile(__dirname + '/views/login.html');
-    //     res.render('login.ejs');
-    // });
-    // app.post('/singup', function (req, res) {
-    //     handleLoginForm(req, res);
-    // });
-
-    // show the signup form
-    app.get('/signup', function(req, res) {
+    //SignUp page
+    app.get('/signup', isNotLoggedIn, function(req, res) {
         // render the page and pass in any flash data if it exists
         res.render('signup.ejs', { message: req.flash('signupMessage') });
     });
-
     // process the signup form
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect : '/profile', // redirect to the secure profile section
@@ -63,12 +52,14 @@ module.exports = function (app, passport) {
         failureFlash : true // allow flash messages
     }));
 
+    //Admin profile - secured
     app.get('/profile', isLoggedIn, function(req, res) {
         res.render('profile.ejs', {
             user : req.user // get the user out of session and pass to template
         });
     });
 
+    //logout
     app.get('/logout', function(req, res) {
         req.logout();
         res.redirect('/');
@@ -94,5 +85,11 @@ function isLoggedIn(req, res, next) {
 
     // if they aren't redirect them to the home page
     console.log("Access forbidden!"); //TODO zmienić to xD
+    res.redirect('/');
+}
+
+function isNotLoggedIn(req, res, next){
+    if(req.isUnauthenticated())
+        return next();
     res.redirect('/');
 }
