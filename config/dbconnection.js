@@ -19,4 +19,9 @@ connection.connect(function (err) {
     }
 });
 
-module.exports = { connection, url, database: 'pollub73', users_table: 'users' };
+module.exports = { connection, url,
+    database: 'pollub73',
+    admins_table: 'administrators',
+    players_table: 'players',
+    rooms_table: 'rooms',
+    quiz_table: 'quiz'};
