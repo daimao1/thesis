@@ -62,6 +62,12 @@ module.exports = function (app, passport) {
         res.redirect('/');
     });
 
+    //board
+    app.get('/board', function (req, res) {
+        //res.sendFile(__dirname + '/views/stoptimegame.html');
+        res.render('board.ejs');
+    });
+
     //Stop-time minigame
     app.get('/stoptimegame', function (req, res) {
         //res.sendFile(__dirname + '/views/stoptimegame.html');
