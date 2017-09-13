@@ -8,15 +8,15 @@
     "url": "https://github.com/abbassoftware/forms-in-nodejs/issues"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=dev DEBUG=* node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1", //TODO test
+    "start": "NODE_ENV=dev DEBUG=* node server.js" //TODO fix, do not work if npm start has been executed
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/daimao1/thesis.git"
   },
   "dependencies": {
-    "bcrypt": "1.0.2",
+    "bcrypt": "1.0.2", //problem with the last version (1.0.3)
     "body-parser": "^1.17.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.3",
