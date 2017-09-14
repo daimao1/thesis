@@ -1,5 +1,6 @@
 
 //ROUTES
+const Room = require('./room/Room.js');
 
 module.exports = function (app, passport) {
 
@@ -26,7 +27,7 @@ module.exports = function (app, passport) {
             failureFlash: true // allow flash messages
         }),
         function (req, res) {
-            console.log("Logowanie  poprawne!");
+            console.log("Login success!");
 
             if (req.body.remember) {
                 req.session.cookie.maxAge = 1000 * 60 * 3;
@@ -54,6 +55,12 @@ module.exports = function (app, passport) {
         res.render('profile.ejs', {
             user : req.user // get the user out of session and pass to template
         });
+    });
+
+    //Create new game room from form
+    app.post('/profile', isLoggedIn, function (req, res) {
+        newRoom(req);
+        res.redirect('/profile');
     });
 
     //logout
@@ -95,4 +102,9 @@ function isNotLoggedIn(req, res, next){
     if(req.isUnauthenticated())
         return next();
     res.redirect('/');
+}
+
+function newRoom(req){
+    let room = new Room(req.body.room_name, 1);
+    //TODO room.id is undefined in short time, because async insert to db
 }

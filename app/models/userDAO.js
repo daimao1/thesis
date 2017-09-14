@@ -1,5 +1,5 @@
 /**
- * Created by Tobiasz on 2017-07-12.
+ * PLIK NIE JEST WYKORZYSTYWANY
  */
 
 const database = require('../../config/dbconnection');
