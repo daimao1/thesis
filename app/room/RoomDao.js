@@ -3,16 +3,22 @@ const dbconnection = db.connection;
 
 module.exports = saveRoom;
 
-function saveRoom(roomName, administratorId, callback){
+function saveRoom(roomName, administratorId){
 
-    dbconnection.query('INSERT INTO ' + db.rooms_table + ' SET ?', {room_name: roomName, administrator_id: administratorId}, function (error, results) {
-        if (error) {
-            throw error;
-            // console.error('Database error!', error);
-        }
-        console.log('Inserted new row to rooms table with id: ' + results.insertId);
-
-        callback(results.insertId);
-        //return results.insertId;
+    return new Promise((resolve, reject) => {
+        dbconnection.query(
+            'INSERT INTO ' + db.rooms_table + ' SET ?',
+            {room_name: roomName, administrator_id: administratorId},
+            function (error, results) {
+                if (error) {
+                    console.error("Database "  + error);
+                    reject(error);
+                }
+                else {
+                    console.log('Database: insert to rooms table with id: ' + results.insertId);
+                    resolve(results.insertId);
+                }
+            }
+        );
     });
 }

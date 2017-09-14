@@ -1,7 +1,7 @@
 
 //ROUTES
 const Room = require('./room/Room.js');
-
+let rooms = [];
 module.exports = function (app, passport) {
 
     //Home page
@@ -53,7 +53,8 @@ module.exports = function (app, passport) {
     //Admin profile - secured
     app.get('/profile', isLoggedIn, function(req, res) {
         res.render('profile.ejs', {
-            user : req.user // get the user out of session and pass to template
+            user : req.user, // get the user out of session and pass to template
+            rooms : rooms
         });
     });
 
@@ -106,5 +107,10 @@ function isNotLoggedIn(req, res, next){
 
 function newRoom(req){
     let room = new Room(req.body.room_name, 1);
-    //TODO room.id is undefined in short time, because async insert to db
+    console.log('1: ' + room.databaseId);
+    console.log(room);
+    setTimeout(function(){ console.log('2: ' + room.databaseId); }, 1000);
+
+    rooms[0] = room;
+    console.log("3: " + rooms[0].name);
 }

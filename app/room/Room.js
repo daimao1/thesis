@@ -1,24 +1,32 @@
 const saveRoom = require('./RoomDao.js');
 
 class Room {
-    constructor(roomName, administratorId){
-        this.name = roomName;
-        this.administatorId = administratorId;
-        var ref = this;
-        saveRoom(roomName, administratorId, function (insertedId) {
-            ref.id = insertedId;
-            console.log(`New room: ${ref.name},id: ${ref.id}, adminId: ${ref.administatorId}`);
-        });
 
+    constructor(roomName, adminId){
+        this.name = roomName;
+        this.adminId = adminId;
+        this.gameNumber = Room.generateGameNumber();
+        this.databaseId = undefined;
+
+        this.saveToDatabaseAndSetDatabaseId();
+
+        console.log(`New room: ${this.name}, id: loading from db, adminId: ${this.adminId}`);
     }
 
-    // get id(){
-    //     return this.id;
-    // }
-    //
-    // set id(id){
-    //     this.id = id;
-    // }
+    saveToDatabaseAndSetDatabaseId(){
+        let promise = saveRoom(this.name, this.adminId);
+        promise.then((insertedId) => {
+            this.databaseId = insertedId;
+            console.log("DatabaseId saved as Room property. [databaseId: " + this.databaseId + "]");
+        });
+    }
+
+    static generateGameNumber(){
+        //TODO NIE WIEM JAK TO ZROBIC....
+        //pewnie trzeba dodać takie pole w bazie
+        //i rozkminić logikę generowania
+        return '1231';
+    }
 }
 
 module.exports = Room;
