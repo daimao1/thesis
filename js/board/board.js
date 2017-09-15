@@ -1,7 +1,5 @@
 let Board = {};
 
-//const ppp = require('../../app/player/Player.js')
-
 let map;
 let grids = [[]]; //TODO pola zwykłe
 let specialGrids = []; //TODO pola specjalne
@@ -9,6 +7,8 @@ let players = [];
 let iHeight = window.innerHeight;
 let iWidth = window.innerWidth;
 let mapBackground;
+let sprite;
+let cursors;
 
 //TODO: koncepcja z tablicą graczy jest do niczego - zrobić na obiektach!
 Board.preload = function () {
@@ -23,21 +23,49 @@ Board.preload = function () {
 };
 
 Board.create = function () {
-    mapBackground = board.add.tileSprite(0, 0, 1600, 900, "background");
-    map = board.add.image(iWidth, iHeight, 'plansza');
-    map.anchor.setTo(0.38, 1.0085); //położenie lewej górnej krawędzi obrazka - ta wartość będzie ulegać zmianie
-    map.scale.setTo(0.9);
-    addPlayersToBoard(6);
+
+
+    mapBackground = board.add.tileSprite(0, 0, 4573, 4605, "background");
+     board.world.setBounds(0, 0, 4573, 4605);
+    map = board.add.image(4573,4605,'plansza');
+    map.anchor.setTo(1,1 ); //położenie lewej górnej krawędzi obrazka - ta wartość będzie ulegać zmianie
+    //map.scale.setTo(0.9);
+    board.physics.startSystem(Phaser.Physics.P2JS);
+    sprite = board.add.sprite(130.0813, 485, 'avatar1');
+    board.physics.p2.enable(sprite);
+    board.camera.follow(sprite);
+    cursors = board.input.keyboard.createCursorKeys();
+
+   // addPlayersToBoard(6);
 
     //board.camera.follow(players[0]);
 };
 
 Board.update = function () {
+sprite.body.setZeroVelocity();
 
+  if (cursors.up.isDown)
+  {
+    sprite.body.moveUp(300)
+  }
+  else if (cursors.down.isDown)
+  {
+    sprite.body.moveDown(300);
+  }
+
+  if (cursors.left.isDown)
+  {
+    sprite.body.velocity.x = -300;
+  }
+  else if (cursors.right.isDown)
+  {
+    sprite.body.moveRight(300);
+  }
 };
 
 Board.render = function () {
-
+  board.debug.cameraInfo(board.camera, 32, 32);
+  board.debug.spriteCoords(sprite, 32, 500);
 };
 
 function addPlayersToBoard(numberOfPlayers) {
