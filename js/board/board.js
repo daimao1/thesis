@@ -1,4 +1,6 @@
-var Board = {};
+let Board = {};
+
+//const ppp = require('../../app/player/Player.js')
 
 let map;
 let grids = [[]]; //TODO pola zwykłe
@@ -8,7 +10,7 @@ let iHeight = window.innerHeight;
 let iWidth = window.innerWidth;
 let mapBackground;
 
-
+//TODO: koncepcja z tablicą graczy jest do niczego - zrobić na obiektach!
 Board.preload = function () {
     board.load.image('plansza', 'assets/map/plansza.png'); //załaduj planszę
     board.load.image('background', 'assets/map/wood_background.png');
@@ -25,14 +27,13 @@ Board.create = function () {
     map = board.add.image(iWidth, iHeight, 'plansza');
     map.anchor.setTo(0.38, 1.0085); //położenie lewej górnej krawędzi obrazka - ta wartość będzie ulegać zmianie
     map.scale.setTo(0.9);
-
     addPlayersToBoard(6);
 
     //board.camera.follow(players[0]);
 };
 
 Board.update = function () {
-//players[0].body.velocity.x = 250;
+
 };
 
 Board.render = function () {
