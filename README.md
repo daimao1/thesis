@@ -17,4 +17,9 @@ Routing:
 
 /stoptimegame  minigra 
 
+
+Testy:
+Aby uruchomić wszystkie testy korzystamy z komendy:
+    npm test
+Albo korzystamy z IDE. Pozdr.
 ✨🐢🚀✨
