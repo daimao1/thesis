@@ -17,9 +17,9 @@
         Aktywne gry
     </p>
     <ul>
-        <%= rooms.forEach(function(room){
-         room.name
-         }); %>
+        <% rooms.forEach(function(room) { %>
+        <li> <%= room.name %> </li>
+        <% }) %>
     </ul>
 
     <p>

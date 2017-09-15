@@ -2,6 +2,7 @@
 //ROUTES
 const Room = require('./room/Room.js');
 let rooms = [];
+
 module.exports = function (app, passport) {
 
     //Home page
@@ -91,8 +92,9 @@ module.exports = function (app, passport) {
 function isLoggedIn(req, res, next) {
 
     // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
+    if (req.isAuthenticated()) {
         return next();
+    }
 
     // if they aren't redirect them to the home page
     console.log("Access forbidden!"); //TODO zmienić to xD
@@ -100,17 +102,18 @@ function isLoggedIn(req, res, next) {
 }
 
 function isNotLoggedIn(req, res, next){
-    if(req.isUnauthenticated())
+    if(req.isUnauthenticated()) {
         return next();
+    }
     res.redirect('/');
 }
 
 function newRoom(req){
-    let room = new Room(req.body.room_name, 1);
+    let room = new Room(req.body.room_name, 2);
     console.log('1: ' + room.databaseId);
     console.log(room);
     setTimeout(function(){ console.log('2: ' + room.databaseId); }, 1000);
 
-    rooms[0] = room;
+    rooms.push(room);
     console.log("3: " + rooms[0].name);
 }
