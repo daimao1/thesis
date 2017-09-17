@@ -89,6 +89,11 @@ io.on('connection', function (socket) {
     socket.on('stopButton', function () {
         //console.log('odebrano socketa z androida');
         io.emit('stoptime', socket.player.id);
+    });
+
+    socket.on('diceValue', function (value) {
+        console.log(socket.player.id+': Odebrano wartość: '+value)
+        io.emit('playerDice', {id: socket.player.id, value: value})
     })
 });
 
