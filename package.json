@@ -8,7 +8,7 @@
     "url": "https://github.com/abbassoftware/forms-in-nodejs/issues"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "NODE_ENV=dev DEBUG=* node server.js"
   },
   "repository": {
@@ -16,7 +16,7 @@
     "url": "https://github.com/daimao1/thesis.git"
   },
   "dependencies": {
-    "bcrypt": "^1.0.2",
+    "bcrypt": "1.0.2",
     "body-parser": "^1.17.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.3",
@@ -30,19 +30,7 @@
     "socket.io": "^2.0.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-flow": "^6.23.0",
-    "flow-bin": "^0.54.1",
-    "standard": "^10.0.3"
-  },
-  "flow": {
-    "name": "my-flow-project",
-    "version": "1.0.0",
-    "devDependencies": {
-      "flow-bin": "^0.41.0"
-    },
-    "scripts": {
-      "flow": "flow"
-    }
+    "chai": "^4.1.2",
+    "mocha": "^3.5.3"
   }
 }
