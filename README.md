@@ -1,11 +1,11 @@
-Aby zainstalować wpisz:
+Aby pobrać zależności:
 npm install
 
 Aby uruchomić:
 node server.js
 
 Do uruchomienia bazy danych potrzebujemy XAMPP:
-- włączamy serwer Apache i MySQL
+- włączamy serwer MySQL
 - jeśli nie mamy bazy pollub73 uruchamiamy skrypt tworzący: "node scripts/create_database.js" 
 - Uruchamiamy server.js. Baza danych uruchomi się automatycznie na porcie 3000
 
