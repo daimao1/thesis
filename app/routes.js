@@ -1,7 +1,9 @@
 
 //ROUTES
 const Room = require('./room/Room.js');
-let rooms = [];
+const Rooms = require('./room/RoomList');
+Rooms.loadDataFromDb();
+let rooms;
 
 module.exports = function (app, passport) {
 
@@ -53,6 +55,7 @@ module.exports = function (app, passport) {
 
     //Admin profile - secured
     app.get('/profile', isLoggedIn, function(req, res) {
+        rooms = Rooms.getAll();
         res.render('profile.ejs', {
             user : req.user, // get the user out of session and pass to template
             rooms : rooms
@@ -67,7 +70,7 @@ module.exports = function (app, passport) {
 
     //logout
     app.get('/logout', function(req, res) {
-        req.logout();
+        req.logout()
         res.redirect('/');
     });
 
@@ -108,12 +111,16 @@ function isNotLoggedIn(req, res, next){
     res.redirect('/');
 }
 
-function newRoom(req){
-    let room = new Room(req.body.room_name, 2);
+function newRoom(req){ //TODO move to another file
+    let room = new Room(req.body.room_name, 1);
     console.log('1: ' + room.databaseId);
     console.log(room);
     setTimeout(function(){ console.log('2: ' + room.databaseId); }, 1000);
 
-    rooms.push(room);
-    console.log("3: " + rooms[0].name);
+    //Rooms.loadDataFromDb();
+    Rooms.add(room);
+    //rooms = Rooms.getAll();
+
+
+
 }

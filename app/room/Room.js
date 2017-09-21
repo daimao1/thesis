@@ -1,8 +1,9 @@
-const saveRoom = require('./RoomDao.js');
+const saveRoom = require('./RoomDao.js').saveRoom;
 
 class Room {
 
     constructor(roomName, adminId){
+        //Fields must have the same names like fields in database
         this.name = roomName;
         this.adminId = adminId;
         this.gameNumber = Room.generateGameNumber();
