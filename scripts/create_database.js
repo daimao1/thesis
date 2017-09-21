@@ -1,11 +1,11 @@
 /*
-* Version: 0.0.2
+* Version: 0.0.3
 * Last update: 21.09.2017
 */
 
-var mysql = require('mysql');
-var db = require('../config/dbconnection');
-var connection = mysql.createConnection({
+const mysql = require('mysql');
+const db = require('../config/dbconnection');
+const connection = mysql.createConnection({
     host: db.url.host,
     user: db.url.user,
     password: db.url.password
@@ -38,7 +38,7 @@ connection.query(`
         \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         \`name\` VARCHAR(20),
         \`administrator_id\` INT NOT NULL,
-        \`game_number\` INT NOT NULL,
+        \`game_number\` INT,
         PRIMARY KEY (\`id\`,\`administrator_id\`),
         UNIQUE INDEX \`game_number_UNIQUE\` (\`game_number\`),
         INDEX \`FK_ROOMS_ADMINISTRATORS_IDX\` (\`administrator_id\` ASC),
@@ -105,5 +105,3 @@ connection.query(`
 );
 
 connection.end();
-
-
