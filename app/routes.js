@@ -1,9 +1,5 @@
-
 //ROUTES
-const Room = require('./room/Room.js');
-const Rooms = require('./room/RoomList');
-Rooms.loadDataFromDb();
-let rooms;
+const Rooms = require('./room/Rooms');
 
 module.exports = function (app, passport) {
 
@@ -55,7 +51,7 @@ module.exports = function (app, passport) {
 
     //Admin profile - secured
     app.get('/profile', isLoggedIn, function(req, res) {
-        rooms = Rooms.getByAdminId(req.user.id); //Refresh rooms list
+        const rooms = Rooms.findByAdminId(req.user.id); //Load rooms list
         res.render('profile.ejs', {
             user : req.user, // get the user out of session and pass to template
             rooms : rooms
@@ -64,16 +60,13 @@ module.exports = function (app, passport) {
 
     //Create new game room from form
     app.post('/profile', isLoggedIn, function (req, res) {
-        if(req.body.room_name !== undefined){
-            newRoom(req);
-        }
+        Rooms.new(req.body.room_name, req.user.id);
         res.redirect('/profile');
     });
 
     //delete room
     app.delete('/profile/room/:id', isLoggedIn, function (req, res) {
-        const id = req.params.id;
-        Rooms.deleteById(id);
+        Rooms.deleteById(req.params.id);
         res.end();
     });
 
@@ -118,11 +111,4 @@ function isNotLoggedIn(req, res, next){
         return next();
     }
     res.redirect('/');
-}
-
-function newRoom(req){ //TODO move to another module
-
-    let room = new Room(req.body.room_name, req.user.id);
-    //console.log(room);
-    Rooms.add(room);
 }
