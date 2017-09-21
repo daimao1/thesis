@@ -9,24 +9,23 @@ class Room {
         this.administrator_id = adminId;
         this.game_number = Room.generateGameNumber();
 
-
-        this.saveToDatabaseAndSetDatabaseId();
+        this.saveToDatabaseAndSetIdFromDatabase();
 
         console.log(`New room: ${this.name}, id: loading from db, administrator_id: ${this.administrator_id}`);
     }
 
-    saveToDatabaseAndSetDatabaseId(){
+    saveToDatabaseAndSetIdFromDatabase(){
+        //TODO dodać game_number
         let promise = saveRoom(this.name, this.administrator_id);
         promise.then((insertedId) => {
             this.id = insertedId;
-            console.log("DatabaseId saved as Room property. [databaseId: " + this.id + "]");
+            console.log("ID from database saved as Room property. room.id: [" + this.id + "]");
         });
     }
 
     static generateGameNumber(){
-        //TODO NIE WIEM JAK TO ZROBIC....
-        //pewnie trzeba dodać takie pole w bazie - done :D
-        //i rozkminić logikę generowania
+        //TODO logika generowania
+        //można też całkiem to olać i korzystać z id
         return '1231';
     }
 }

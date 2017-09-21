@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Thesis - login</title>
+    <script>
+        function deleteRoom(id) {
+            const req = new XMLHttpRequest();
+            req.open('DELETE', '/profile/room/' + id, true);
+            req.send(null);
+
+            location.reload();
+        }
+    </script>
 </head>
 <body>
     <p>
@@ -18,7 +27,7 @@
     </p>
     <ul>
         <% rooms.forEach(function(room) { %>
-        <li> <%= room.name %> </li>
+        <li> <%= room.name %> <button onclick="deleteRoom(<%= room.id %>)">Delete</button></li>
         <% }) %>
     </ul>
 

@@ -33,7 +33,24 @@ exports.getAll = function (){
                 throw error;
             }
             else {
-                console.log('Database: selected all from ' + table_name + ' table.');
+                console.log('Database: selected all rows from ' + table_name + ' table.');
+                resolve(results);
+            }
+        });
+    });
+};
+
+exports.deleteById = function (id){
+    "use strict";
+
+    return new Promise((resolve) => {
+        dbconnection.query(`DELETE FROM ${table_name} WHERE id = ${id}`, function (error, results) {
+            if (error) {
+                console.error("Database " + error);
+                throw error;
+            }
+            else {
+                console.log(`Database: deleting from ${table_name}...`);
                 resolve(results);
             }
         });

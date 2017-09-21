@@ -55,7 +55,7 @@ module.exports = function (app, passport) {
 
     //Admin profile - secured
     app.get('/profile', isLoggedIn, function(req, res) {
-        rooms = Rooms.getAll();
+        rooms = Rooms.getByAdminId(req.user.id); //Refresh rooms list
         res.render('profile.ejs', {
             user : req.user, // get the user out of session and pass to template
             rooms : rooms
@@ -64,13 +64,22 @@ module.exports = function (app, passport) {
 
     //Create new game room from form
     app.post('/profile', isLoggedIn, function (req, res) {
-        newRoom(req);
+        if(req.body.room_name !== undefined){
+            newRoom(req);
+        }
         res.redirect('/profile');
+    });
+
+    //delete room
+    app.delete('/profile/room/:id', isLoggedIn, function (req, res) {
+        const id = req.params.id;
+        Rooms.deleteById(id);
+        res.end();
     });
 
     //logout
     app.get('/logout', function(req, res) {
-        req.logout()
+        req.logout();
         res.redirect('/');
     });
 
@@ -88,7 +97,7 @@ module.exports = function (app, passport) {
     //404
     app.use(function (req, res) {
         res.setHeader('Content-Type', 'text/plain');
-        res.status(404).send('Strony nie znaleziono');
+        res.status(404).send('Not found');
     });
 };
 
@@ -100,7 +109,7 @@ function isLoggedIn(req, res, next) {
     }
 
     // if they aren't redirect them to the home page
-    console.log("Access forbidden!"); //TODO zmienić to xD
+    console.log("Access forbidden!");
     res.redirect('/');
 }
 
@@ -112,15 +121,8 @@ function isNotLoggedIn(req, res, next){
 }
 
 function newRoom(req){ //TODO move to another module
-    let room = new Room(req.body.room_name, 1);
-    console.log('1: ' + room.databaseId);
-    console.log(room);
-    setTimeout(function(){ console.log('2: ' + room.databaseId); }, 1000);
 
-    //Rooms.loadDataFromDb();
+    let room = new Room(req.body.room_name, req.user.id);
+    //console.log(room);
     Rooms.add(room);
-    //rooms = Rooms.getAll();
-
-
-
 }
