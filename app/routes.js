@@ -1,5 +1,5 @@
-
 //ROUTES
+const Rooms = require('./room/Rooms');
 
 module.exports = function (app, passport) {
 
@@ -26,7 +26,7 @@ module.exports = function (app, passport) {
             failureFlash: true // allow flash messages
         }),
         function (req, res) {
-            console.log("Logowanie  poprawne!");
+            console.log("Login success!");
 
             if (req.body.remember) {
                 req.session.cookie.maxAge = 1000 * 60 * 3;
@@ -51,9 +51,23 @@ module.exports = function (app, passport) {
 
     //Admin profile - secured
     app.get('/profile', isLoggedIn, function(req, res) {
+        const rooms = Rooms.findByAdminId(req.user.id); //Load rooms list
         res.render('profile.ejs', {
-            user : req.user // get the user out of session and pass to template
+            user : req.user, // get the user out of session and pass to template
+            rooms : rooms
         });
+    });
+
+    //Create new game room from form
+    app.post('/profile', isLoggedIn, function (req, res) {
+        Rooms.new(req.body.room_name, req.user.id);
+        res.redirect('/profile');
+    });
+
+    //delete room
+    app.delete('/profile/room/:id', isLoggedIn, function (req, res) {
+        Rooms.deleteById(req.params.id);
+        res.end();
     });
 
     //logout
@@ -76,23 +90,25 @@ module.exports = function (app, passport) {
     //404
     app.use(function (req, res) {
         res.setHeader('Content-Type', 'text/plain');
-        res.status(404).send('Strony nie znaleziono');
+        res.status(404).send('Not found');
     });
 };
 
 function isLoggedIn(req, res, next) {
 
     // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
+    if (req.isAuthenticated()) {
         return next();
+    }
 
     // if they aren't redirect them to the home page
-    console.log("Access forbidden!"); //TODO zmienić to xD
+    console.log("Access forbidden!");
     res.redirect('/');
 }
 
 function isNotLoggedIn(req, res, next){
-    if(req.isUnauthenticated())
+    if(req.isUnauthenticated()) {
         return next();
+    }
     res.redirect('/');
 }
