@@ -111,7 +111,7 @@ function isNotLoggedIn(req, res, next){
     res.redirect('/');
 }
 
-function newRoom(req){ //TODO move to another file
+function newRoom(req){ //TODO move to another module
     let room = new Room(req.body.room_name, 1);
     console.log('1: ' + room.databaseId);
     console.log(room);

@@ -7,7 +7,7 @@ exports.saveRoom = function (roomName, administratorId){
     return new Promise((resolve) => {
         dbconnection.query(
             'INSERT INTO ' + table_name + ' SET ?',
-            {room_name: roomName, administrator_id: administratorId},
+            {name: roomName, administrator_id: administratorId},
             function (error, results) {
                 if (error) {
                     console.error("Database "  + error);
