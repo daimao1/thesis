@@ -1,29 +1,142 @@
-var Board = {};
+let Board = {}
 
-var map;
-var grids = []; //TODO pola zwykłe
-var specialGrids = []; //TODO pola specjalne
-var playerGrid=[]; //dane gracza (np. położenie, awatar)
+let map
+//pole START ma współrzędne grids[0][0], grids[0][1]; Pole META ma współrzędne grids grids[288][0], grids[288][1]
+let grids = [[120, 3929.94], [248, 3929.94], [398, 3929.94], [540, 3929.94], [682, 3929.94], [824, 3929.94], [972, 3929.94], [1117, 3929.94],
+  [1264, 3929.94], [1406, 3929.94], [1406, 3779.94], [1406, 3634.94], [1406, 3494.94], [1272, 3494.94], [1127, 3494.94], [1127, 3634.94],
+  [982, 3634.94], [837, 3634.94], [837, 3494.94], [692, 3494.94], [548, 3494.94], [404, 3494.94], [260, 3494.94], [116, 3494.94],
+  [116, 3350.94], [116, 3220.94], [116, 3092.94], [116, 2952.94], [116, 2805.94], [116, 2665.94], [116, 2517.94], [116, 2374.94],
+  [260, 2374.94], [404, 2374.94], [548, 2374.94], [548, 2514.94], [548, 2654.94], [404, 2657.94], [404, 2805.94], [404, 2948.94],
+  [550, 2948.94], [550, 3092.94], [550, 3236.94], [694, 3236.94], [842, 3236.94], [984, 3236.94], [1130, 3236.94], [1274, 3236.94],
+  [1274, 3096.94], [1274, 2952.94], [1274, 2808.94], [1274, 2664.94], [1130, 2664.94], [986, 2664.94], [842, 2664.94], [842, 2518.94],
+  [842, 2378.94], [842, 2234.94], [842, 2090.94], [986, 2090.94], [1130, 2090.94], [1274, 2090.94], [1274, 2230.94], [1274, 2374.94],
+  [1418, 2374.94], [1562, 2374.94], [1562, 2230.94], [1562, 2085.94], [1706, 2085.94], [1850, 2085.94], [1850, 2230.94], [1850, 2375.94],
+  [1850, 2520.94], [1850, 2662.94], [1850, 2804.94], [1995, 2804.94], [2136, 2804.94], [2136, 2659.94], [2136, 2514.94], [2136, 2374.94],
+  [2136, 2230.94], [2136, 2085.94], [2136, 1940.94], [2136, 1798.94], [2280, 1798.94], [2424, 1798.94], [2424, 1943.94], [2424, 2088.94],
+  [2424, 2228.94], [2424, 2370.94], [2424, 2515.94], [2568, 2515.94], [2568, 2660.94], [2568, 2805.94], [2424, 2805.94], [2424, 2949.94],
+  [2424, 3094.94], [2280, 3094.94], [2135, 3094.94], [2135, 3236.94], [1991, 3236.94], [1846, 3236.94], [1846, 3384.94], [1846, 3526.94],
+  [1846, 3670.94], [1990, 3670.94], [2134, 3670.94], [2134, 3814.94], [2278, 3814.94], [2428, 3814.94], [2566, 3814.94], [2712, 3814.94],
+  [2856, 3814.94], [2856, 3672.94], [2856, 3530.94], [2856, 3382.94], [2856, 3240.94], [2856, 3098.94], [2856, 2950.94], [2856, 2808.94],
+  [3000, 2808.94], [3144, 2808.94], [3144, 2950.94], [3144, 3092.94], [3288, 3092.94], [3432, 3092.94], [3432, 3234.94], [3432, 3380.94],
+  [3288, 3380.94], [3144, 3380.94], [3144, 3526.94], [3144, 3670.94], [3288, 3670.94], [3432, 3670.94], [3576, 3670.94], [3720, 3670.94],
+  [3864, 3670.94], [3864, 3528.94], [3864, 3386.94], [3864, 3240.94], [3864, 3096.94], [3864, 2954.94], [3864, 2806.94], [3864, 2662.94],
+  [3720, 2662.94], [3576, 2662.94], [3434, 2662.94], [3434, 2516.94], [3434, 2374.94], [3578, 2374.94], [3722, 2374.94], [3866, 2374.94],
+  [4010, 2374.94], [4010, 2232.94], [4010, 2086.94], [3866, 2086.94], [3722, 2086.94], [3576, 2086.94], [3434, 2086.94], [3290, 2086.94],
+  [3146, 2086.94], [3002, 2086.94], [3002, 1940.94], [3002, 1798.94], [3002, 1652.94], [3002, 1510.94], [3002, 1364.94], [2858, 1364.94],
+  [2714, 1364.94], [2570, 1364.94], [2426, 1364.94], [2282, 1364.94], [2138, 1364.94], [2138, 1222.94], [2138, 1076.94], [1994, 1076.94],
+  [1850, 1076.94], [1706, 1076.94], [1706, 1218.94], [1706, 1364.94], [1706, 1508.94], [1562, 1508.94], [1418, 1508.94], [1274, 1508.94],
+  [1274, 1654.94], [1274, 1796.94], [1130, 1796.94], [986, 1796.94], [986, 1654.94], [986, 1508.94], [842, 1508.94], [698, 1508.94],
+  [554, 1508.94], [410, 1508.94], [266, 1508.94], [266, 1366.94], [266, 1220.94], [122, 1220.94], [122, 1078.94], [122, 932.94],
+  [122, 786.94], [266, 786.94], [410, 786.94], [554, 786.94], [554, 934.94], [554, 1076.94], [554, 1222.94], [698, 1222.94],
+  [842, 1222.94], [986, 1222.94], [986, 1080.94], [986, 934.94], [986, 790.94], [986, 644.94], [986, 500.94], [842, 500.94],
+  [698, 500.94], [554, 500.94], [554, 356.94], [554, 212.94], [554, 68.94], [698, 68.94], [842, 68.94], [986, 68.94],
+  [1130, 68.94], [1274, 68.94], [1418, 68.94], [1562, 68.94], [1706, 68.94], [1850, 68.94], [1994, 68.94], [2138, 68.94],
+  [2138, 212.94], [2138, 356.94], [2282, 356.94], [2426, 356.94], [2426, 212.94], [2570, 212.94], [2714, 212.94], [2714, 356.94],
+  [2858, 356.94], [3002, 356.94], [3002, 500.94], [3002, 644.94], [2858, 644.94], [2714, 644.94], [2570, 644.94], [2426, 644.94],
+  [2426, 788.94], [2426, 932.94], [2570, 932.94], [2714, 932.94], [2858, 932.94], [3002, 932.94], [3146, 932.94], [3290, 932.94],
+  [3290, 1076.94], [3434, 1076.94], [3578, 1076.94], [3578, 1220.94], [3578, 1364.94], [3434, 1364.94], [3290, 1364.94], [3290, 1508.94],
+  [3290, 1652.94], [3290, 1796.94], [3434, 1796.94], [3578, 1796.94], [3722, 1796.94], [3866, 1796.94], [3866, 1652.94], [3866, 1508.94],
+  [3866, 1364.94], [3866, 1220.94], [3866, 1076.94], [3866, 932.94], [3866, 788.94], [3866, 644.94], [3722, 644.94], [3578, 644.94],
+  [3434, 644.94], [3434, 500.94], [3434, 356.94], [3434, 212.94], [3434, 68.94], [3578, 68.94], [3722, 68.94], [3866, 68.94],
+  [4010, 68.94]]
+//let specialGrids = [] //TODO pola specjalne
+let players = []
+let iHeight = window.innerHeight
+let iWidth = window.innerWidth
+let mapBackground
+let player1, player2, player3, player4, player5, player6
+let cursors
+// let idPlayer = -1
+// let diceValue = -1
 
+Board.socket = io.connect()
+
+//TODO
+Board.socket.on('playerDice', function (id, value) {
+  console.log('elo ' + id + ' ' + value)
+  player1.body.moveUp(1200)
+})
 
 Board.preload = function () {
-    board.load.image('plansza', 'assets/map/plansza.png'); //załaduj planszę
-    board.load.spritesheet('avatar1','assets/sprites/boy.png');
-};
+  board.load.image('plansza', 'assets/map/plansza.png') //załaduj planszę
+  board.load.image('background', 'assets/map/wood_background.png')
+  board.load.spritesheet('avatar1', 'assets/sprites/avatar1.png') //załaduj awatary
+  board.load.spritesheet('avatar2', 'assets/sprites/avatar2.png')
+  board.load.spritesheet('avatar3', 'assets/sprites/avatar3.png')
+  board.load.spritesheet('avatar4', 'assets/sprites/avatar4.png')
+  board.load.spritesheet('avatar5', 'assets/sprites/avatar5.png')
+  board.load.spritesheet('avatar6', 'assets/sprites/avatar6.png')
+}
 
 Board.create = function () {
-    board.stage.backgroundColor = "#4488AA";
-    map = board.add.image(board.world.centerX,board.world.centerY,'plansza');
-    map.anchor.setTo(0.5, 0.45);
 
-    playerGrid[1] = board.add.sprite(32,32,'avatar1');
-    playerGrid[1].anchor.setTo(-6.5, -9); //ustawienie gracza na start
-};
+  mapBackground = board.add.tileSprite(0, 0, 4573 * 0.9, 4605 * 0.9, 'background')
+  board.world.setBounds(0, 0, 4573 * 0.9, 4605 * 0.9)
+  map = board.add.image(4573 * 0.9, 4605 * 0.9, 'plansza')
+  map.anchor.setTo(1, 1) //położenie lewej górnej krawędzi obrazka - ta wartość będzie ulegać zmianie
+  map.scale.setTo(0.9)
+  board.physics.startSystem(Phaser.Physics.P2JS)
+  addPlayersToBoard(6)
+  board.camera.follow(player1)
+  window.alert(diceValue)
+  //cursors = board.input.keyboard.createCursorKeys()
+}
 
 Board.update = function () {
 
-};
+  //sterowanie strzałkami
+  // sprite.body.setZeroVelocity()
+  //
+  // if (cursors.up.isDown) {
+  //   sprite.body.moveUp(300)
+  // }
+  // else if (cursors.down.isDown) {
+  //   sprite.body.moveDown(300)
+  // }
+  //
+  // if (cursors.left.isDown) {
+  //   sprite.body.velocity.x = -300
+  // }
+  // else if (cursors.right.isDown) {
+  //   sprite.body.moveRight(300)
+  // }
+}
 
 Board.render = function () {
+  // board.debug.cameraInfo(board.camera, 32, 32)
+  board.debug.spriteCoords(sprite, 32, 500)
+}
 
-};
+function addPlayersToBoard (numberOfPlayers) {
+
+  switch (numberOfPlayers) {
+    case 6:
+      player6 = board.add.sprite(grids[0][0] + 70, grids[0][1] + 47, 'avatar6')
+      board.physics.p2.enable(player6)
+    case 5:
+      player5 = board.add.sprite(grids[0][0] + 35, grids[0][1] + 47, 'avatar5')
+      board.physics.p2.enable(player5)
+    case 4:
+      player4 = board.add.sprite(grids[0][0], grids[0][1] + 47, 'avatar4')
+      board.physics.p2.enable(player4)
+    case 3:
+      player3 = board.add.sprite(grids[0][0] + 70, grids[0][1], 'avatar3')
+      board.physics.p2.enable(player3)
+    case 2:
+      player2 = board.add.sprite(grids[0][0] + 35, grids[0][1], 'avatar2')
+      board.physics.p2.enable(player2)
+    case 1:
+      player1 = board.add.sprite(grids[0][0], grids[0][1], 'avatar1')
+      board.physics.p2.enable(player1)
+  }
+}
+
+//TODO
+function changePlayerPosition () {
+  window.alert('ale jazda!')
+}
+
+//TODO
+// function checkSpecialGrid(){
+//
+// }

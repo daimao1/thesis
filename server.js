@@ -1,14 +1,14 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var morgan = require('morgan');
-var session  = require('express-session');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var passport = require('passport');
-var flash = require('connect-flash');
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const morgan = require('morgan');
+const session  = require('express-session');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const passport = require('passport');
+const flash = require('connect-flash');
 
-var io = require('socket.io').listen(server);
+const io = require('socket.io').listen(server);
 
 //resources TODO nie wiadomo czy nam to potrzebne
 app.use('/css', express.static(__dirname + '/css'));
@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // required for passport
-require('./config/passport')(passport);
+require('./app/config/passport')(passport);
 app.use(session({
     secret: 'vidyapathaisalwaysrunning',
     resave: true,
@@ -89,14 +89,21 @@ io.on('connection', function (socket) {
     socket.on('stopButton', function () {
         //console.log('odebrano socketa z androida');
         io.emit('stoptime', socket.player.id);
-    })
+    });
+
+    socket.on('diceValue', function (value) {
+        console.log(socket.player.id+': Odebrano wartość: '+value);
+        io.emit('playerDice', {id: socket.player.id, value: value});
+    });
 });
 
 function getAllPlayers() {
-    var players = [];
+    let players = [];
     Object.keys(io.sockets.connected).forEach(function (socketID) {
-        var player = io.sockets.connected[socketID].player;
-        if (player) players.push(player);
+        let player = io.sockets.connected[socketID].player;
+        if (player) {
+            players.push(player);
+        }
     });
     return players;
 }
