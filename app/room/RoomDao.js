@@ -1,4 +1,4 @@
-const db = require('../../config/dbconnection');
+const db = require('../config/dbconnection');
 const dbconnection = db.connection;
 const table_name = db.rooms_table;
 

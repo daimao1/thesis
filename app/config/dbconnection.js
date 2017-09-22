@@ -1,7 +1,7 @@
 /**
  * Created by Tobiasz on 2017-07-12.
  */
-var mysql = require('mysql');
+const mysql = require('mysql');
 
 const url = {
     host     : 'localhost',
@@ -10,7 +10,7 @@ const url = {
     database : 'pollub73'
 };
 
-var connection = mysql.createConnection(url);
+const connection = mysql.createConnection(url);
 connection.connect(function (err) {
     if (!err) {
         console.log("Database is connected as id: " + connection.threadId);

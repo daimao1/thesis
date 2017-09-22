@@ -5,7 +5,7 @@ let roomList = [];
 loadDataFromDb();
 
 function logDeleteSuccess(results) {
-    console.log(`Deleted [${results.affectedRows}] rows from rooms table`);
+    console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
 }
 
 function loadDataFromDb() {

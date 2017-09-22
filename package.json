@@ -8,7 +8,7 @@
     "url": "https://github.com/abbassoftware/forms-in-nodejs/issues"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "NODE_ENV=dev DEBUG=* node server.js"
   },
   "repository": {

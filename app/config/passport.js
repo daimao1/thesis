@@ -5,12 +5,12 @@
 // required for persistent login sessions
 // passport needs ability to serialize and unserialize users out of session
 
-var LocalStrategy = require('passport-local').Strategy;
-var bcrypt = require('bcrypt'); //to password hash
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt'); //to password hash
 const saltRounds = 8; //bcrypt hash param (cost: ~40 hashes per sec with 2GHz cpu)
 
-var db = require('./dbconnection');
-var dbconnection = db.connection; // db to table names and query exec
+const db = require('./dbconnection');
+const dbconnection = db.connection; // db to table names and query exec
 
 module.exports = function(passport) {
 
@@ -40,24 +40,26 @@ module.exports = function(passport) {
                 // find a user whose email is the same as the forms email
                 // we are checking to see if the user trying to login already exists
                 dbconnection.query("SELECT * FROM " + db.admins_table + " WHERE email = '" + email + "'", function(err, rows) {
-                    if (err)
+                    if (err) {
                         return done(err);
+                    }
                     if (rows.length) {
                         //return done(null, false, console.log('That email is already taken.'));
                         return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
                     } else {
                         // if there is no user with that email
                         // create the user
-                        var newUserMysql = {
+                        let newUserMysql = {
                             email: email,
                             password: bcrypt.hashSync(password, saltRounds)  // use the generateHash function in our user model
                         }; //TODO sync hash is not recommended https://www.npmjs.com/package/bcrypt
 
-                        var insertQuery = "INSERT INTO " + db.admins_table + " ( `email`, `password` ) values (?,?)";
+                        let insertQuery = "INSERT INTO " + db.admins_table + " ( `email`, `password` ) values (?,?)";
 
                         dbconnection.query(insertQuery,[newUserMysql.email, newUserMysql.password], function(err, rows) {
-                            if(err)
+                            if(err) {
                                 return done(err);
+                            }
                             newUserMysql.id = rows.insertId;
                             return done(null, newUserMysql);
                         });
@@ -78,8 +80,9 @@ module.exports = function(passport) {
             },
             function(req, email, password, done) { // callback with email and password from our form
                 dbconnection.query("SELECT * FROM " + db.admins_table + " WHERE email = '" + email + "'", function(err, rows){
-                    if (err)
+                    if (err) {
                         return done(err);
+                    }
                     if (!rows.length) {
                         return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
                     }
