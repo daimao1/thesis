@@ -4,9 +4,6 @@
   "main": "server.js",
   "authors": "Tomasz Korga, Tobiasz Kaciuczyk, Damian Kozieł",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/abbassoftware/forms-in-nodejs/issues"
-  },
   "scripts": {
     "test": "mocha",
     "start": "NODE_ENV=dev DEBUG=* node server.js"
