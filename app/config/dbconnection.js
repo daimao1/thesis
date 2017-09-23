@@ -15,7 +15,7 @@ connection.connect(function (err) {
     if (!err) {
         console.log("Database is connected as id: " + connection.threadId);
     } else {
-        console.log("Error connecting database...");
+        throw new Error(`Cannot connect to database! Connection url: [${Object.keys(url)}][${Object.values(url)}]`);
     }
 });
 
