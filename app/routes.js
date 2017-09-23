@@ -59,15 +59,23 @@ module.exports = function (app, passport) {
     });
 
     //Create new game room from form
-    app.post('/profile', isLoggedIn, function (req, res) {
+    app.post('/room', isLoggedIn, function (req, res) {
         Rooms.new(req.body.room_name, req.user.id);
         res.redirect('/profile');
     });
 
     //delete room
-    app.delete('/profile/room/:id', isLoggedIn, function (req, res) {
+    app.delete('/room/:id', isLoggedIn, function (req, res) {
         Rooms.deleteById(req.params.id);
         res.end();
+    });
+
+    //single room
+    app.get('/room/:id', isLoggedIn, function (req, res) {
+        const room = Rooms.findByAdminId(req.params.id);
+        res.render('room.ejs', {
+            room : room
+        });
     });
 
     //logout

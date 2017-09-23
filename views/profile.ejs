@@ -6,7 +6,7 @@
     <script>
         function deleteRoom(id) {
             const req = new XMLHttpRequest();
-            req.open('DELETE', '/profile/room/' + id, true);
+            req.open('DELETE', '/room/' + id, true);
             req.send(null);
 
             location.reload();
@@ -34,7 +34,7 @@
     <p>
         Stwórz nową grę:
     </p>
-    <form action="" method="post" id="create_room_form">
+    <form action="/room" method="post" id="create_room_form">
         <input type="text" name="room_name" id="room_name" placeholder="Nazwa gry" size="50" autofocus required />
         <input type="submit" id="confirm" value="Send" />
     </form>
