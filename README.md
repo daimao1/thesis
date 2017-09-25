@@ -17,6 +17,10 @@ Routing:
 
 /stoptimegame  minigra 
 
+Debugowanie:
+Ustawić zmienne środowiskowe za pomocą komendy 'set' w terminalu.
+set DEBUG=*
+// set NODE_ENV=dev - nie sprawdzone
 
 Testy:
 Aby uruchomić wszystkie testy korzystamy z komendy:
