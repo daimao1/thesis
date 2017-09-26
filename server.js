@@ -7,7 +7,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var flash = require('connect-flash');
-
 var io = require('socket.io').listen(server);
 
 //resources TODO nie wiadomo czy nam to potrzebne
@@ -47,9 +46,9 @@ server.listen(process.env.PORT || 8081, function () {
 server.lastPlayerID = 1; //TODO musi być osobna lista graczy dla każdego pokoju
 server.lastRoomID = 1;
 server.playersList = [];
-
 //połączenie
 io.on('connection', function (socket) {
+
     console.log('Socket connection on.');
     socket.on('new_room', function () {
         console.log('New game room created, id: ' + server.lastRoomID);
