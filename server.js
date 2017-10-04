@@ -99,6 +99,7 @@ io.on('connection', function (socket) {
     console.log('Id aktualnego gracza: ' + gridData.id + ' Wartość pola specjalnego: ' + gridData.grid)
     io.emit('specialGrid', {id: gridData.id, grid: gridData.grid})
   })
+
 })
 
 function getAllPlayers () {
