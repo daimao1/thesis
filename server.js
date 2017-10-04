@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 // required for passport
-require('./config/passport')(passport)
+require('./app/config/passport')(passport)
 app.use(session({
   secret: 'vidyapathaisalwaysrunning',
   resave: true,
