@@ -27,7 +27,10 @@
     </p>
     <ul>
         <% rooms.forEach(function(room) { %>
-        <li> <%= room.name %> <button onclick="deleteRoom(<%= room.id %>)">Delete</button></li>
+        <li>
+            <a href="/room/<%= room.id %>"> <%= room.name %> </a>
+            <button onclick="deleteRoom(<%= room.id %>)">Delete</button>
+        </li>
         <% }) %>
     </ul>
 

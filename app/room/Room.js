@@ -7,7 +7,7 @@ class Room {
         this.id = undefined;
         this.name = roomName;
         this.administrator_id = adminId;
-        this.game_number = Room.generateGameNumber();
+        //this.game_number = Room.generateGameNumber();
 
         this.saveToDatabaseAndSetIdFromDatabase();
 
@@ -20,14 +20,18 @@ class Room {
         promise.then((insertedId) => {
             this.id = insertedId;
             console.log("ID from database saved as Room property. room.id: [" + this.id + "]");
+
+            //this.createSocketNamespace(this.id);
         });
     }
 
-    static generateGameNumber(){
-        //TODO logika generowania
-        //można też całkiem to olać i korzystać z id
-        return '1231';
-    }
+   // createSocketNamespace(id) { }
+
+    // static generateGameNumber(){
+    //     //TODO logika generowania
+    //     //można też całkiem to olać i korzystać z id
+    //     return '1231';
+    // }
 }
 
 module.exports = Room;
