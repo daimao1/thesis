@@ -1,7 +1,7 @@
 let Board = {}
 
 let map
-//pole START ma współrzędne grids[0][0], grids[0][1]; Pole META ma współrzędne grids grids[288][0], grids[288][1]
+//pole START ma współrzędne grids[0][0], grids[0][1]; Pole META ma współrzędne grids[288][0], grids[288][1]
 let grids = [[120, 3929.94], [248, 3929.94], [398, 3929.94], [540, 3929.94], [682, 3929.94], [824, 3929.94], [972, 3929.94], [1117, 3929.94],
   [1264, 3929.94], [1406, 3929.94], [1406, 3779.94], [1406, 3634.94], [1406, 3494.94], [1272, 3494.94], [1127, 3494.94], [1127, 3634.94],
   [982, 3634.94], [837, 3634.94], [837, 3494.94], [692, 3494.94], [548, 3494.94], [404, 3494.94], [260, 3494.94], [116, 3494.94],
@@ -39,22 +39,15 @@ let grids = [[120, 3929.94], [248, 3929.94], [398, 3929.94], [540, 3929.94], [68
   [3866, 1364.94], [3866, 1220.94], [3866, 1076.94], [3866, 932.94], [3866, 788.94], [3866, 644.94], [3722, 644.94], [3578, 644.94],
   [3434, 644.94], [3434, 500.94], [3434, 356.94], [3434, 212.94], [3434, 68.94], [3578, 68.94], [3722, 68.94], [3866, 68.94],
   [4010, 68.94]]
-//let specialGrids = [] //TODO pola specjalne
 let players = []
 let currentPlayer
 let iHeight = window.innerHeight
 let iWidth = window.innerWidth
 let mapBackground
 let player1, player2, player3, player4, player5, player6
-let cursors
 let socket
 let tween1, tween2, tween3, tween4, tween5, tween6
-
-//TODO
-// Board.socket.on('playerDice', function (playerData) {
-//   console.log('Odebrano socketa z serwera. Id i wartość oczek: ' + playerData.id + ' ' + playerData.value)
-//   //player1.body.moveUp(1200)
-// })
+let turnMessage, diceMessage
 
 Board.preload = function () {
   board.load.image('plansza', 'assets/map/plansza.png') //załaduj planszę
@@ -65,12 +58,15 @@ Board.preload = function () {
   board.load.spritesheet('avatar4', 'assets/sprites/avatar4.png')
   board.load.spritesheet('avatar5', 'assets/sprites/avatar5.png')
   board.load.spritesheet('avatar6', 'assets/sprites/avatar6.png')
+  board.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/desyrel.png', 'assets/fonts/bitmapFonts/desyrel.xml')
+  board.load.bitmapFont('desyrel-pink', 'assets/fonts/bitmapFonts/desyrel-pink.png', 'assets/fonts/bitmapFonts/desyrel-pink.xml')
 }
 
 Board.create = function () {
   socket = io.connect()
-  //addMap()
-
+  //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
+  // currentPlayer.fieldNumber =0
+  // currentPlayer.value=0
   mapBackground = board.add.tileSprite(0, 0, 4573 * 0.9, 4605 * 0.9, 'background')
   board.world.setBounds(0, 0, 4573 * 0.9, 4605 * 0.9)
   map = board.add.image(4573 * 0.9, 4605 * 0.9, 'plansza')
@@ -132,37 +128,41 @@ function addPlayersToBoard (numberOfPlayers) {
   }
 }
 
-
 let setEventHandlers = function () {
   socket.on('playerDice', movePlayer)
 }
 
 //TODO: zrobić dla wielu graczy - w zależności o numeru gracza
 function movePlayer (playerData) {
-  console.log('Odebrano socketa z serwera. Id i wartość oczek: ' + playerData.id + ' ' + playerData.value)
-  tween1 = board.add.tween(player1.body)
-  let destination = +player1.fieldNumber + +playerData.value
+  currentPlayer = player1 //tymczasowe rozwiązanie dla testu
+  player1.id = playerData.id //
+  currentPlayer.id = player1.id //
+  currentPlayer.value = playerData.value
+  console.log('Odebrano socketa z serwera. Id i wartość oczek: ' + currentPlayer.id + ' ' + currentPlayer.value) //
+  tween1 = board.add.tween(currentPlayer.body)
+  let destination = +currentPlayer.fieldNumber + +playerData.value
+  //let destination = 9
   if (destination >= 288)
     destination = 288
   console.log('Ruszysz się na pole nr: ' + destination)
-  for (i = player1.fieldNumber; i <= destination; i++) {
+  showMessage()
+  for (i = currentPlayer.fieldNumber; i <= destination; i++) {
     tween1.to({
       x: grids[i][0],
       y: grids[i][1]
     }, 800)
   }
   tween1.start()
-  let distance = destination - player1.fieldNumber
-  player1.fieldNumber = destination
-  board.time.events.add(distance * 1200, function () {
-    isPlayerOnSpecialGrid(player1)
+  let distance = destination - currentPlayer.fieldNumber
+  currentPlayer.fieldNumber = destination
+  board.time.events.add(distance * 1600, function () {
+    isPlayerOnSpecialGrid(currentPlayer)
   })
-  console.log('Player 1: fieldNumber: ' + player1.fieldNumber)
+  console.log('Player 1: fieldNumber: ' + currentPlayer.fieldNumber)
 }
 
-
-function isPlayerOnSpecialGrid (player) {
-  currentPlayer = player
+function isPlayerOnSpecialGrid (currentPlayer) {
+  //currentPlayer = player
   switch (currentPlayer.fieldNumber) {
     case 6:
     case 27:
@@ -191,6 +191,7 @@ function isPlayerOnSpecialGrid (player) {
     case 257:
     case 287:
       console.log('Znajdujesz się na polu ZAMEK')
+      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'castle'})
       break
     case 22:
     case 89:
@@ -198,25 +199,30 @@ function isPlayerOnSpecialGrid (player) {
     case 240:
     case 286:
       console.log('Znajdujesz się na polu STADION')
+      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'stadium'})
       break
     case 31:
     case 71:
       console.log('Znajdujesz się na polu WYZWANIE 4')
+      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'challenge4'})
       break
     case 44:
     case 118:
     case 174:
       console.log('Znajdujesz się na polu WYZWANIE 5')
+      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'challenge5'})
       break
     case 224:
     case 283:
       console.log('Znajdujesz się na polu WYZWANIE 6')
+      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'challenge6'})
       break
     case 53:
     case 133:
     case 205:
     case 264:
       console.log('Znajdujesz się na polu RATUSZ')
+      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'townHall'})
       break
     case 36:
     case 82:
@@ -224,6 +230,7 @@ function isPlayerOnSpecialGrid (player) {
     case 215:
     case 271:
       console.log('Znajdujesz się na polu QUIZ 1 NA WSZYSTKICH')
+      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'oneAtAll'})
       break
     case 288:
       makeWinner()
@@ -235,10 +242,10 @@ function makeWinner () {
   console.log('Wygrałeś')
 }
 
-function goThreeFieldsBack(){
+function goThreeFieldsBack () {
   tween1 = board.add.tween(currentPlayer.body)
   let k = 1
-  for (j = 0; j < 3; j++) {
+  for (let j = 0; j < 3; j++) {
     tween1.to({
       x: grids[currentPlayer.fieldNumber - k][0],
       y: grids[currentPlayer.fieldNumber - k][1]
@@ -250,10 +257,10 @@ function goThreeFieldsBack(){
   console.log('Player 1: fieldNumber: ' + currentPlayer.fieldNumber)
 }
 
-function goThreeFieldsForward(){
+function goThreeFieldsForward () {
   tween1 = board.add.tween(currentPlayer.body)
   let m = 1
-  for (j = 0; j < 3; j++) {
+  for (let j = 0; j < 3; j++) {
     tween1.to({
       x: grids[currentPlayer.fieldNumber + m][0],
       y: grids[currentPlayer.fieldNumber + m][1]
@@ -263,4 +270,30 @@ function goThreeFieldsForward(){
   tween1.start()
   currentPlayer.fieldNumber = currentPlayer.fieldNumber - 3
   console.log('Player 1: fieldNumber: ' + currentPlayer.fieldNumber)
+}
+
+function showMessage () {
+  showTurn()
+  showDice()
+}
+
+//showTurn(currentPlayer)
+function showTurn () {
+  if (typeof turnMessage !== 'undefined') {
+    turnMessage.destroy()
+  }
+  turnMessage = board.add.bitmapText(1, 1, 'desyrel', 'TURN:  Player' + currentPlayer.id, 64)
+  turnMessage.fontSize = 55
+  turnMessage.fixedToCamera = true
+  turnMessage.cameraOffset.setTo(iWidth / 7, iHeight / 1.2)
+}
+
+function showDice () {
+  if (typeof diceMessage !== 'undefined') {
+    diceMessage.destroy()
+  }
+  diceMessage = board.add.bitmapText(1, 1, 'desyrel-pink', 'GOAL:  ' + currentPlayer.value, 64)
+  diceMessage.fontSize = 55
+  diceMessage.fixedToCamera = true
+  diceMessage.cameraOffset.setTo(iWidth / 1.7, iHeight / 1.2)
 }
