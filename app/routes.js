@@ -65,7 +65,7 @@ module.exports = function (app, passport) {
     });
 
     //delete room
-    app.delete('/profile/room/:id', isLoggedIn, function (req, res) {
+    app.delete('/room/:id', isLoggedIn, function (req, res) {
         RoomService.deleteById(+req.params.id);
         res.end();
     });
@@ -73,15 +73,15 @@ module.exports = function (app, passport) {
     //single room
     app.get('/room/:id', isLoggedIn, function (req, res) {
         const room = RoomService.getById(+req.params.id, +req.user.id);
-        if(room !== undefined){
-            res.render('room.ejs', {
-                room : room
-            });
-        }
-        else {
+        if(room === undefined) {
             res.setHeader('Content-Type', 'text/plain');
             res.status(404).send('Not found');
+        } else {
+            res.render('room.ejs', {
+                room: room
+            });
         }
+
     });
 
     //logout

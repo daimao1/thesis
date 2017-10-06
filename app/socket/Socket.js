@@ -21,11 +21,11 @@ module.exports = function (io) {
 
     //problably each connection
     io.on('connection', function (socket) {
-        console.log('Socket: client connected.');
+        console.log(`SocketIO: client connected: socket.id = [${socket.id}]`);
         //Object.keys(socket).forEach(function(data)
         //{ console.log(Object.keys(data) + ' : ' + Object.values(data)); });
         socket.on('disconnect', function () {
-            console.log('Socket client disconnected.');
+            console.log(`SocketIO: client disconnected: socket.id = [${socket.id}]`);
         });
     });
 };

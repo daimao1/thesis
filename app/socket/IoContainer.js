@@ -2,13 +2,13 @@ let io;
 
 exports.setIO = function(newIO){
         io = newIO;
-        console.log('Io has been set');
+        console.log('IO Container: IO set');
 };
 
 exports.getIO = function () {
-    console.log('Io get');
+    console.log('IO Container: IO get');
     if(io === undefined){
-        throw new Error('IO object not set. Cannot get.');
+        throw new Error('IO Container: IO object not set. Cannot get.');
     }
     return io;
 };

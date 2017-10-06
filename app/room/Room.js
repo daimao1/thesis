@@ -1,31 +1,44 @@
-const saveRoom = require('./RoomDao.js').saveRoom;
-
 class Room {
 
-    constructor(roomName, adminId){
+    constructor(id, name, adminId, socketNamespace) {
         //Fields must have the same names as fields in database
-        this.id = undefined;
-        this.name = roomName;
+        this.id = id;
+        this.name = name;
         this.administrator_id = adminId;
+        this.socketNamespace = socketNamespace;
+        this.players = [];
         //this.game_number = Room.generateGameNumber();
 
-        this.saveToDatabaseAndSetIdFromDatabase();
-
-        console.log(`New room: ${this.name}, id: loading from db, administrator_id: ${this.administrator_id}`);
+        console.log(`New room: [${this.name}], id: [${this.id}], administrator_id: [${this.administrator_id}]`);
     }
 
-    saveToDatabaseAndSetIdFromDatabase(){
-        //TODO dodać game_number
-        let promise = saveRoom(this.name, this.administrator_id);
-        promise.then((insertedId) => {
-            this.id = insertedId;
-            console.log("ID from database saved as Room property. room.id: [" + this.id + "]");
-
-            //this.createSocketNamespace(this.id);
-        });
+    static get MAX_PLAYERS() {
+        /**
+         * MAX PLAYERS IN ONE ROOM: 6
+         */
+        return 6;
     }
 
-   // createSocketNamespace(id) { }
+    addPlayer(player) {
+        if (this.players.length >= this.MAX_PLAYERS) {
+            throw new Error(`Room#${this.id}: room full, cannot add new player.`);
+        }
+        this.players.push(player);
+        console.log(`Room#${this.id}: new player added.`);
+    }
+
+    addSocketNamespace(socketNamespace) {
+        if(this.socketNamespace !== undefined) {
+            throw new Error(`Room#${this.id}: 'socketNamespace' already defined. SocketNamespace.id: [${this.socketNamespace.id}]`);
+        }
+        this.socketNamespace = socketNamespace;
+        console.log(`Room#${this.id}: 'socketNamespace' added: [/${this.socketNamespace.roomId}]`);
+    }
+
+    removePlayers(){
+        this.players = [];
+        console.log(`Room#${this.id}: all players has been completely removed.`);
+    }
 
     // static generateGameNumber(){
     //     //TODO logika generowania
@@ -35,7 +48,3 @@ class Room {
 }
 
 module.exports = Room;
-
-
-
-
