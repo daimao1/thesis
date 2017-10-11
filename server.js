@@ -46,59 +46,64 @@ server.listen(process.env.PORT || 8081, function () {
 
 require('./app/socket/Socket')(io); //SOCKET CONNECTION
 
+/**
+ * Important event handler:
+ * handle unhandled promise rejection -> to avoid unexpected errors with non-zero exit code
+*/
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 server.lastPlayerID = 1; //TODO musi być osobna lista graczy dla każdego pokoju
 server.lastRoomID = 1;
 server.playersList = [];
 
-//połączenie
-// io.on('connection', function (socket) {
-//     console.log('Socket connection on.');
-//     socket.on('new_room', function () {
-//         console.log('New game room created, id: ' + server.lastRoomID);
-//         socket.room = {
-//             id: server.lastRoomID++
-//         };
-//         //socket.emit('allplayers', getAllPlayers()); //wysłanie do przeglądarki akutalnej listy graczy
-//         socket.broadcast.emit('new_room', socket.player); //powiadomienie wszystkich włączonych przeglądarek o nowym pokoju
-//
-//         //rozłączenie
-//         socket.on('disconnect', function () {
-//             console.log('Browser with room id: ' + socket.client.id + ' disconnected. Room closed.');
-//             io.emit('remove_room', socket.room.id);
-//         });
-//     });
-//
-//     socket.on('test', function () {
-//         console.log('***Test received***');
-//     });
-//
-//     socket.on('new_droid', function () {  //łączy się z androidem
-//         console.log('New android device connected, id = ' + server.lastPlayerID);
-//         socket.player = {
-//             id: server.lastPlayerID++
-//         };
-//         socket.emit('allplayers', getAllPlayers()); //wysyła socketa do funkcji allplayers
-//         socket.broadcast.emit('newplayer', socket.player);
-//
-//         //rozłączenie
-//         socket.on('disconnect', function () {
-//             console.log('Deleted android device id: ' + socket.player.id);
-//             server.lastPlayerID--;
-//             io.emit('remove_player', socket.player.id);
-//         });
-//     });
-//
-//     socket.on('stopButton', function () {
-//         //console.log('odebrano socketa z androida');
-//         io.emit('stoptime', socket.player.id);
-//     });
-//
-//     socket.on('diceValue', function (value) {
-//         console.log(socket.player.id+': Odebrano wartość: '+value);
-//         io.emit('playerDice', {id: socket.player.id, value: value});
-//     });
-// });
-//
+//TODO move to Socket manager system (EventHandler)
+//dubluje połączenie managera
+io.on('connection', function (socket) {
+    console.log('Socket connection on.');
+    // socket.on('new_room', function () {
+    //     console.log('New game room created, id: ' + server.lastRoomID);
+    //     socket.room = {
+    //         id: server.lastRoomID++
+    //     };
+    //     //socket.emit('allplayers', getAllPlayers()); //wysłanie do przeglądarki akutalnej listy graczy
+    //     socket.broadcast.emit('new_room', socket.player); //powiadomienie wszystkich włączonych przeglądarek o nowym pokoju
+    //
+    //     //rozłączenie
+    //     socket.on('disconnect', function () {
+    //         console.log('Browser with room id: ' + socket.client.id + ' disconnected. Room closed.');
+    //         io.emit('remove_room', socket.room.id);
+    //     });
+    // });
+
+    // socket.on('new_droid', function () {  //łączy się z androidem
+    //     console.log('New android device connected, id = ' + server.lastPlayerID);
+    //     socket.player = {
+    //         id: server.lastPlayerID++
+    //     };
+    //     socket.emit('allplayers', getAllPlayers()); //wysyła socketa do funkcji allplayers
+    //     socket.broadcast.emit('newplayer', socket.player);
+    //
+    //     //rozłączenie
+    //     socket.on('disconnect', function () {
+    //         console.log('Deleted android device id: ' + socket.player.id);
+    //         server.lastPlayerID--;
+    //         io.emit('remove_player', socket.player.id);
+    //     });
+    // });
+
+    socket.on('stopButton', function () {
+        //console.log('odebrano socketa z androida');
+        io.emit('stoptime', socket.player.id);
+    });
+
+    socket.on('diceValue', function (value) {
+        console.log(socket.player.id+': Odebrano wartość: '+value);
+        io.emit('playerDice', {id: socket.player.id, value: value});
+    });
+});
+
 // function getAllPlayers() {
 //     let players = [];
 //     Object.keys(io.sockets.connected).forEach(function (socketID) {
