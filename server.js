@@ -104,6 +104,7 @@ io.on('connection', function (socket) {
     socket.on('specialGrid', function (gridData) {
         console.log('Id aktualnego gracza: ' + gridData.id + ' Wartość pola specjalnego: ' + gridData.grid);
         io.emit('specialGrid', {id: gridData.id, grid: gridData.grid});
+    });
 });
 
 // function getAllPlayers() {
