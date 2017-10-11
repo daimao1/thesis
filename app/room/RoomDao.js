@@ -27,11 +27,11 @@ exports.saveRoom = function (roomName, administratorId){
 exports.getAll = function (){
     "use strict";
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         dbconnection.query('SELECT * FROM ' + table_name, function (error, results) {
             if (error) {
-                console.error("Database " + error);
-                throw error;
+                console.error("Database "  + error);
+                reject(error); //send error to promise, have to be catched
             }
             else {
                 console.log('Database: selected all rows from ' + table_name + ' table.');
@@ -44,11 +44,11 @@ exports.getAll = function (){
 exports.deleteById = function (id){
     "use strict";
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         dbconnection.query(`DELETE FROM ${table_name} WHERE id = ${id}`, function (error, results) {
             if (error) {
-                console.error("Database " + error);
-                throw error;
+                console.error("Database "  + error);
+                reject(error); //send error to promise, have to be catched
             }
             else {
                 console.log(`Database: deleting from ${table_name}...`);
