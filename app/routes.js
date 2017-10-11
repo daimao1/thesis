@@ -1,5 +1,5 @@
 //ROUTES
-const Rooms = require('./room/Rooms');
+const RoomService = require('./room/RoomService');
 
 module.exports = function (app, passport) {
 
@@ -51,7 +51,7 @@ module.exports = function (app, passport) {
 
     //Admin profile - secured
     app.get('/profile', isLoggedIn, function(req, res) {
-        const rooms = Rooms.findByAdminId(req.user.id); //Load rooms list
+        const rooms = RoomService.getByAdminId(req.user.id); //Load rooms list
         res.render('profile.ejs', {
             user : req.user, // get the user out of session and pass to template
             rooms : rooms
@@ -60,22 +60,28 @@ module.exports = function (app, passport) {
 
     //Create new game room from form
     app.post('/room', isLoggedIn, function (req, res) {
-        Rooms.new(req.body.room_name, req.user.id);
+        RoomService.newRoom(req.body.room_name, req.user.id);
         res.redirect('/profile');
     });
 
     //delete room
     app.delete('/room/:id', isLoggedIn, function (req, res) {
-        Rooms.deleteById(req.params.id);
+        RoomService.deleteById(+req.params.id);
         res.end();
     });
 
     //single room
     app.get('/room/:id', isLoggedIn, function (req, res) {
-        const room = Rooms.findByAdminId(req.params.id);
-        res.render('room.ejs', {
-            room : room
-        });
+        const room = RoomService.getById(+req.params.id, +req.user.id);
+        if(room === undefined) {
+            res.setHeader('Content-Type', 'text/plain');
+            res.status(404).send('Not found');
+        } else {
+            res.render('room.ejs', {
+                room: room
+            });
+        }
+
     });
 
     //logout
