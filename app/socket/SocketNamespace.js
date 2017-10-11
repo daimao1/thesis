@@ -1,7 +1,7 @@
 const IoContainer = require('./IoContainer');
-
 const PlayerService = require('../player/PlayerService');
 const RoomService = require('../room/RoomService');
+const SocketEventService = require('./SocketEventService');
 
 class SocketNamespace {
 
@@ -28,12 +28,9 @@ class SocketNamespace {
         this.namespace.on('connection', (socket) => {
             console.log(`SocketIO/N: Socket namespace id[${roomId}]: new client connected: socket.id = [${socket.id}]`);
 
-            RoomService.addPlayerToRoom(PlayerService.newPlayer(roomId, socket));
-
-            socket.on('disconnect', function () {
-                console.log(`SocketIO/N: Socket namespace id[${roomId}]: client disconnected: socket.id = [${socket.id}]`);
-                RoomService.removeAllPlayers(roomId); //TODO nie usuwać wszystkich
-            });
+            const player = PlayerService.newPlayer(roomId, socket);
+            RoomService.addPlayerToRoom(player);
+            SocketEventService.addDisconnectHandler(player, this);
         });
     }
 }
