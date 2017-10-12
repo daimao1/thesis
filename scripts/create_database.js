@@ -44,7 +44,7 @@ connection.query(`
         INDEX \`FK_ROOMS_ADMINISTRATORS_IDX\` (\`administrator_id\` ASC),
         CONSTRAINT \`FK_ROOMS_ADMINISTRATORS\`
         FOREIGN KEY (\`administrator_id\`)
-        REFERENCES \`pollub73\`.\`administrators\` (\`id\`)
+        REFERENCES \`${db.database}\`.\`administrators\` (\`id\`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
     )`,
@@ -68,7 +68,7 @@ connection.query(`
         \`room_id\` INT UNSIGNED,
         PRIMARY KEY (\`id\`,\`room_id\`),
         INDEX \`FK_PLAYERS_ROOMS_IDX\` (\`room_id\` ASC),
-        CONSTRAINT \`FK_PLAYERS_ROOMS\` FOREIGN KEY (\`room_id\`) REFERENCES \`pollub73\`.\`rooms\` (\`id\`)
+        CONSTRAINT \`FK_PLAYERS_ROOMS\` FOREIGN KEY (\`room_id\`) REFERENCES \`${db.database}\`.\`rooms\` (\`id\`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
     )`,
