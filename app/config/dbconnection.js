@@ -4,10 +4,11 @@
 const mysql = require('mysql');
 
 const url = {
-    host     : '127.0.0.1',
-    user     : 'root',
-    password : '',
-    database : 'pollub73'
+    host     : 'us-cdbr-iron-east-05.cleardb.net',
+    user     : 'ba7796f0de13d2',
+    password : '6e704ee6',
+    database : 'heroku_f993dad1a7fd975',
+    port:3306
 };
 
 const connection = mysql.createConnection(url);
@@ -20,7 +21,7 @@ connection.connect(function (err) {
 });
 
 module.exports = { connection, url,
-    database: 'pollub73',
+    database: 'heroku_f993dad1a7fd975',
     admins_table: 'administrators',
     players_table: 'players',
     rooms_table: 'rooms',
