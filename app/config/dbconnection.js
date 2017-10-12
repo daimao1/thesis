@@ -11,14 +11,27 @@ const url = {
     port:3306
 };
 
-const connection = mysql.createConnection(url);
-connection.connect(function (err) {
+function handleDisconnect() {
+  const connection = mysql.createConnection(url);
+  connection.connect(function (err) {
     if (!err) {
-        console.log("Database is connected as id: " + connection.threadId);
+      console.log("Database is connected as id: " + connection.threadId);
     } else {
-        throw new Error(`Cannot connect to database! Connection url: [${Object.keys(url)}][${Object.values(url)}]`);
+      //throw new Error(`Cannot connect to database! Connection url: [${Object.keys(url)}][${Object.values(url)}]`);
+      setTimeout(handleDisconnect, 2000);
     }
-});
+  });
+
+  connection.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+      handleDisconnect();                         // lost due to either server restart, or a
+    } else {                                      // connnection idle timeout (the wait_timeout
+      throw err;                                  // server variable configures this)
+    }
+  });
+}
+handleDisconnect();
 
 module.exports = { connection, url,
     database: 'heroku_f993dad1a7fd975',
