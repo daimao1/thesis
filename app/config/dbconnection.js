@@ -30,13 +30,13 @@ function handleDisconnect() {
       throw err;                                  // server variable configures this)
     }
   });
-}
-handleDisconnect();
-
-module.exports = { connection, url,
+  module.exports = { connection, url,
     database: 'heroku_f993dad1a7fd975',
     admins_table: 'administrators',
     players_table: 'players',
     rooms_table: 'rooms',
     quiz_table: 'quiz'
-};
+  };
+}
+handleDisconnect();
+
