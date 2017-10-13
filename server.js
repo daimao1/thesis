@@ -27,12 +27,12 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 // required for passport
-// require('./app/config/passport')(passport)
-// app.use(session({
-//   secret: 'vidyapathaisalwaysrunning',
-//   resave: true,
-//   saveUninitialized: true
-// })) // session secret
+require('./app/config/passport')(passport)
+app.use(session({
+  secret: 'vidyapathaisalwaysrunning',
+  resave: true,
+  saveUninitialized: true
+})) // session secret
 app.use(passport.initialize())
 app.use(passport.session()) // persistent login sessions
 app.use(flash()) // use connect-flash for flash messages stored in session
