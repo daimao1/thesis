@@ -8,6 +8,7 @@ var bodyParser = require('body-parser')
 var passport = require('passport')
 var flash = require('connect-flash')
 var io = require('socket.io').listen(server)
+
 //resources TODO nie wiadomo czy nam to potrzebne
 app.use('/css', express.static(__dirname + '/css'))
 app.use('/js', express.static(__dirname + '/js'))
