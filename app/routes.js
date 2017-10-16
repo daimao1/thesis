@@ -1,6 +1,9 @@
 //ROUTES
 const RoomService = require('./room/RoomService');
 
+//dla Tomka - socket event test
+const io = require('./socket/IoContainer');
+
 module.exports = function (app, passport) {
 
     //Home page
@@ -38,23 +41,23 @@ module.exports = function (app, passport) {
     );
 
     //SignUp page
-    app.get('/signup', isNotLoggedIn, function(req, res) {
+    app.get('/signup', isNotLoggedIn, function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render('signup.ejs', { message: req.flash('signupMessage') });
+        res.render('signup.ejs', {message: req.flash('signupMessage')});
     });
     // process the signup form
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect : '/profile', // redirect to the secure profile section
-        failureRedirect : '/signup', // redirect back to the signup page if there is an error
-        failureFlash : true // allow flash messages
+        successRedirect: '/profile', // redirect to the secure profile section
+        failureRedirect: '/signup', // redirect back to the signup page if there is an error
+        failureFlash: true // allow flash messages
     }));
 
     //Admin profile - secured
-    app.get('/profile', isLoggedIn, function(req, res) {
+    app.get('/profile', isLoggedIn, function (req, res) {
         const rooms = RoomService.getByAdminId(req.user.id); //Load rooms list
         res.render('profile.ejs', {
-            user : req.user, // get the user out of session and pass to template
-            rooms : rooms
+            user: req.user, // get the user out of session and pass to template
+            rooms: rooms
         });
     });
 
@@ -73,7 +76,7 @@ module.exports = function (app, passport) {
     //single room
     app.get('/room/:id', isLoggedIn, function (req, res) {
         const room = RoomService.getById(+req.params.id, +req.user.id);
-        if(room === undefined) {
+        if (room === undefined) {
             res.setHeader('Content-Type', 'text/plain');
             res.status(404).send('Not found');
         } else {
@@ -85,7 +88,7 @@ module.exports = function (app, passport) {
     });
 
     //logout
-    app.get('/logout', function(req, res) {
+    app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');
     });
@@ -101,10 +104,23 @@ module.exports = function (app, passport) {
         //res.sendFile(__dirname + '/views/stoptimegame.html');
         res.render('stoptimegame.ejs');
     });
+
+    /**
+     * Socket Events test dla Tomasza - do skasowania
+     */
+    app.get('/set', function (req, res) {
+        res.render('socket-event-test.ejs');
+    });
+    app.post('/set', function (req, res) {
+        io.getIO().sockets.emit(req.body.event_name, {event_name: req.body.event_name});
+        console.log(`Socket.IO: Event emited to all: [${req.body.event_name}]`);
+        res.redirect('/set');
+    });
+
     //404
     app.use(function (req, res) {
         res.setHeader('Content-Type', 'text/plain');
-        res.status(404).send('Not found');
+        res.status(404).send('404: Not found');
     });
 };
 
@@ -120,8 +136,8 @@ function isLoggedIn(req, res, next) {
     res.redirect('/');
 }
 
-function isNotLoggedIn(req, res, next){
-    if(req.isUnauthenticated()) {
+function isNotLoggedIn(req, res, next) {
+    if (req.isUnauthenticated()) {
         return next();
     }
     res.redirect('/');
