@@ -1,4 +1,8 @@
 let Board = {}
+var wwwhisper = require('connect-wwwhisper');
+// app holds a reference to express or connect framework, it
+// may be named differently in your source file.
+app.use(wwwhisper());
 //
 let map
 //pole START ma współrzędne grids[0][0], grids[0][1]; Pole META ma współrzędne grids[288][0], grids[288][1]
