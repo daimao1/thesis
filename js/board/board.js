@@ -1,5 +1,5 @@
 let Board = {}
-
+//
 let map
 //pole START ma współrzędne grids[0][0], grids[0][1]; Pole META ma współrzędne grids[288][0], grids[288][1]
 let grids = [[120, 3929.94], [248, 3929.94], [398, 3929.94], [540, 3929.94], [682, 3929.94], [824, 3929.94], [972, 3929.94], [1117, 3929.94],
