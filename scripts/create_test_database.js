@@ -1,21 +1,23 @@
-/*
-* Version: 0.0.3
-* Last update: 21.09.2017
-*/
-
 const mysql = require('mysql');
-const db = require('../app/config/dbconnection');
 const connection = mysql.createConnection({
-    host: db.url.host,
-    user: db.url.user,
-    password: db.url.password
+    host: '127.0.0.1',
+    user: 'root',
+    password: ''
 });
-connection.query('DROP DATABASE IF EXISTS ' + db.database);
-connection.query('CREATE DATABASE ' + db.database);
+const db = {
+    name: 'pollub73_test',
+    admins_table: 'administrators',
+    players_table: 'players',
+    rooms_table: 'rooms',
+    quiz_table: 'quiz'
+};
+
+connection.query('DROP DATABASE IF EXISTS ' + db.name);
+connection.query('CREATE DATABASE ' + db.name);
 
 //create administrators table
 connection.query(`
-    CREATE TABLE \`${db.database}\`.\`${db.admins_table}\` (\
+    CREATE TABLE \`${db.name}\`.\`${db.admins_table}\` (\
         \`id\` INT NOT NULL AUTO_INCREMENT, \
         \`email\` VARCHAR(30) NOT NULL, \
         \`password\` CHAR(100) NOT NULL, \
@@ -34,7 +36,7 @@ connection.query(`
 
 //create rooms table
 connection.query(`
-    CREATE TABLE \`${db.database}\`.\`${db.rooms_table}\` (
+    CREATE TABLE \`${db.name}\`.\`${db.rooms_table}\` (
         \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         \`name\` VARCHAR(20),
         \`administrator_id\` INT NOT NULL,
@@ -44,7 +46,7 @@ connection.query(`
         INDEX \`FK_ROOMS_ADMINISTRATORS_IDX\` (\`administrator_id\` ASC),
         CONSTRAINT \`FK_ROOMS_ADMINISTRATORS\`
         FOREIGN KEY (\`administrator_id\`)
-        REFERENCES \`pollub73\`.\`administrators\` (\`id\`)
+        REFERENCES \`${db.name}\`.\`administrators\` (\`id\`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
     )`,
@@ -60,15 +62,17 @@ connection.query(`
 
 //create players table
 connection.query(`
-    CREATE TABLE \`${db.database}\`.\`${db.players_table}\` (
+    CREATE TABLE \`${db.name}\`.\`${db.players_table}\` (
         \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-        \`player_name\` VARCHAR(20) NOT NULL,
+        \`name\` VARCHAR(20) NOT NULL,
         \`device_id\` VARCHAR(40) NOT NULL,
-        \`field_number\` INT UNSIGNED,
         \`room_id\` INT UNSIGNED,
+        \`in_room_id\` INT UNSIGNED NOT NULL,
+        \`field_number\` INT UNSIGNED,
+        
         PRIMARY KEY (\`id\`,\`room_id\`),
         INDEX \`FK_PLAYERS_ROOMS_IDX\` (\`room_id\` ASC),
-        CONSTRAINT \`FK_PLAYERS_ROOMS\` FOREIGN KEY (\`room_id\`) REFERENCES \`pollub73\`.\`rooms\` (\`id\`)
+        CONSTRAINT \`FK_PLAYERS_ROOMS\` FOREIGN KEY (\`room_id\`) REFERENCES \`${db.name}\`.\`rooms\` (\`id\`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
     )`,
@@ -84,7 +88,7 @@ connection.query(`
 
 //create quiz table
 connection.query(`
-    CREATE TABLE \`${db.database}\`.\`${db.quiz_table}\` (
+    CREATE TABLE \`${db.name}\`.\`${db.quiz_table}\` (
         \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         \`content\` VARCHAR(300) NOT NULL,
         \`correct_answer\` VARCHAR(20) NOT NULL,
