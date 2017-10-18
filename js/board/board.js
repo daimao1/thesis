@@ -48,6 +48,7 @@ let player1, player2, player3, player4, player5, player6
 let socket
 let tween1, tween2, tween3, tween4, tween5, tween6
 let turnMessage, diceMessage
+let background_sound, effect_special
 
 Board.preload = function () {
   board.load.image('plansza', 'assets/map/plansza.png') //załaduj planszę
@@ -60,6 +61,9 @@ Board.preload = function () {
   board.load.spritesheet('avatar6', 'assets/sprites/avatar6.png')
   board.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/desyrel.png', 'assets/fonts/bitmapFonts/desyrel.xml')
   board.load.bitmapFont('desyrel-pink', 'assets/fonts/bitmapFonts/desyrel-pink.png', 'assets/fonts/bitmapFonts/desyrel-pink.xml')
+
+  board.load.audio('background_sound', 'assets/audio/background_sound.mp3')
+  board.load.audio('effect_special', 'assets/audio/effect_special.wav')
 }
 
 Board.create = function () {
@@ -67,6 +71,11 @@ Board.create = function () {
   //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
   // currentPlayer.fieldNumber =0
   // currentPlayer.value=0
+  background_sound = board.add.audio('background_sound')
+  background_sound.play()
+  background_sound.volume=0.4
+  background_sound.loopFull()
+  effect_special = board.add.audio('effect_special')
   mapBackground = board.add.tileSprite(0, 0, 4573 * 0.9, 4605 * 0.9, 'background')
   board.world.setBounds(0, 0, 4573 * 0.9, 4605 * 0.9)
   map = board.add.image(4573 * 0.9, 4605 * 0.9, 'plansza')
@@ -75,7 +84,6 @@ Board.create = function () {
   board.physics.startSystem(Phaser.Physics.P2JS)
   addPlayersToBoard(6)
   board.camera.follow(player1)
-  //cursors = board.input.keyboard.createCursorKeys()
   setEventHandlers()
 }
 
@@ -151,8 +159,10 @@ function movePlayer (playerData) {
       x: grids[i][0],
       y: grids[i][1]
     }, 800)
+    effect_special.play()
   }
   tween1.start()
+  // effect_special.play()
   let distance = destination - currentPlayer.fieldNumber
   currentPlayer.fieldNumber = destination
   board.time.events.add(distance * 1600, function () {
@@ -251,6 +261,7 @@ function goThreeFieldsBack () {
       y: grids[currentPlayer.fieldNumber - k][1]
     }, 800)
     k++
+
   }
   tween1.start()
   currentPlayer.fieldNumber = currentPlayer.fieldNumber - 3
