@@ -29,8 +29,9 @@ class Room {
         if (this.players.length >= Room.MAX_PLAYERS) {
             throw new Error(`Room[${this.id}]#addPlayer(): room full, cannot add new player.`);
         }
+        player.in_room_id = this.players.length;
         this.players.push(player);
-        console.log(`Room[${this.id}]#addPlayer(): new player added.`);
+        console.log(`Room[${this.id}]#addPlayer(): new player added. InRoomId: [${player.in_room_id}]`);
     }
 
     addSocketNamespace(socketNamespace) {

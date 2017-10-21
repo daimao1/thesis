@@ -6,16 +6,30 @@ const Player = require('../../app/player/Player');
 describe("Room", function () {
 
     let room;
+    let player1;
+    let player2;
+    let fakeSocketNamespace;
 
     before(function () {
-        const fakeSocketNamespace = {roomId: 1};
+        fakeSocketNamespace = {roomId: 1};
         room = new Room(1, "GameName", 1, fakeSocketNamespace);
+        player1 = new Player(1, 1, undefined);
+        player1.setName('FirstGamer');
     });
 
     describe("#addPlayer()", function () {
+
+        beforeEach(function () {
+            room = new Room(1, "GameName", 1, fakeSocketNamespace);
+        });
+
+        it("should set player.inRoomId", () => {
+            room.addPlayer(player1);
+            assert.equal(player1.in_room_id, 0, 'First added player should have index [0]');
+        });
         it("should throw exception when room full", () => {
             for (let i = 0; i < Room.MAX_PLAYERS; i++) {
-                room.addPlayer(undefined);
+                room.addPlayer(player1);
             }
             expect(room.addPlayer.bind(undefined)).to.throw();
         });
@@ -32,8 +46,6 @@ describe("Room", function () {
     });
 
     describe('#removeOnePlayer()', function () {
-        let player1;
-        let player2;
         before(function () {
             player1 = new Player(1, 'first gamer', 1, 1, undefined);
             player2 = new Player(2, 'second gamer', 2, 1, undefined);

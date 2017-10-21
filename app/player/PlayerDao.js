@@ -7,7 +7,6 @@ let dbConnection = db.getConnection();
 exports.savePlayer = savePlayer;
 exports.getAll = getAll;
 
-
 // function setAlternativeDbConnection(connection) {
 //     //connection.end();
 //     dbConnection = connection;

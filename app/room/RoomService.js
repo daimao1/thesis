@@ -102,7 +102,7 @@ function getById(roomId, adminId) {
 
 function addPlayerToRoom(player) {
 
-    const room = getById(player.roomId, 1); //TODO adminID
+    const room = getById(player.id, 1); //TODO adminID
 
     if (room === undefined) {
         throw new Error('Room undefined');

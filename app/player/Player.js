@@ -1,14 +1,15 @@
 class Player {
 
-    constructor(id, deviceId, roomId, inRoomId, socket) {
+    constructor(id, deviceId, roomId, socket) {
         /**
          * Fields must have the same names as fields in database
          */
         this.id = id;
         this.device_id = deviceId;
         this.room_id = roomId;
-        this.inRoomId = inRoomId;
         this.socket = socket;
+        //this.name
+        //this.in_room_id
         //fieldNumber
     }
 

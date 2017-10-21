@@ -10,7 +10,7 @@ exports.setPlayerName = setPlayerName;
 
 function newPlayer(roomId, socket) {
     //TODO insert player to DB and get ID
-    const player = new Player(1, 'imie', 1, roomId, socket);
+    const player = new Player(1, 1, roomId, socket);
     console.log(`PlayerService: new player. Socket.id: ${socket.id}`);
     return player;
 }

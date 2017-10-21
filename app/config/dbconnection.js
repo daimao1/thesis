@@ -34,9 +34,11 @@ function setUrl() {
             break;
         case 'production':
             url = productionUrl;
-            console.log('Database url set to production.');
+            console.log('WARNING: Database url set to production!');
+            console.log('WARNING: Every db operation will be executed in production database!');
             break;
         default:
+            console.log('NODE_ENV undefined. Database url set to development.');
             url = localDevUrl;
     }
     return url;
