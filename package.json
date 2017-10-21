@@ -5,8 +5,8 @@
   "authors": "Tomasz Korga, Tobiasz Kaciuczyk, Damian Kozieł",
   "license": "MIT",
   "scripts": {
-    "test": "mocha",
-    "start": "NODE_ENV=dev DEBUG=* node server.js"
+    "test": "mocha --recursive",
+    "start": "SET NODE_ENV=development && node server.js"
   },
   "repository": {
     "type": "git",

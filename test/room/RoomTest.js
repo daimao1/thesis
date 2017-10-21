@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const assert = require('chai').assert;
-const Room = require('../app/room/Room');
-const Player = require('../app/player/Player');
+const Room = require('../../app/room/Room');
+const Player = require('../../app/player/Player');
 
 describe("Room", function () {
 

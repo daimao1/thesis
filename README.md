@@ -2,18 +2,24 @@ Aby pobrać zależności:
 npm install
 
 Aby uruchomić:
-node server.js
+node server.js - production mode
+SET NODE_ENV=development && node server.js - development mode
+npm start - wywołanie skryptu "start" z pliku package.json - domyślnie development mode
 
 Do uruchomienia bazy danych potrzebujemy XAMPP:
 - włączamy serwer MySQL
-- jeśli nie mamy bazy pollub73 uruchamiamy skrypt tworzący: "node scripts/create_database.js" 
+- jeśli nie mamy bazy pollub73 uruchamiamy skrypt tworzący: "node scripts/create_dev_database.js" 
 - Uruchamiamy server.js. Baza danych uruchomi się automatycznie na porcie 3000
 
 Routing:
-/login -logowanie
-/signup -rejestracja
+/login - logowanie
+/signup - rejestracja
 /profile - dostęp tylko po zalogowaniu
 /logout - wylogowanie
+
+SocketIO api:
+'connection' with 'URL/roomId'
+'setName' - player name setter
 
 /stoptimegame  minigra 
 

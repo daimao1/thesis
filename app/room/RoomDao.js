@@ -1,9 +1,9 @@
+'use strict';
 const db = require('../config/dbconnection');
-const dbconnection = db.connection;
+const dbconnection = db.getConnection();
 const table_name = db.rooms_table;
 
 exports.saveRoom = function (roomName, administratorId){
-    'use strict';
 
     return new Promise((resolve, reject) => {
         dbconnection.query(
@@ -25,7 +25,6 @@ exports.saveRoom = function (roomName, administratorId){
 };
 
 exports.getAll = function (){
-    "use strict";
 
     return new Promise((resolve, reject) => {
         dbconnection.query('SELECT * FROM ' + table_name, function (error, results) {
@@ -42,7 +41,6 @@ exports.getAll = function (){
 };
 
 exports.deleteById = function (id){
-    "use strict";
 
     return new Promise((resolve, reject) => {
         dbconnection.query(`DELETE FROM ${table_name} WHERE id = ${id}`, function (error, results) {

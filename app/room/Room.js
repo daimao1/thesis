@@ -1,7 +1,9 @@
 class Room {
 
     constructor(id, name, adminId, socketNamespace) {
-        //Fields must have the same names as fields in database
+        /**
+        * Fields must have the same names as fields in database
+        */
         this.id = id;
         this.name = name;
         this.administrator_id = adminId;
