@@ -61,6 +61,7 @@ server.playersList = [];
 //dubluje połączenie managera
 io.on('connection', function (socket) {
     console.log('Socket connection on.');
+    console.log('You are using deprecated socket connection files. You should use files from app/socket folder.');
     // socket.on('new_room', function () {
     //     console.log('New game room created, id: ' + server.lastRoomID);
     //     socket.room = {
