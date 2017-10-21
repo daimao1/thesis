@@ -2,8 +2,13 @@ Aby pobrać zależności:
 npm install
 
 Aby uruchomić:
-node server.js - production mode
+node server.js - powinien uruchomić się development mode
+
+Aplikacja uruchamia się z odpowiednim profilem na podstawie zmiennej NODE_ENV
+Na przykład:
 SET NODE_ENV=development && node server.js - development mode
+SET NODE_ENV=test && node server.js - tryb do testów
+
 npm start - wywołanie skryptu "start" z pliku package.json - domyślnie development mode
 
 Do uruchomienia bazy danych potrzebujemy XAMPP:
@@ -26,7 +31,6 @@ SocketIO api:
 Debugowanie:
 Ustawić zmienne środowiskowe za pomocą komendy 'set' w terminalu.
 set DEBUG=*
-// set NODE_ENV=dev - nie sprawdzone
 
 Testy:
 Aby uruchomić wszystkie testy korzystamy z komendy:
