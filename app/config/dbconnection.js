@@ -61,6 +61,7 @@ function connectToDatabase() {
 function getConnection() {
     if (connection === undefined) {
         setUrl();
+        console.log('Creating new db connection...');
         connection = connectToDatabase();
     }
     return connection;
@@ -68,6 +69,7 @@ function getConnection() {
 
 function endConnection() {
     if (connection !== undefined) {
+        console.log('End db connection.');
         connection.end();
     }
 }
