@@ -102,10 +102,10 @@ function getById(roomId, adminId) {
 
 function addPlayerToRoom(player) {
 
-    const room = getById(player.id, 1); //TODO adminID
+    const room = getRoomByIdUnauthorized(player.room_id);
 
     if (room === undefined) {
-        throw new Error('Room undefined');
+        throw new Error('RoomService#addPlayerToRoom(): Room undefined');
     }
     else {
         room.addPlayer(player);
@@ -116,11 +116,11 @@ function removeAllPlayers(socketNamespace) {
     getRoomBySocketNamespace(socketNamespace).removeAllPlayers();
 }
 
-function removePlayer(socketNamespace, player) {
-    if (player === undefined || socketNamespace === undefined) {
-        throw new Error("RoomService: player undefined");
+function removePlayer(player) {
+    if (player === undefined) {
+        throw new Error("RoomService#removePlayer(): player undefined");
     }
-    getRoomBySocketNamespace(socketNamespace).removePlayer(player);
+    getRoomByIdUnauthorized(player.roomId).removePlayer(player);
 }
 
 function getRoomBySocketNamespace(socketNamespace) {
@@ -140,7 +140,19 @@ function getRoomBySocketNamespace(socketNamespace) {
     return roomToReturn;
 }
 
-// exports.findAll = function () {
-//     console.log("RoomList: " + roomList);
-//     return roomList;
-// };
+/*
+* Private function
+*/
+function getRoomByIdUnauthorized(roomId){
+    let roomToReturn;
+    for (let room of roomList) {
+        if (room.id === roomId) {
+            roomToReturn = room;
+            break;
+        }
+    }
+    if (roomToReturn === undefined) {
+        throw new Error(`RoomService#getByIdUnauthorized(): cannot find room with id[${roomId}].`);
+    }
+    return roomToReturn;
+}

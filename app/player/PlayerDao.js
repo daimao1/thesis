@@ -12,12 +12,12 @@ exports.getAll = getAll;
 //     dbConnection = connection;
 // }
 
-function savePlayer(name, deviceId, roomId, inRoomId){
+function savePlayer(name, roomId, inRoomId){
 
     return new Promise((resolve) => {
         dbConnection.query(
             'INSERT INTO ' + table_name + ' SET ?',
-            {name: name, device_id: deviceId, room_id: roomId, in_room_id: inRoomId},
+            {name: name, room_id: roomId, in_room_id: inRoomId},
             function (error, results) {
                 if (error) {
                     console.error("Database "  + error);
@@ -50,7 +50,6 @@ function getAll(){
     });
 }
 
-/*
 exports.deleteById = function (id){
 
     return new Promise((resolve, reject) => {
@@ -60,10 +59,9 @@ exports.deleteById = function (id){
                 reject(error); //send error to promise, have to be catched
             }
             else {
-                console.log(`Database: deleting from ${table_name}...`);
+                console.log(`PlayerDao#deleteById: deleting from ${table_name}...`);
                 resolve(results);
             }
         });
     });
 };
-*/
