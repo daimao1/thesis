@@ -3,38 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Thesis - login</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-        function getConnectedDevices() {
-            const req = new XMLHttpRequest();
-            req.open('GET', '/room/' + roomId + '/players', true);
-            req.send(null);
-
-            //location.reload();
-        }
+        //        function getConnectedDevices() {
+        //            const req = new XMLHttpRequest();
+        //            req.open('GET', '/room/' + roomId + '/players', true);
+        //            req.send(null);
+        //
+        //            //location.reload();
+        //        }
     </script>
 </head>
 <body>
-    <h1>Thesis game</h1>
-    <h3><%= room.name %></h3>
-    <p>Numer gry: <%= room.id %></p>
-    <p>Wprowadź ten numer w aplikacji na urządzeniu z systemem android.</p>
-    <br>
-    <p>Podłączone urządzenia:</p>
-    <% if(room.players === undefined) {%>
-        <p>Brak podłączonych urządzeń</p>
-    <% } else { %>
-        <ul>
-            <% room.players.forEach(function(player) { %>
-            <li>
-                <p>Nick: <%= player.name %>, socket.id: <%= player.socket.id %> </p>
-            </li>
-            <% }) %>
-        </ul>
-    <% } %>
-    <button>Refresh in future</button>
-    <ul>
-
-    </ul>
+<h1>Thesis game</h1>
+<h3><%= room.name %></h3>
+<p>Numer gry: <%= room.id %></p>
+<p>Wprowadź ten numer w aplikacji na urządzeniu z systemem android.</p>
+<br>
+<p>Podłączone urządzenia:</p>
+<% if(room.players === undefined) { %>
+<p>Brak podłączonych urządzeń</p>
+<% } else { %>
+<ul>
+    <% room.players.forEach(function(player) { %>
+    <li>
+        <p>Nick: <%= player.name %>, socket.id: <%= player.socket.id %> </p>
+    </li>
+    <% }) %>
+</ul>
+<% } %>
+<button>Refresh in future</button>
+<a href="/board/<%= room.id %>">Wejdź do gry</a>
 </body>
 </html>
