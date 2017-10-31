@@ -9,8 +9,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt'); //to password hash
 const saltRounds = 8; //bcrypt hash param (cost: ~40 hashes per sec with 2GHz cpu)
 
-const db = require('./dbconnection');
-const dbconnection = db.connection; // db to table names and query exec
+const db = require('./dbConnection');
+const dbConnection = db.getConnection(); // db to table names and query exec
 
 module.exports = function(passport) {
 
@@ -21,7 +21,7 @@ module.exports = function(passport) {
 
     // deserialize the user
     passport.deserializeUser(function(id, done) {
-        dbconnection.query("SELECT * FROM " + db.admins_table + " WHERE id = " + id, function(err, rows){
+        dbConnection.query("SELECT * FROM " + db.admins_table + " WHERE id = " + id, function(err, rows){
             done(err, rows[0]);
         });
     });
@@ -39,7 +39,7 @@ module.exports = function(passport) {
             function(req, email, password, done) {
                 // find a user whose email is the same as the forms email
                 // we are checking to see if the user trying to login already exists
-                dbconnection.query("SELECT * FROM " + db.admins_table + " WHERE email = '" + email + "'", function(err, rows) {
+                dbConnection.query("SELECT * FROM " + db.admins_table + " WHERE email = '" + email + "'", function(err, rows) {
                     if (err) {
                         return done(err);
                     }
@@ -56,7 +56,7 @@ module.exports = function(passport) {
 
                         let insertQuery = "INSERT INTO " + db.admins_table + " ( `email`, `password` ) values (?,?)";
 
-                        dbconnection.query(insertQuery,[newUserMysql.email, newUserMysql.password], function(err, rows) {
+                        dbConnection.query(insertQuery,[newUserMysql.email, newUserMysql.password], function(err, rows) {
                             if(err) {
                                 return done(err);
                             }
@@ -79,7 +79,7 @@ module.exports = function(passport) {
                 passReqToCallback : true // allows us to pass back the entire request to the callback
             },
             function(req, email, password, done) { // callback with email and password from our form
-                dbconnection.query("SELECT * FROM " + db.admins_table + " WHERE email = '" + email + "'", function(err, rows){
+                dbConnection.query("SELECT * FROM " + db.admins_table + " WHERE email = '" + email + "'", function(err, rows){
                     if (err) {
                         return done(err);
                     }

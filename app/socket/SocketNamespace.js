@@ -1,6 +1,6 @@
 const IoContainer = require('./IoContainer');
 const PlayerService = require('../player/PlayerService');
-const RoomService = require('../room/RoomService');
+//const RoomService = require('../room/RoomService');
 const SocketEventService = require('./SocketEventService');
 
 class SocketNamespace {
@@ -29,8 +29,8 @@ class SocketNamespace {
             console.log(`SocketIO/N: Socket namespace id[${roomId}]: new client connected: socket.id = [${socket.id}]`);
 
             const player = PlayerService.newPlayer(roomId, socket);
-            RoomService.addPlayerToRoom(player);
-            SocketEventService.addDisconnectHandler(player, this);
+
+            SocketEventService.initBasicHandlers(player, this);
         });
     }
 }

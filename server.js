@@ -40,7 +40,7 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 require('./app/routes.js')(app, passport); //ROUTING
 
 server.listen(process.env.PORT || 8081, function () {
-console.log('Listening on *: ' + server.address().port);
+    console.log('Listening on *: ' + server.address().port);
 });
 
 require('./app/socket/Socket')(io); //SOCKET CONNECTION
@@ -61,6 +61,7 @@ server.playersList = [];
 //dubluje połączenie managera
 io.on('connection', function (socket) {
     console.log('Socket connection on.');
+    console.log('You are using deprecated socket connection files. You should use files from app/socket folder.');
     // socket.on('new_room', function () {
     //     console.log('New game room created, id: ' + server.lastRoomID);
     //     socket.room = {
