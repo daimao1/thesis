@@ -21,6 +21,7 @@ Routing:
 /signup - rejestracja
 /profile - dostęp tylko po zalogowaniu
 /logout - wylogowanie
+/board/roomId - plansza dla pokoju o numerze 'roomId', dostęp tylko po zalogowaniu
 
 SocketIO api:
 'connection' with 'URL/roomId'

@@ -91,9 +91,11 @@ module.exports = function (app, passport) {
     });
 
     //board
-    app.get('/board', function (req, res) {
+    app.get('/board/:id', isLoggedIn, function (req, res) {
         //res.sendFile(__dirname + '/views/stoptimegame.html');
-        res.render('board.ejs');
+        res.render('board.ejs', {
+            id: req.params.id
+        });
     });
 
     //Stop-time minigame
