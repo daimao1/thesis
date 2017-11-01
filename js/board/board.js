@@ -1,5 +1,5 @@
 let Board = {}
-
+let roomId = document.head.id
 let map
 //pole START ma współrzędne grids[0][0], grids[0][1]; Pole META ma współrzędne grids[288][0], grids[288][1]
 let grids = [[120, 3929.94], [248, 3929.94], [398, 3929.94], [540, 3929.94], [682, 3929.94], [824, 3929.94], [972, 3929.94], [1117, 3929.94],
@@ -51,30 +51,32 @@ let turnMessage, diceMessage
 let background_sound, effect_special
 
 Board.preload = function () {
-  board.load.image('plansza', 'assets/map/plansza.png') //załaduj planszę
-  board.load.image('background', 'assets/map/wood_background.png')
-  board.load.spritesheet('avatar1', 'assets/sprites/avatar1.png') //załaduj awatary
-  board.load.spritesheet('avatar2', 'assets/sprites/avatar2.png')
-  board.load.spritesheet('avatar3', 'assets/sprites/avatar3.png')
-  board.load.spritesheet('avatar4', 'assets/sprites/avatar4.png')
-  board.load.spritesheet('avatar5', 'assets/sprites/avatar5.png')
-  board.load.spritesheet('avatar6', 'assets/sprites/avatar6.png')
-  board.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/desyrel.png', 'assets/fonts/bitmapFonts/desyrel.xml')
-  board.load.bitmapFont('desyrel-pink', 'assets/fonts/bitmapFonts/desyrel-pink.png', 'assets/fonts/bitmapFonts/desyrel-pink.xml')
+  board.load.image('plansza', '../assets/map/plansza.png') //załaduj planszę
+  board.load.image('background', '../assets/map/wood_background.png')
+  board.load.spritesheet('avatar1', '../assets/sprites/avatar1.png') //załaduj awatary
+  board.load.spritesheet('avatar2', '../assets/sprites/avatar2.png')
+  board.load.spritesheet('avatar3', '../assets/sprites/avatar3.png')
+  board.load.spritesheet('avatar4', '../assets/sprites/avatar4.png')
+  board.load.spritesheet('avatar5', '../assets/sprites/avatar5.png')
+  board.load.spritesheet('avatar6', '../assets/sprites/avatar6.png')
+  board.load.bitmapFont('desyrel', '../assets/fonts/bitmapFonts/desyrel.png', 'assets/fonts/bitmapFonts/desyrel.xml')
+  board.load.bitmapFont('desyrel-pink', '../assets/fonts/bitmapFonts/desyrel-pink.png', 'assets/fonts/bitmapFonts/desyrel-pink.xml')
 
-  board.load.audio('background_sound', 'assets/audio/background_sound.mp3')
-  board.load.audio('effect_special', 'assets/audio/effect_special.wav')
+  board.load.audio('background_sound', '../assets/audio/background_sound.mp3')
+  board.load.audio('effect_special', '../assets/audio/effect_special.wav')
 }
 
 Board.create = function () {
-  socket = io.connect()
+  socket = io.connect('/'+roomId)
   //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
+
   // currentPlayer.fieldNumber =0
   // currentPlayer.value=0
-  background_sound = board.add.audio('background_sound')
-  background_sound.play()
-  background_sound.volume=0.4
-  background_sound.loopFull()
+
+  //background_sound = board.add.audio('background_sound')
+ // background_sound.play()
+ // background_sound.volume=0.4
+ // background_sound.loopFull()
   effect_special = board.add.audio('effect_special')
   mapBackground = board.add.tileSprite(0, 0, 4573 * 0.9, 4605 * 0.9, 'background')
   board.world.setBounds(0, 0, 4573 * 0.9, 4605 * 0.9)
