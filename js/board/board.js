@@ -68,6 +68,7 @@ Board.preload = function () {
 
 Board.create = function () {
   socket = io.connect('/'+roomId)
+  io.emit('markGame',{});
   //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
 
   // currentPlayer.fieldNumber =0
@@ -140,6 +141,7 @@ function addPlayersToBoard (numberOfPlayers) {
 
 let setEventHandlers = function () {
   socket.on('playerDice', movePlayer)
+  socket.on('playersInfo', receivePlayersInfo)
 }
 
 //TODO: zrobić dla wielu graczy - w zależności o numeru gracza
@@ -171,6 +173,11 @@ function movePlayer (playerData) {
     isPlayerOnSpecialGrid(currentPlayer)
   })
   console.log('Player 1: fieldNumber: ' + currentPlayer.fieldNumber)
+}
+
+//TODO
+function receivePlayersInfo(playerName, numberOfPlayers, inRoomId){
+
 }
 
 function isPlayerOnSpecialGrid (currentPlayer) {
