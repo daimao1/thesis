@@ -6,24 +6,51 @@ const PlayerService = require('../player/PlayerService');
 //exports.addPlayerNameHandler = addPlayerNameHandler;
 
 exports.initBasicHandlers = initBasicHandlers;
+exports.sendPlayersInfoToGame = sendPlayersInfoToGame;
 
-function initBasicHandlers(player, socketNamespace){
-    addDisconnectHandler(player, socketNamespace);
-    addPlayerNameHandler(player);
+function initBasicHandlers(socket, socketNamespace){
+    socket.on('setName', (object) => {
+        newPlayer(socket, socketNamespace, object.name);
+    });
+
+    socket.on('markGame', () => {
+       newGame(socket);
+    });
 }
 
-function addDisconnectHandler(player, socketNamespace) {
+function newPlayer(socket, socketNamespace, name){
+    console.log('SocketEventHandler: handle \'setName\' event - creating new player.');
+    //socket.isPlayer = true;
+    const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name);
+    addPlayerDisconnectHandler(player);
+}
+
+function newGame(socket, socketNamespace){
+    console.log('SocketIO/N/EventHandler: connection to game initialized.');
+    //socket.isPlayer = false;
+    socketNamespace.gameSocket = socket;
+    addGameDisconnectHandler(socket);
+}
+
+
+function addPlayerDisconnectHandler(player) {
     player.socket.on('disconnect', () => {
-        console.log(`SocketIO/N/EventHandler: Socket namespace id[${socketNamespace.roomId}]: client disconnected: socket.id = [${player.socket.id}]`);
-        RoomService.removePlayer(socketNamespace, player);
+        console.log(`SocketIO/N/EventHandler: player disconnected. RoomID: [${player.room_id}], inRoomId: [${player.in_room_id}]`);
+        RoomService.removePlayer(player);
         PlayerService.removeFromDb(player);
     });
 }
 
-function addPlayerNameHandler(player) {
-    player.socket.on('setName', (object) => {
-        console.log('SocketEventHandler: handle \'setName\' event.');
-        PlayerService.setPlayerName(player, object.name);
-        PlayerService.saveToDb(player);
+function addGameDisconnectHandler(socket){
+    socket.on('disconnect', () => {
+        //TODO something with it
+        throw new Error('Game socket disconnected!');
     });
+}
+
+function sendPlayersInfoToGame(socket, playersInfo){
+    if(socket === undefined) {
+        throw new Error('SocketEventService#sendRoomInfoToGame(): socket undefined');
+    }
+    socket.emit('playersInfo', playersInfo);
 }

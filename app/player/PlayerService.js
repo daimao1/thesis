@@ -6,35 +6,26 @@ const Player = require('../player/Player');
 const RoomService = require('../room/RoomService');
 
 exports.newPlayer = newPlayer;
-exports.setPlayerName = setPlayerName;
-exports.saveToDb = saveToDb;
+//exports.saveToDb = saveToDb;
 exports.removeFromDb = removeFromDb;
 
-function newPlayer(roomId, socket) {
-    //TODO insert player to DB and get ID
-    if (roomId === undefined || socket === undefined) {
-        throw new Error('PlayerService#newPlayer(): roomId or socket undefined.');
+function newPlayer(roomId, socket, name) {
+    if (name === undefined || roomId === undefined || socket === undefined) {
+        throw new Error('PlayerService#newPlayer(): player name, roomId or socket undefined.');
     }
-    const player = new Player(roomId, socket);
+    const player = new Player(roomId, socket, name);
     RoomService.addPlayerToRoom(player);
 
-    console.log(`PlayerService#newPlayer(): Socket.id: ${socket.id}. Player will be saved to database after handle socket event 'setName'.`);
+    console.log(`PlayerService#newPlayer(): Socket.id: [${socket.id}], name: [${player.name}]`);
+
+    saveToDb(player);
 
     return player;
 }
 
-function setPlayerName(player, name) {
-    if (name === undefined || player === undefined) {
-        throw new Error('PlayerService#setPlayerName(): player or name undefined.');
-        //} else if (name) {// TODO validate length of string
-    } else {
-        player.setName(name);
-    }
-}
-
 function saveToDb(player){
-    if(player.name === undefined || player.room_id === undefined || player.in_room_id === undefined){
-        throw new Error(`PlayerService#saveToDb(): player properties undefined`);
+    if(player.in_room_id === undefined){
+        throw new Error(`PlayerService#saveToDb(): player property undefined`);
     }
     PlayerDao.savePlayer(player.name, player.room_id, player.in_room_id).then((insertedId) => {
         player.setId(insertedId);

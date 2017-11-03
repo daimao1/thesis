@@ -2,6 +2,7 @@
 const RoomDao = require('./RoomDao');
 const Room = require('./Room');
 const SocketNamespace = require('../socket/SocketNamespace');
+const SocketEventService = require('../socket/SocketEventService');
 
 let roomList = [];
 loadDataFromDb();
@@ -13,6 +14,8 @@ exports.getById = getById;
 exports.addPlayerToRoom = addPlayerToRoom;
 exports.removeAllPlayers = removeAllPlayers;
 exports.removePlayer = removePlayer;
+
+exports.sendRoomInfoToGame = sendRoomInfoToGame;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -138,6 +141,20 @@ function getRoomBySocketNamespace(socketNamespace) {
         throw new Error(`FATAL ERROR RoomService: unexpected state.`);
     }
     return roomToReturn;
+}
+
+function sendRoomInfoToGame(room) {
+    if(room === undefined){
+        throw new Error('RoomService#sendRoomInfoToGame(): room undefined');
+    }
+
+    //TODO test it!
+    let playersInfo = [];
+    room.players.forEach( (player, index) => {
+        playersInfo[index] = { name: player.name, inRoomId: player.in_room_id };
+    });
+
+    SocketEventService.sendPlayersInfoToGame(room.socketNamespace.gameSocket, playersInfo);
 }
 
 /*

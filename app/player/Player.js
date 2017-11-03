@@ -1,6 +1,6 @@
 class Player {
 
-    constructor(roomId, socket) {
+    constructor(roomId, socket, name) {
         /**
          * Fields must have the same names as fields in database
          */
@@ -8,7 +8,7 @@ class Player {
         //this.device_id = deviceId;
         this.room_id = roomId;
         this.socket = socket;
-        this.name = undefined;
+        this.name = name;
         this.in_room_id = undefined;
         //fieldNumber
     }
@@ -23,12 +23,12 @@ class Player {
         this.id = id;
     }
 
-    setName(name) {
-        if (this.name !== undefined) {
-            throw new Error(`Player[${this.id}]#setName(): this player already have a name.`);
-        }
-        this.name = name;
-    }
+    // setName(name) {
+    //     if (this.name !== undefined) {
+    //         throw new Error(`Player[${this.id}]#setName(): this player already have a name.`);
+    //     }
+    //     this.name = name;
+    // }
 }
 
 module.exports = Player;
