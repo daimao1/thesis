@@ -117,6 +117,10 @@ module.exports = function (app, passport) {
         res.redirect('/set');
     });
 
+    app.get('/check-system-status', (req, res) => {
+        res.status(200).send();
+    });
+
     //404
     app.use(function (req, res) {
         res.setHeader('Content-Type', 'text/plain');
