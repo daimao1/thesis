@@ -16,18 +16,34 @@ Do uruchomienia bazy danych potrzebujemy XAMPP:
 - jeśli nie mamy bazy pollub73 uruchamiamy skrypt tworzący: "node scripts/create_dev_database.js" 
 - Uruchamiamy server.js. Baza danych uruchomi się automatycznie na porcie 3000
 
-Routing:
+*Http api:
 /login - logowanie
 /signup - rejestracja
 /profile - dostęp tylko po zalogowaniu
 /logout - wylogowanie
 /board/roomId - plansza dla pokoju o numerze 'roomId', dostęp tylko po zalogowaniu
+/stoptimegame  minigra
 
-SocketIO api:
-'connection' with 'URL/roomId'
-'setName' - player name setter
+*SocketIO API
 
-/stoptimegame  minigra 
+**Server
+Common api for both player and game:
+Received events:
+'connection' - emitted after io.connect call by client, like this:
+    io.connect('/1')
+where '1' is a room number.
+After connection application is waiting for 'setName' or 'markGame' events, to identify client as player or game (browser).
+'setName' - player name setter - after this event, application identify socket as a player and will create a new player object. In parameter expected object with 'name' property.
+'markGame' - after this event socket will be marked as a game (browser).
+***Api for game:
+Received events:
+'disconnect' - not implemented, application throws Error.
+Send events:
+'playersInfo' - in args array of objects (players) with two properties: 'name' and 'inRoomId'. Array length is number of the players.
+
+***Api for player:
+Received events:
+'disconnect' - player will be removed from room and from database.
 
 Debugowanie:
 Ustawić zmienne środowiskowe za pomocą komendy 'set' w terminalu.
