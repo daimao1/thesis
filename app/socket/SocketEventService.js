@@ -14,7 +14,7 @@ function initBasicHandlers(socket, socketNamespace){
     });
 
     socket.on('markGame', () => {
-       newGame(socket);
+       newGame(socket, socketNamespace);
     });
 }
 
