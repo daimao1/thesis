@@ -49,6 +49,7 @@ let socket
 let tween1, tween2, tween3, tween4, tween5, tween6
 let turnMessage, diceMessage
 let background_sound, effect_special
+//const io = require('socket.io').listen(server);
 
 Board.preload = function () {
   board.load.image('plansza', '../assets/map/plansza.png') //załaduj planszę
@@ -68,7 +69,7 @@ Board.preload = function () {
 
 Board.create = function () {
   socket = io.connect('/'+roomId)
-  io.emit('markGame',{});
+  socket.emit('markGame',showTestMessage())
   //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
 
   // currentPlayer.fieldNumber =0
@@ -88,6 +89,10 @@ Board.create = function () {
   addPlayersToBoard(6)
   board.camera.follow(player1)
   setEventHandlers()
+}
+
+function showTestMessage(){
+  console.log("działa jak natura chciała!")
 }
 
 Board.update = function () {
@@ -176,8 +181,8 @@ function movePlayer (playerData) {
 }
 
 //TODO
-function receivePlayersInfo(playerName, numberOfPlayers, inRoomId){
-
+function receivePlayersInfo(playerName, inRoomId){
+console.log(playerName + inRoomId)
 }
 
 function isPlayerOnSpecialGrid (currentPlayer) {
