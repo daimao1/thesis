@@ -22,28 +22,33 @@ Do uruchomienia bazy danych potrzebujemy XAMPP:
 /profile - dostęp tylko po zalogowaniu
 /logout - wylogowanie
 /board/roomId - plansza dla pokoju o numerze 'roomId', dostęp tylko po zalogowaniu
-/stoptimegame  minigra
+/stoptimegame - minigra
 
 *SocketIO API
 
 **Server
-Common api for both player and game:
-Received events:
+***Common api for both player and game:
+****Handled events:
 'connection' - emitted after io.connect call by client, like this:
     io.connect('/1')
 where '1' is a room number.
 After connection application is waiting for 'setName' or 'markGame' events, to identify client as player or game (browser).
 'setName' - player name setter - after this event, application identify socket as a player and will create a new player object. In parameter expected object with 'name' property.
 'markGame' - after this event socket will be marked as a game (browser).
+
 ***Api for game:
-Received events:
+****Handled events:
 'disconnect' - not implemented, application throws Error.
-Send events:
+****Emitted events:
 'playersInfo' - in args array of objects (players) with two properties: 'name' and 'inRoomId'. Array length is number of the players.
+'stopTime' - emitted after handle 'stopTime' event from player, in args number - player.in_room_id
+'playerDice' - emitted after handle 'diceValue' event from player, in args object with 'id', and 'value' (dice results) keys.
 
 ***Api for player:
-Received events:
+****Handled events:
 'disconnect' - player will be removed from room and from database.
+'stopButton' - emit event 'stopTime' to game socket
+'diceValue' - emit event 'playerDice' to game socket, in args expected number with dice results
 
 Debugowanie:
 Ustawić zmienne środowiskowe za pomocą komendy 'set' w terminalu.

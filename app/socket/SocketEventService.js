@@ -13,23 +13,26 @@ function initBasicHandlers(socket, socketNamespace){
         newPlayer(socket, socketNamespace, object.name);
     });
 
+
+    //TODO it is possible to change this to socket.handshake
     socket.on('markGame', () => {
        newGame(socket, socketNamespace);
     });
 }
 
 function newPlayer(socket, socketNamespace, name){
+    socket.join('players');
     console.log('SocketEventHandler: handle \'setName\' event - creating new player.');
-    //socket.isPlayer = true;
     const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name);
     addPlayerDisconnectHandler(player);
+    addPlayerDefaultHandlers(player, socketNamespace);
 }
 
 function newGame(socket, socketNamespace){
-    console.log('SocketIO/N/EventHandler: connection to game initialized.');
-    //socket.isPlayer = false;
+    console.log('SocketIO/N/EventHandler: game connection initialized.');
     socketNamespace.gameSocket = socket;
     addGameDisconnectHandler(socket);
+    addGameDefaultHandlers(socketNamespace);
 }
 
 
@@ -43,14 +46,32 @@ function addPlayerDisconnectHandler(player) {
 
 function addGameDisconnectHandler(socket){
     socket.on('disconnect', () => {
-        //TODO something with it
-        throw new Error('Game socket disconnected!');
+        //TODO implement
+        throw new Error('Game socket disconnected! Not implemented!');
     });
 }
 
 function sendPlayersInfoToGame(socket, playersInfo){
-    if(socket === undefined) {
-        throw new Error('SocketEventService#sendRoomInfoToGame(): socket undefined');
+    if(playersInfo === undefined) {
+        throw new Error('SocketEventService#sendRoomInfoToGame(): playersInfo undefined.');
     }
     socket.emit('playersInfo', playersInfo);
+}
+
+function addPlayerDefaultHandlers(player, socketNamespace){
+
+    //TODO after jump to StopTimeGame
+    player.socket.on('stopButton', function () {
+        socketNamespace.gameSocket.emit('stopTime', player.in_room_id);
+    });
+    player.socket.on('diceValue', function (value) {
+        socketNamespace.gameSocket.emit('playerDice', {id: player.in_room_id, value: value});
+    });
+}
+
+function addGameDefaultHandlers(socketNamespace) {
+    socketNamespace.gameSocket.on('specialGrid', function (gridData) {
+        const playerToNotify = RoomService.getPlayerFromRoom(socketNamespace.roomId, gridData.playerId);
+        playerToNotify.socket.emit('specialGrid', gridData.gridName);
+    });
 }

@@ -53,15 +53,11 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-server.lastPlayerID = 1; //TODO musi być osobna lista graczy dla każdego pokoju
-server.lastRoomID = 1;
-server.playersList = [];
-
-//TODO move to Socket manager system (EventHandler)
+//TODO test socketEventManager and delete this commented code after test completion
 //dubluje połączenie managera
-io.on('connection', function (socket) {
-    console.log('Socket connection on.');
-    console.log('You are using deprecated socket connection files. You should use files from app/socket folder.');
+// io.on('connection', function (socket) {
+//     console.log('Socket connection on.');
+//     console.log('You are using deprecated socket connection files. You should use files from app/socket folder.');
     // socket.on('new_room', function () {
     //     console.log('New game room created, id: ' + server.lastRoomID);
     //     socket.room = {
@@ -93,20 +89,20 @@ io.on('connection', function (socket) {
     //     });
     // });
 
-    socket.on('stopButton', function () {
-        //console.log('odebrano socketa z androida');
-        io.emit('stoptime', socket.player.id);
-    });
-
-    socket.on('diceValue', function (value) {
-        console.log(socket.player.id + ': Odebrano wartość: ' + value);
-        io.emit('playerDice', {id: socket.player.id, value: value});
-    });
-    socket.on('specialGrid', function (gridData) {
-        console.log('Id aktualnego gracza: ' + gridData.id + ' Wartość pola specjalnego: ' + gridData.grid);
-        io.emit('specialGrid', {id: gridData.id, grid: gridData.grid});
-    });
-});
+//     socket.on('stopButton', function () {
+//         //console.log('odebrano socketa z androida');
+//         io.emit('stoptime', socket.player.id);
+//     });
+//
+//     socket.on('diceValue', function (value) {
+//         console.log(socket.player.id + ': Odebrano wartość: ' + value);
+//         io.emit('playerDice', {id: socket.player.id, value: value});
+//     });
+//     socket.on('specialGrid', function (gridData) {
+//         console.log('Id aktualnego gracza: ' + gridData.id + ' Wartość pola specjalnego: ' + gridData.grid);
+//         io.emit('specialGrid', {id: gridData.id, grid: gridData.grid});
+//     });
+// });
 
 // function getAllPlayers() {
 //     let players = [];

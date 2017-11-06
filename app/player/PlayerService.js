@@ -6,7 +6,6 @@ const Player = require('../player/Player');
 const RoomService = require('../room/RoomService');
 
 exports.newPlayer = newPlayer;
-//exports.saveToDb = saveToDb;
 exports.removeFromDb = removeFromDb;
 
 function newPlayer(roomId, socket, name) {

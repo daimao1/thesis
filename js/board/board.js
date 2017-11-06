@@ -163,7 +163,7 @@ function movePlayer (playerData) {
     destination = 288
   console.log('Ruszysz się na pole nr: ' + destination)
   showMessage()
-  for (i = currentPlayer.fieldNumber; i <= destination; i++) {
+  for (let i = currentPlayer.fieldNumber; i <= destination; i++) {
     tween1.to({
       x: grids[i][0],
       y: grids[i][1]
@@ -215,7 +215,7 @@ function isPlayerOnSpecialGrid (currentPlayer) {
     case 257:
     case 287:
       console.log('Znajdujesz się na polu ZAMEK')
-      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'castle'})
+      socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'castle'})
       break
     case 22:
     case 89:
@@ -223,30 +223,30 @@ function isPlayerOnSpecialGrid (currentPlayer) {
     case 240:
     case 286:
       console.log('Znajdujesz się na polu STADION')
-      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'stadium'})
+      socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'stadium'})
       break
     case 31:
     case 71:
       console.log('Znajdujesz się na polu WYZWANIE 4')
-      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'challenge4'})
+      socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'challenge4'})
       break
     case 44:
     case 118:
     case 174:
       console.log('Znajdujesz się na polu WYZWANIE 5')
-      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'challenge5'})
+      socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'challenge5'})
       break
     case 224:
     case 283:
       console.log('Znajdujesz się na polu WYZWANIE 6')
-      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'challenge6'})
+      socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'challenge6'})
       break
     case 53:
     case 133:
     case 205:
     case 264:
       console.log('Znajdujesz się na polu RATUSZ')
-      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'townHall'})
+      socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'townHall'})
       break
     case 36:
     case 82:
@@ -254,7 +254,7 @@ function isPlayerOnSpecialGrid (currentPlayer) {
     case 215:
     case 271:
       console.log('Znajdujesz się na polu QUIZ 1 NA WSZYSTKICH')
-      socket.emit('specialGrid', {id: currentPlayer.id, grid: 'oneAtAll'})
+      socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'oneAtAll'})
       break
     case 288:
       makeWinner()

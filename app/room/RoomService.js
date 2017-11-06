@@ -14,8 +14,8 @@ exports.getById = getById;
 exports.addPlayerToRoom = addPlayerToRoom;
 exports.removeAllPlayers = removeAllPlayers;
 exports.removePlayer = removePlayer;
-
 exports.sendRoomInfoToGame = sendRoomInfoToGame;
+exports.getPlayerFromRoom = getPlayerFromRoom;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -155,6 +155,16 @@ function sendRoomInfoToGame(room) {
     });
 
     SocketEventService.sendPlayersInfoToGame(room.socketNamespace.gameSocket, playersInfo);
+}
+
+function getPlayerFromRoom(roomId, playerInRoomId) {
+    if(roomId === undefined || playerInRoomId === undefined){
+        throw new Error('RoomService#getPlayerFromRoom(): roomId or playerId undefined.');
+    }
+    const player = getRoomByIdUnauthorized(roomId).players[playerInRoomId];
+    if(player === undefined){
+        throw new Error('RoomService#getPlayerFromRoom(): cannot find player.');
+    }
 }
 
 /*

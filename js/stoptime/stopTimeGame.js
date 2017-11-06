@@ -24,7 +24,7 @@ var zz = [];
 
 StopTimeGame.socket = io.connect();
 
-StopTimeGame.socket.on('stoptime', function (id) {
+StopTimeGame.socket.on('stopTime', function (id) {
     timer[id].pause();
     result[id] = Math.abs(random_number - timer[id].ms); //obliczam wynik
 
@@ -141,12 +141,12 @@ if (stopTimeGame.renderType === Phaser.WEBGL) {
 }
 
 function timerInit(){
-    for (i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 4; i++) {
         timer[i] = stopTimeGame.time.create();
         timer[i].add(Phaser.Timer.SECOND * 30 + Phaser.Timer * 100, this, this.endTimer);
     }
     setTimeout(function () {
-        for (i = 1; i <= 4; i++)
+        for (let i = 1; i <= 4; i++)
             timer[i].start()//????????????????
     }, 5000);//start with delay
 }
@@ -164,7 +164,7 @@ function formatTime(s) {
 };
 
 StopTimeGame.endTimer = function () {
-    for (i = 1; i <= 4; i++)
+    for (let i = 1; i <= 4; i++)
         timer[i].stop();
 };
 //
