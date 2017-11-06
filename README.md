@@ -1,5 +1,4 @@
 ## Getting started
-
 Aby pobrać zależności:
 npm install
 
@@ -30,9 +29,9 @@ Do uruchomienia bazy danych potrzebujemy serwera MySQL:
 * '/test' - Phaser game test
 
 
-##SocketIO server API
-###Common api for both player and game:
-* ####Handled events:
+## SocketIO server API
+### Common api for both player and game:
+* #### Handled events:
     * 'connection' - emitted after io.connect call by client, like this:
     io.connect('/1')
 where '1' is a room number.
@@ -40,25 +39,25 @@ After connection application is waiting for 'setName' or 'markGame' events, to i
     * 'playerName' - player name setter - after this event, application identify socket as a player and will create a new player object. In parameter expected string with player name.
     * 'markGame' - after this event socket will be marked as a game (browser).
 
-###Api for game:
-* ####Handled events:
+### Api for game:
+* #### Handled events:
     * 'disconnect' - not implemented, application throws Error.
-* ####Emitted events:
+* #### Emitted events:
     * 'playersInfo' - in args array of objects (players) with two properties: 'name' and 'inRoomId'. Array length is number of the players. Emitted after 'markGame' event.
     * 'stopTime' - emitted after handle 'stopTime' event from player, in args number - player.in_room_id
     * 'playerDice' - emitted after handle 'diceValue' event from player, in args object with 'id', and 'value' (dice results) keys.
 
-###Api for player:
-* ####Handled events:
+### Api for player:
+* #### Handled events:
     * 'disconnect' - player will be removed from room and from database.
     * 'stopButton' - emit event 'stopTime' to game socket
     * 'diceValue' - emit event 'playerDice' to game socket, in args expected number with dice results
 
-##Debugowanie:
+## Debugowanie
 Ustawić zmienne środowiskowe za pomocą komendy 'set' w terminalu.
 set DEBUG=*
 
-##Testy:
+## Testy
 Aby uruchomić wszystkie testy korzystamy z komendy:
     npm test
 Albo korzystamy z IDE. Pozdr.
