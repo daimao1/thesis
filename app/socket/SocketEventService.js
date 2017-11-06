@@ -22,7 +22,7 @@ function initBasicHandlers(socket, socketNamespace){
 
 function newPlayer(socket, socketNamespace, name){
     socket.join('players');
-    console.log('SocketEventHandler: handle \'setName\' event - creating new player.');
+    console.log('SocketEventHandler: handle \'playerName\' event - creating new player.');
     const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name);
     addPlayerDisconnectHandler(player);
     addPlayerDefaultHandlers(player, socketNamespace);
