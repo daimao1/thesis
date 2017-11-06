@@ -9,8 +9,8 @@ exports.initBasicHandlers = initBasicHandlers;
 exports.sendPlayersInfoToGame = sendPlayersInfoToGame;
 
 function initBasicHandlers(socket, socketNamespace){
-    socket.on('setName', (object) => {
-        newPlayer(socket, socketNamespace, object.name);
+    socket.on('setName', (playerName) => {
+        newPlayer(socket, socketNamespace, playerName);
     });
 
 
