@@ -183,8 +183,9 @@ function movePlayer (playerData) {
 }
 
 //TODO
-function receivePlayersInfo(playerName, inRoomId){
-console.log(playerName + inRoomId)
+function receivePlayersInfo(playersInfo){
+playersInfo.forEach((player) => console.log('PlayerName: ' +
+   player.name +' PlayerInRoomId ' + player.inRoomId))
 }
 
 function isPlayerOnSpecialGrid (currentPlayer) {
