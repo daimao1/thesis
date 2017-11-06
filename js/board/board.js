@@ -69,7 +69,7 @@ Board.preload = function () {
 
 Board.create = function () {
   socket = io.connect('/'+roomId)
-  //socket.emit('markGame','message')
+  socket.emit('markGame', showTestMessage())
 
 
   //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
@@ -94,7 +94,7 @@ Board.create = function () {
 }
 
 function showTestMessage(){
-  console.log("działa jak natura chciała!")
+  console.log("Emitted 'markGame' event to server.")
 }
 
 Board.update = function () {
