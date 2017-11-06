@@ -33,7 +33,7 @@ Do uruchomienia bazy danych potrzebujemy XAMPP:
     io.connect('/1')
 where '1' is a room number.
 After connection application is waiting for 'setName' or 'markGame' events, to identify client as player or game (browser).
-'setName' - player name setter - after this event, application identify socket as a player and will create a new player object. In parameter expected string with player name.
+'playerName' - player name setter - after this event, application identify socket as a player and will create a new player object. In parameter expected string with player name.
 'markGame' - after this event socket will be marked as a game (browser).
 
 ***Api for game:
