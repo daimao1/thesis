@@ -32,6 +32,7 @@ function newGame(socket, socketNamespace){
     console.log('SocketIO/N/EventHandler: game connection initialized.');
     socketNamespace.gameSocket = socket;
     addGameDisconnectHandler(socket);
+    sendPlayersInfoToGame(socketNamespace);
     addGameDefaultHandlers(socketNamespace);
 }
 
@@ -51,11 +52,12 @@ function addGameDisconnectHandler(socket){
     });
 }
 
-function sendPlayersInfoToGame(socket, playersInfo){
-    if(playersInfo === undefined) {
-        throw new Error('SocketEventService#sendRoomInfoToGame(): playersInfo undefined.');
+function sendPlayersInfoToGame(socketNamespace){
+    if(socketNamespace === undefined) {
+        throw new Error('SocketEventService#sendRoomInfoToGame(): socketNamespace undefined.');
     }
-    socket.emit('playersInfo', playersInfo);
+    const playersInfo = RoomService.getPlayersInfoDTO(socketNamespace.roomId);
+    socketNamespace.gameSocket.emit('playersInfo', playersInfo);
 }
 
 function addPlayerDefaultHandlers(player, socketNamespace){

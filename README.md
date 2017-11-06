@@ -40,7 +40,7 @@ After connection application is waiting for 'setName' or 'markGame' events, to i
 ****Handled events:
 'disconnect' - not implemented, application throws Error.
 ****Emitted events:
-'playersInfo' - in args array of objects (players) with two properties: 'name' and 'inRoomId'. Array length is number of the players.
+'playersInfo' - in args array of objects (players) with two properties: 'name' and 'inRoomId'. Array length is number of the players. Emitted after 'markGame' event.
 'stopTime' - emitted after handle 'stopTime' event from player, in args number - player.in_room_id
 'playerDice' - emitted after handle 'diceValue' event from player, in args object with 'id', and 'value' (dice results) keys.
 

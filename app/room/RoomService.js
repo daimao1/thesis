@@ -2,7 +2,7 @@
 const RoomDao = require('./RoomDao');
 const Room = require('./Room');
 const SocketNamespace = require('../socket/SocketNamespace');
-const SocketEventService = require('../socket/SocketEventService');
+//const SocketEventService = require('../socket/SocketEventService');
 
 let roomList = [];
 loadDataFromDb();
@@ -14,7 +14,7 @@ exports.getById = getById;
 exports.addPlayerToRoom = addPlayerToRoom;
 exports.removeAllPlayers = removeAllPlayers;
 exports.removePlayer = removePlayer;
-exports.sendRoomInfoToGame = sendRoomInfoToGame;
+exports.getPlayersInfoDTO = getPlayersInfoDTO;
 exports.getPlayerFromRoom = getPlayerFromRoom;
 
 function logDeleteSuccess(results) {
@@ -143,18 +143,23 @@ function getRoomBySocketNamespace(socketNamespace) {
     return roomToReturn;
 }
 
-function sendRoomInfoToGame(room) {
-    if(room === undefined){
-        throw new Error('RoomService#sendRoomInfoToGame(): room undefined');
+function getPlayersInfoDTO(roomId) {
+    if(roomId === undefined){
+        throw new Error('RoomService#getPlayersInfoDTO(): roomId undefined');
     }
+
+    const room = getRoomByIdUnauthorized(roomId);
 
     //TODO test it!
     let playersInfo = [];
     room.players.forEach( (player, index) => {
         playersInfo[index] = { name: player.name, inRoomId: player.in_room_id };
     });
-
-    SocketEventService.sendPlayersInfoToGame(room.socketNamespace.gameSocket, playersInfo);
+    if(playersInfo.length === 0){
+        throw new Error('RoomService#getPlayersInfoDTO(): there are no players in the room');
+    } else {
+        return playersInfo;
+    }
 }
 
 function getPlayerFromRoom(roomId, playerInRoomId) {
