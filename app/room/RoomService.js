@@ -153,7 +153,7 @@ function getPlayersInfoDTO(roomId) {
     //TODO test it!
     let playersInfo = [];
     room.players.forEach( (player, index) => {
-        playersInfo[index] = { name: player.name, inRoomId: player.in_room_id };
+        playersInfo[index] = { name: player.name, id: player.in_room_id };
     });
     if(playersInfo.length === 0){
         throw new Error('RoomService#getPlayersInfoDTO(): there are no players in the room');
