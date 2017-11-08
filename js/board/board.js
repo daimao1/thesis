@@ -87,6 +87,7 @@ Board.create = function () {
   addPlayersToBoard(numberOfPlayers)
   board.camera.follow(player1)
 
+  socket.emit('gameReady')
 }
 
 function showTestMessage(){
