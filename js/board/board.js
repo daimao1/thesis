@@ -85,7 +85,7 @@ Board.create = function () {
   map.scale.setTo(0.9)
   board.physics.startSystem(Phaser.Physics.P2JS)
   addPlayersToBoard(numberOfPlayers)
-  board.camera.follow(player1)
+  board.camera.follow(currentPlayer)
 
   socket.emit('gameReady')
 }
@@ -105,6 +105,7 @@ Board.render = function () {
 let setEventHandlers = function () {
   socket.on('playerDice', movePlayer)
   socket.on('playersInfo', receivePlayersInfo)
+  socket.on('nextPlayerTurn', receiveNextPlayerTurn)
 }
 
 function addPlayersToBoard (number) {
@@ -152,12 +153,9 @@ function addPlayersToBoard (number) {
 
 //TODO: zrobić dla wielu graczy - w zależności o numeru gracza
 function movePlayer (playerData) {
-  currentPlayer = player1 //tymczasowe rozwiązanie dla testu
-
- // player1.id = playerData.id //
   currentPlayer.id = playerData.id //
   currentPlayer.value = playerData.value
-  console.log('Odebrano socketa z serwera. Id i wartość oczek: ' + currentPlayer.id + ' ' + currentPlayer.value) //
+  console.log('Odebrano socketa z serwera. Id '+currentPlayer.id +' wartość oczek: ' + currentPlayer.value) //
   tween1 = board.add.tween(currentPlayer.body)
   let destination = +currentPlayer.fieldNumber + +playerData.value
   //let destination = 9
@@ -188,7 +186,23 @@ playersInfo.forEach((player) => console.log('PlayerName: ' +
   console.log('ile wszystkich graczy w pokoju: ' + playersInfo.length)
 
   numberOfPlayers = playersInfo.length
+}
 
+function receiveNextPlayerTurn(id){
+
+  switch(id){
+    case 0:
+      currentPlayer = player1
+    case 1:
+      currentPlayer = player2
+    case 2:
+      currentPlayer = player3
+    case 3:
+      currentPlayer = player4
+    case 4:
+      currentPlayer = player5
+    case 5:
+  }
 }
 
 function isPlayerOnSpecialGrid (currentPlayer) {
