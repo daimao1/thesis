@@ -1,3 +1,32 @@
+1. załadowanie gry: game -> serwer 'markGame', serwer-> game 'playersInfo'
+2. Gra -> serwer 'gameReady'
+
+3.0 Serwer -> game 'nextPlayerTurn' (id)
+3.1 Gra - wyświetla: Tura gracza {id}
+3.2 Serwer -> player 'youTurn'(ilomaKostkami) i czekam na 'diceValue'
+3.3 Android - uruchomienie aktywności 'dice' lub więcej kostek
+3.4 Android -> serwer 'diceValue' (diceValue)
+3.5 Serwer odbiera 'diceValue'
+3.6 Serwer -> game 'playerDice'(id, diceValue)
+3.7 Gra - ruch awatara  
+    3.7.1 Gra -> serwer 'finish'
+    3.7.2 Gra -> serwer 'specialGrid'('nazwa')
+3.8 Serwer odbiera opcjonalny event
+    3.8.1 'finish' - rzuca wyjątek
+    3.8.2 'specialGrid' - rozpoczęcie nowej minigry (osobny zestaw instrukcji)
+3.8 Gra -> serwer 'endTurn'
+3.9 if(game !== undefined) jump to 3.0
+
+
+'castle'
+'stadium'
+'challenge4'
+'challenge5'
+'challenge6'
+'townHall'
+'oneVsAll'
+
+
 ## Getting started
 Aby pobrać zależności:
 npm install
