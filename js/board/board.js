@@ -44,12 +44,14 @@ let currentPlayer
 let iHeight = window.innerHeight
 let iWidth = window.innerWidth
 let mapBackground
-let player1, player2, player3, player4, player5, player6
 let socket
 let tween1, tween2, tween3, tween4, tween5, tween6
 let turnMessage, diceMessage
 let background_sound, effect_special
-//const io = require('socket.io').listen(server);
+
+let numberOfPlayers
+let player1, player2, player3, player4, player5, player6
+let actualPlayerName
 
 Board.preload = function () {
   board.load.image('plansza', '../assets/map/plansza.png') //załaduj planszę
@@ -65,32 +67,26 @@ Board.preload = function () {
 
   board.load.audio('background_sound', '../assets/audio/background_sound.mp3')
   board.load.audio('effect_special', '../assets/audio/effect_special.wav')
+
+  socket = io.connect('/'+roomId)
+  socket.emit('markGame', showTestMessage())
+  setEventHandlers()
 }
 
 Board.create = function () {
-  socket = io.connect('/'+roomId)
-  socket.emit('markGame', showTestMessage())
-
-
   //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
 
-  // currentPlayer.fieldNumber =0
-  // currentPlayer.value=0
-
-  //background_sound = board.add.audio('background_sound')
- // background_sound.play()
- // background_sound.volume=0.4
- // background_sound.loopFull()
   effect_special = board.add.audio('effect_special')
+  effect_special.volume = 0.2
   mapBackground = board.add.tileSprite(0, 0, 4573 * 0.9, 4605 * 0.9, 'background')
   board.world.setBounds(0, 0, 4573 * 0.9, 4605 * 0.9)
   map = board.add.image(4573 * 0.9, 4605 * 0.9, 'plansza')
   map.anchor.setTo(1, 1) //położenie lewej górnej krawędzi obrazka - ta wartość będzie ulegać zmianie
   map.scale.setTo(0.9)
   board.physics.startSystem(Phaser.Physics.P2JS)
-  addPlayersToBoard(6)
+  addPlayersToBoard(numberOfPlayers)
   board.camera.follow(player1)
-  setEventHandlers()
+
 }
 
 function showTestMessage(){
@@ -105,9 +101,14 @@ Board.render = function () {
 
 }
 
-function addPlayersToBoard (numberOfPlayers) {
+let setEventHandlers = function () {
+  socket.on('playerDice', movePlayer)
+  socket.on('playersInfo', receivePlayersInfo)
+}
 
-  switch (numberOfPlayers) {
+function addPlayersToBoard (number) {
+
+  switch (number) {
     case 6:
       player6 = board.add.sprite(grids[0][0] + 70, grids[0][1] + 47, 'avatar6')
       player6.fieldNumber = 0
@@ -146,16 +147,14 @@ function addPlayersToBoard (numberOfPlayers) {
   }
 }
 
-let setEventHandlers = function () {
-  socket.on('playerDice', movePlayer)
-  socket.on('playersInfo', receivePlayersInfo)
-}
+
 
 //TODO: zrobić dla wielu graczy - w zależności o numeru gracza
 function movePlayer (playerData) {
   currentPlayer = player1 //tymczasowe rozwiązanie dla testu
-  player1.id = playerData.id //
-  currentPlayer.id = player1.id //
+
+ // player1.id = playerData.id //
+  currentPlayer.id = playerData.id //
   currentPlayer.value = playerData.value
   console.log('Odebrano socketa z serwera. Id i wartość oczek: ' + currentPlayer.id + ' ' + currentPlayer.value) //
   tween1 = board.add.tween(currentPlayer.body)
@@ -173,7 +172,6 @@ function movePlayer (playerData) {
     effect_special.play()
   }
   tween1.start()
-  // effect_special.play()
   let distance = destination - currentPlayer.fieldNumber
   currentPlayer.fieldNumber = destination
   board.time.events.add(distance * 1600, function () {
@@ -186,6 +184,10 @@ function movePlayer (playerData) {
 function receivePlayersInfo(playersInfo){
 playersInfo.forEach((player) => console.log('PlayerName: ' +
    player.name +' PlayerInRoomId ' + player.inRoomId))
+  console.log('ile wszystkich graczy w pokoju: ' + playersInfo.length)
+
+  numberOfPlayers = playersInfo.length
+
 }
 
 function isPlayerOnSpecialGrid (currentPlayer) {
@@ -257,7 +259,7 @@ function isPlayerOnSpecialGrid (currentPlayer) {
     case 215:
     case 271:
       console.log('Znajdujesz się na polu QUIZ 1 NA WSZYSTKICH')
-      socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'oneAtAll'})
+      socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'oneVsAll'})
       break
     case 288:
       makeWinner()
