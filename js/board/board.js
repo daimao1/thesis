@@ -182,7 +182,7 @@ function movePlayer (playerData) {
 //TODO
 function receivePlayersInfo(playersInfo){
 playersInfo.forEach((player) => console.log('PlayerName: ' +
-   player.name +' PlayerInRoomId ' + player.inRoomId))
+   player.name +' PlayerInRoomId ' + player.id))
   console.log('ile wszystkich graczy w pokoju: ' + playersInfo.length)
 
   numberOfPlayers = playersInfo.length
