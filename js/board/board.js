@@ -1,6 +1,7 @@
 let Board = {}
 let roomId = document.head.id
 let map
+
 //pole START ma współrzędne grids[0][0], grids[0][1]; Pole META ma współrzędne grids[288][0], grids[288][1]
 let grids = [[120, 3929.94], [248, 3929.94], [398, 3929.94], [540, 3929.94], [682, 3929.94], [824, 3929.94], [972, 3929.94], [1117, 3929.94],
   [1264, 3929.94], [1406, 3929.94], [1406, 3779.94], [1406, 3634.94], [1406, 3494.94], [1272, 3494.94], [1127, 3494.94], [1127, 3634.94],
@@ -39,19 +40,20 @@ let grids = [[120, 3929.94], [248, 3929.94], [398, 3929.94], [540, 3929.94], [68
   [3866, 1364.94], [3866, 1220.94], [3866, 1076.94], [3866, 932.94], [3866, 788.94], [3866, 644.94], [3722, 644.94], [3578, 644.94],
   [3434, 644.94], [3434, 500.94], [3434, 356.94], [3434, 212.94], [3434, 68.94], [3578, 68.94], [3722, 68.94], [3866, 68.94],
   [4010, 68.94]]
+
 let players = []
 let currentPlayer
 let iHeight = window.innerHeight
 let iWidth = window.innerWidth
 let mapBackground
 let socket
-let tween1, tween2, tween3, tween4, tween5, tween6
+let tween
 let turnMessage, diceMessage
 let background_sound, effect_special
 
 let numberOfPlayers
 let player1, player2, player3, player4, player5, player6
-let actualPlayerName
+let allPlayers
 
 Board.preload = function () {
   board.load.image('plansza', '../assets/map/plansza.png') //załaduj planszę
@@ -68,20 +70,19 @@ Board.preload = function () {
   board.load.audio('background_sound', '../assets/audio/background_sound.mp3')
   board.load.audio('effect_special', '../assets/audio/effect_special.wav')
 
-  socket = io.connect('/'+roomId)
-  socket.emit('markGame', showTestMessage())
+  socket = io.connect('/' + roomId)
+  socket.emit('markGame', showMarkGame())
   setEventHandlers()
 }
 
 Board.create = function () {
   //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
-
   effect_special = board.add.audio('effect_special')
   effect_special.volume = 0.2
   mapBackground = board.add.tileSprite(0, 0, 4573 * 0.9, 4605 * 0.9, 'background')
   board.world.setBounds(0, 0, 4573 * 0.9, 4605 * 0.9)
   map = board.add.image(4573 * 0.9, 4605 * 0.9, 'plansza')
-  map.anchor.setTo(1, 1) //położenie lewej górnej krawędzi obrazka - ta wartość będzie ulegać zmianie
+  map.anchor.setTo(1, 1) //położenie lewej górnej krawędzi obrazka
   map.scale.setTo(0.9)
   board.physics.startSystem(Phaser.Physics.P2JS)
   addPlayersToBoard(numberOfPlayers)
@@ -90,8 +91,8 @@ Board.create = function () {
   socket.emit('gameReady')
 }
 
-function showTestMessage(){
-  console.log("Emitted 'markGame' event to server.")
+function showMarkGame () {
+  console.log('Emitted markGame event to server.')
 }
 
 Board.update = function () {
@@ -114,83 +115,85 @@ function addPlayersToBoard (number) {
     case 6:
       player6 = board.add.sprite(grids[0][0] + 70, grids[0][1] + 47, 'avatar6')
       player6.fieldNumber = 0
+      player6.name = allPlayers[5]
       board.physics.p2.enable(player6)
       player6.body.clearCollision()
-    //  tween6 = board.add.tween(player6.body)
     case 5:
       player5 = board.add.sprite(grids[0][0] + 35, grids[0][1] + 47, 'avatar5')
       player5.fieldNumber = 0
+      player6.name = allPlayers[4]
       board.physics.p2.enable(player5)
       player5.body.clearCollision()
-    // tween5 = board.add.tween(player5.body)
     case 4:
       player4 = board.add.sprite(grids[0][0], grids[0][1] + 47, 'avatar4')
       player4.fieldNumber = 0
+      player6.name = allPlayers[3]
       board.physics.p2.enable(player4)
       player4.body.clearCollision()
-    // tween4 = board.add.tween(player4.body)
     case 3:
       player3 = board.add.sprite(grids[0][0] + 70, grids[0][1], 'avatar3')
       player3.fieldNumber = 0
+      player6.name = allPlayers[2]
       board.physics.p2.enable(player3)
       player3.body.clearCollision()
-    //  tween3 = board.add.tween(player3.body)
     case 2:
       player2 = board.add.sprite(grids[0][0] + 35, grids[0][1], 'avatar2')
       player2.fieldNumber = 0
+      player6.name = allPlayers[1]
       board.physics.p2.enable(player2)
       player2.body.clearCollision()
-    // tween2 = board.add.tween(player2.body)
     case 1:
       player1 = board.add.sprite(grids[0][0], grids[0][1], 'avatar1')
       player1.fieldNumber = 0
+      player6.name = allPlayers[0]
       board.physics.p2.enable(player1)
       player1.body.clearCollision()
   }
 }
 
-
-
-//TODO: zrobić dla wielu graczy - w zależności o numeru gracza
 function movePlayer (playerData) {
   currentPlayer.id = playerData.id //
   currentPlayer.value = playerData.value
-  console.log('Odebrano socketa z serwera. Id '+currentPlayer.id +' wartość oczek: ' + currentPlayer.value) //
-  tween1 = board.add.tween(currentPlayer.body)
+  currentPlayer.name = allPlayers[id]
+  console.log('Odebrano socketa z serwera. Id ' + currentPlayer.id + ' ilośc wyrzuconych oczek: ' + currentPlayer.value) //
+  tween = board.add.tween(currentPlayer.body)
   let destination = +currentPlayer.fieldNumber + +playerData.value
-  //let destination = 9
   if (destination >= 288)
     destination = 288
   console.log('Ruszysz się na pole nr: ' + destination)
-  showMessage()
+  showTurnAndDice()
   for (let i = currentPlayer.fieldNumber; i <= destination; i++) {
-    tween1.to({
+    tween.to({
       x: grids[i][0],
       y: grids[i][1]
     }, 800)
     effect_special.play()
   }
-  tween1.start()
+  tween.start()
   let distance = destination - currentPlayer.fieldNumber
   currentPlayer.fieldNumber = destination
   board.time.events.add(distance * 1600, function () {
     isPlayerOnSpecialGrid(currentPlayer)
   })
-  console.log('Player 1: fieldNumber: ' + currentPlayer.fieldNumber)
+  console.log('Player id:' + currentPlayer.id + ' fieldNumber: ' + currentPlayer.fieldNumber)
 }
 
-//TODO
-function receivePlayersInfo(playersInfo){
-playersInfo.forEach((player) => console.log('PlayerName: ' +
-   player.name +' PlayerInRoomId ' + player.id))
-  console.log('ile wszystkich graczy w pokoju: ' + playersInfo.length)
+function receivePlayersInfo (playersInfo) {
+  console.log('Odebrano socket playersInfo')
 
-  numberOfPlayers = playersInfo.length
+  allPlayers = playersInfo
+  allPlayers.forEach((player) => console.log('PlayerName: ' +
+    player.name + ' PlayerInRoomId ' + player.id))
+  console.log('ile wszystkich graczy w pokoju: ' + allPlayers.length)
+
+  numberOfPlayers = allPlayers.length
+
 }
 
-function receiveNextPlayerTurn(id){
+function receiveNextPlayerTurn (id) {
+  console.log('Odebrano socket nextPlayerTurn')
 
-  switch(id){
+  switch (id) {
     case 0:
       currentPlayer = player1
     case 1:
@@ -203,10 +206,10 @@ function receiveNextPlayerTurn(id){
       currentPlayer = player5
     case 5:
   }
+  console.log('Ustawiono aktualnego gracza: ' + currentPlayer)
 }
 
 function isPlayerOnSpecialGrid (currentPlayer) {
-  //currentPlayer = player
   switch (currentPlayer.fieldNumber) {
     case 6:
     case 27:
@@ -282,47 +285,46 @@ function isPlayerOnSpecialGrid (currentPlayer) {
   }
 }
 
-function makeWinner () {
-  console.log('Wygrałeś')
-}
-
 function goThreeFieldsBack () {
-  tween1 = board.add.tween(currentPlayer.body)
+  tween = board.add.tween(currentPlayer.body)
   let k = 1
   for (let j = 0; j < 3; j++) {
-    tween1.to({
+    tween.to({
       x: grids[currentPlayer.fieldNumber - k][0],
       y: grids[currentPlayer.fieldNumber - k][1]
     }, 800)
     k++
 
   }
-  tween1.start()
+  tween.start()
   currentPlayer.fieldNumber = currentPlayer.fieldNumber - 3
   console.log('Player 1: fieldNumber: ' + currentPlayer.fieldNumber)
 }
 
 function goThreeFieldsForward () {
-  tween1 = board.add.tween(currentPlayer.body)
+  tween = board.add.tween(currentPlayer.body)
   let m = 1
   for (let j = 0; j < 3; j++) {
-    tween1.to({
+    tween.to({
       x: grids[currentPlayer.fieldNumber + m][0],
       y: grids[currentPlayer.fieldNumber + m][1]
     }, 800)
     m++
   }
-  tween1.start()
+  tween.start()
   currentPlayer.fieldNumber = currentPlayer.fieldNumber - 3
   console.log('Player 1: fieldNumber: ' + currentPlayer.fieldNumber)
 }
 
-function showMessage () {
+function makeWinner () {
+  console.log('Wygrałeś')
+}
+
+function showTurnAndDice () {
   showTurn()
   showDice()
 }
 
-//showTurn(currentPlayer)
 function showTurn () {
   if (typeof turnMessage !== 'undefined') {
     turnMessage.destroy()
