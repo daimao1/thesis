@@ -2,6 +2,7 @@
 const RoomDao = require('./RoomDao');
 const Room = require('./Room');
 const SocketNamespace = require('../socket/SocketNamespace');
+const Constants = require('../Constants');
 //const SocketEventService = require('../socket/SocketEventService');
 
 let roomList = [];
@@ -16,6 +17,8 @@ exports.removeAllPlayers = removeAllPlayers;
 exports.removePlayer = removePlayer;
 exports.getPlayersInfoDTO = getPlayersInfoDTO;
 exports.getPlayerFromRoom = getPlayerFromRoom;
+exports.nextPlayerTurn = nextPlayerTurn;
+exports.setPlayersOrderFromMinigame = setPlayersOrderFromMinigame;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -170,6 +173,28 @@ function getPlayerFromRoom(roomId, playerInRoomId) {
     if(player === undefined){
         throw new Error('RoomService#getPlayerFromRoom(): cannot find player.');
     }
+}
+
+function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
+
+    const room = getRoomByIdUnauthorized(roomId);
+
+    if (orderFromMiniGame === undefined || orderFromMiniGame.length > room.players.length) {
+        throw new Error(`Room[${room.id}]#setNewPlayerOrder(): order incorrect.`);
+    }
+    if (room.currentPlayer !== -1) {
+        throw new Error(`Room[${room.id}]#setNewPlayerOrder(): current round is not finished.`);
+    }
+    if (Constants.PLAYER_ORDER === Constants.PLAYER_ORDER.FIRST_TO_LAST) {
+        room.setPlayersOrder(orderFromMiniGame); // Array is loaded from the end, so first player from mini game will be last.
+    } else {
+        // FIRST_TO_FIRST, first player from mini game will be first in board game
+        room.setNewPlayersOrder(orderFromMiniGame.reverse());
+    }
+}
+
+function nextPlayerTurn(roomId) {
+    getRoomByIdUnauthorized(roomId).nextPlayerTurn();
 }
 
 /*

@@ -1,14 +1,19 @@
+'use strict';
+const Constants = require('../Constants');
+
 class Room {
 
     constructor(id, name, adminId, socketNamespace) {
         /**
-        * Fields must have the same names as fields in database
-        */
+         * Fields must have the same names as fields in database
+         */
         this.id = id;
         this.name = name;
         this.administrator_id = adminId;
         this.socketNamespace = socketNamespace;
         this.players = [];
+        this.playerOrder = [];
+        this.currentPlayerId = -1;
         //this.game_number = Room.generateGameNumber();
 
         if (socketNamespace === undefined) {
@@ -19,10 +24,7 @@ class Room {
     }
 
     static get MAX_PLAYERS() {
-        /**
-         * MAX PLAYERS IN ONE ROOM: 6
-         */
-        return 6;
+        return Constants.MAX_PLAYERS;
     }
 
     addPlayer(player) {
@@ -56,6 +58,19 @@ class Room {
         else {
             throw new Error(`Room[${this.id}]#removePlayer(): cannot find player with id[${player.id}] in this room. Removing failed.`);
         }
+    }
+
+    setNewPlayersOrder(order) {
+        this.playerOrder = order;
+        console.log(`Room[${this.id}]#setNewPlayersOrder(): new order.`);
+    }
+
+    nextPlayerTurn() {
+        //TODO if nextPlayerId === undefined - end round
+        this.currentPlayerId = this.playerOrder.pop();
+        console.log(`Room[${this.id}]#newPlayerTurn(): currentPlayerId = [${this.currentPlayerId}].`);
+
+        return this.currentPlayerId;
     }
 
     // static generateGameNumber(){
