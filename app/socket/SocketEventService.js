@@ -78,11 +78,17 @@ function addGameDefaultHandlers(socketNamespace) {
         //what does it mean
         //it means that you have to init first miniGame!
         //and collect results
-        const orderFromMinigame = [0,1];
+        const orderFromMinigame = [0];
         RoomService.setPlayersOrderFromMinigame(orderFromMinigame, socketNamespace.roomId);
-        const playerTurnId = RoomService.nextPlayerTurn(socketNamespace.roomId);
+        let playerTurnId = RoomService.nextPlayerTurn(socketNamespace.roomId);
         //and next you have to send 'youTurn' event to game and to the right player!
         socketNamespace.gameSocket.emit('nextPlayerTurn', playerTurnId);
+        //TODO send to player
+
+        socketNamespace.gameSocket.on('endPlayerTurn', () => {
+            socketNamespace.gameSocket.emit('nextPlayerTurn', RoomService.nextPlayerTurn(socketNamespace.roomId));
+        });
+
 
         //OK. I understand. That sound quite simply. What next?
         //Next you have to wait for diceValue event from player.
