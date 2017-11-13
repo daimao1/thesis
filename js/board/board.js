@@ -53,7 +53,7 @@ let background_sound, effect_special
 
 let numberOfPlayers
 let player1, player2, player3, player4, player5, player6
-let allPlayers
+let allPlayers=[]
 
 Board.preload = function () {
   board.load.image('plansza', '../assets/map/plansza.png') //załaduj planszę
@@ -86,13 +86,14 @@ Board.create = function () {
   map.scale.setTo(0.9)
   board.physics.startSystem(Phaser.Physics.P2JS)
   addPlayersToBoard(numberOfPlayers)
-  board.camera.follow(currentPlayer)
+
 
   socket.emit('gameReady')
+  receiveNextPlayerTurn(0) //TODO receiveNextPlayerTurn(id)
 }
 
 function showMarkGame () {
-  console.log('Emitted markGame event to server.')
+  console.log('Wysłano socket markGame na serwer.')
 }
 
 Board.update = function () {
@@ -106,7 +107,7 @@ Board.render = function () {
 let setEventHandlers = function () {
   socket.on('playerDice', movePlayer)
   socket.on('playersInfo', receivePlayersInfo)
-  socket.on('nextPlayerTurn', receiveNextPlayerTurn)
+ // socket.on('nextPlayerTurn', receiveNextPlayerTurn) //TODO uncomment
 }
 
 function addPlayersToBoard (number) {
@@ -121,31 +122,31 @@ function addPlayersToBoard (number) {
     case 5:
       player5 = board.add.sprite(grids[0][0] + 35, grids[0][1] + 47, 'avatar5')
       player5.fieldNumber = 0
-      player6.name = allPlayers[4]
+      player5.name = allPlayers[4]
       board.physics.p2.enable(player5)
       player5.body.clearCollision()
     case 4:
       player4 = board.add.sprite(grids[0][0], grids[0][1] + 47, 'avatar4')
       player4.fieldNumber = 0
-      player6.name = allPlayers[3]
+      player4.name = allPlayers[3]
       board.physics.p2.enable(player4)
       player4.body.clearCollision()
     case 3:
       player3 = board.add.sprite(grids[0][0] + 70, grids[0][1], 'avatar3')
       player3.fieldNumber = 0
-      player6.name = allPlayers[2]
+      player3.name = allPlayers[2]
       board.physics.p2.enable(player3)
       player3.body.clearCollision()
     case 2:
       player2 = board.add.sprite(grids[0][0] + 35, grids[0][1], 'avatar2')
       player2.fieldNumber = 0
-      player6.name = allPlayers[1]
+      player2.name = allPlayers[1]
       board.physics.p2.enable(player2)
       player2.body.clearCollision()
     case 1:
       player1 = board.add.sprite(grids[0][0], grids[0][1], 'avatar1')
       player1.fieldNumber = 0
-      player6.name = allPlayers[0]
+      player1.name = allPlayers[0]
       board.physics.p2.enable(player1)
       player1.body.clearCollision()
   }
@@ -154,7 +155,7 @@ function addPlayersToBoard (number) {
 function movePlayer (playerData) {
   currentPlayer.id = playerData.id //
   currentPlayer.value = playerData.value
-  currentPlayer.name = allPlayers[id]
+  currentPlayer.name = allPlayers[currentPlayer.id].name
   console.log('Odebrano socketa z serwera. Id ' + currentPlayer.id + ' ilośc wyrzuconych oczek: ' + currentPlayer.value) //
   tween = board.add.tween(currentPlayer.body)
   let destination = +currentPlayer.fieldNumber + +playerData.value
@@ -196,14 +197,24 @@ function receiveNextPlayerTurn (id) {
   switch (id) {
     case 0:
       currentPlayer = player1
+      board.camera.follow(player1)
+      break
     case 1:
       currentPlayer = player2
+      board.camera.follow(player2)
+      break
     case 2:
       currentPlayer = player3
+      board.camera.follow(player3)
+      break
     case 3:
       currentPlayer = player4
+      board.camera.follow(player4)
+      break
     case 4:
       currentPlayer = player5
+      board.camera.follow(player5)
+      break
     case 5:
   }
   console.log('Ustawiono aktualnego gracza: ' + currentPlayer)
@@ -329,7 +340,7 @@ function showTurn () {
   if (typeof turnMessage !== 'undefined') {
     turnMessage.destroy()
   }
-  turnMessage = board.add.bitmapText(1, 1, 'desyrel', 'TURN:  Player' + currentPlayer.id, 64)
+  turnMessage = board.add.bitmapText(1, 1, 'desyrel', 'TURN:  ' + currentPlayer.name, 64)
   turnMessage.fontSize = 55
   turnMessage.fixedToCamera = true
   turnMessage.cameraOffset.setTo(iWidth / 7, iHeight / 1.2)
