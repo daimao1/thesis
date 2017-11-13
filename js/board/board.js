@@ -89,7 +89,6 @@ Board.create = function () {
 
 
   socket.emit('gameReady')
-  receiveNextPlayerTurn(0) //TODO receiveNextPlayerTurn(id)
 }
 
 function showMarkGame () {
@@ -107,7 +106,7 @@ Board.render = function () {
 let setEventHandlers = function () {
   socket.on('playerDice', movePlayer)
   socket.on('playersInfo', receivePlayersInfo)
- // socket.on('nextPlayerTurn', receiveNextPlayerTurn) //TODO uncomment
+  socket.on('nextPlayerTurn', receiveNextPlayerTurn)
 }
 
 function addPlayersToBoard (number) {
@@ -193,7 +192,7 @@ function receivePlayersInfo (playersInfo) {
 
 function receiveNextPlayerTurn (id) {
   console.log('Odebrano socket nextPlayerTurn')
-
+  console.log('ID: '+id)
   switch (id) {
     case 0:
       currentPlayer = player1

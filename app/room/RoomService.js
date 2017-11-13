@@ -182,11 +182,11 @@ function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
     if (orderFromMiniGame === undefined || orderFromMiniGame.length > room.players.length) {
         throw new Error(`Room[${room.id}]#setNewPlayerOrder(): order incorrect.`);
     }
-    if (room.currentPlayer !== -1) {
+    if (room.currentPlayerId !== -1) {
         throw new Error(`Room[${room.id}]#setNewPlayerOrder(): current round is not finished.`);
     }
     if (Constants.PLAYER_ORDER === Constants.PLAYER_ORDER.FIRST_TO_LAST) {
-        room.setPlayersOrder(orderFromMiniGame); // Array is loaded from the end, so first player from mini game will be last.
+        room.setNewPlayersOrder(orderFromMiniGame); // Array is loaded from the end, so first player from mini game will be last.
     } else {
         // FIRST_TO_FIRST, first player from mini game will be first in board game
         room.setNewPlayersOrder(orderFromMiniGame.reverse());
@@ -194,7 +194,7 @@ function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
 }
 
 function nextPlayerTurn(roomId) {
-    getRoomByIdUnauthorized(roomId).nextPlayerTurn();
+    return getRoomByIdUnauthorized(roomId).nextPlayerTurn();
 }
 
 /*
