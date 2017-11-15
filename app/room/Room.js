@@ -71,7 +71,7 @@ class Room {
             this.currentPlayerId = -1;
         }
         console.log(`Room[${this.id}]#newPlayerTurn(): currentPlayerId = [${this.currentPlayerId}].`);
-
+        this.currentPlayerId = playerId;
         return this.currentPlayerId;
     }
 

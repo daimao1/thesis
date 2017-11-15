@@ -87,12 +87,14 @@ function addGameDefaultHandlers(socketNamespace) {
 
         socketNamespace.gameSocket.on('endPlayerTurn', () => {
             let playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
-            if(playerId === -1) {
+            if (playerId === -1) {
                 //new minigame
                 RoomService.setPlayersOrderFromMinigame(orderFromMinigame, socketNamespace.roomId);
                 playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
             }
-            socketNamespace.gameSocket.emit('nextPlayerTurn', playerId);
+            if (playerId !== -1){
+                socketNamespace.gameSocket.emit('nextPlayerTurn', playerId);
+            }
         });
 
 
