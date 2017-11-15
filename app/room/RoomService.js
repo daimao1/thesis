@@ -19,6 +19,7 @@ exports.getPlayersInfoDTO = getPlayersInfoDTO;
 exports.getPlayerFromRoom = getPlayerFromRoom;
 exports.nextPlayerTurn = nextPlayerTurn;
 exports.setPlayersOrderFromMinigame = setPlayersOrderFromMinigame;
+exports.endRound = endRound;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -180,10 +181,10 @@ function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
     const room = getRoomByIdUnauthorized(roomId);
 
     if (orderFromMiniGame === undefined || orderFromMiniGame.length > room.players.length) {
-        throw new Error(`Room[${room.id}]#setNewPlayerOrder(): order incorrect.`);
+        throw new Error(`Room[${room.id}]#setNewPlayersOrder(): order incorrect.`);
     }
     if (room.currentPlayerId !== -1) {
-        throw new Error(`Room[${room.id}]#setNewPlayerOrder(): current round is not finished.`);
+        throw new Error(`Room[${room.id}]#setNewPlayersOrder(): current round is not finished.`);
     }
     if (Constants.PLAYER_ORDER === Constants.PLAYER_ORDER.FIRST_TO_LAST) {
         room.setNewPlayersOrder(orderFromMiniGame); // Array is loaded from the end, so first player from mini game will be last.
@@ -195,6 +196,13 @@ function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
 
 function nextPlayerTurn(roomId) {
     return getRoomByIdUnauthorized(roomId).nextPlayerTurn();
+}
+
+function endRound(roomId) {
+    const room = getRoomByIdUnauthorized(roomId);
+    room.currentPlayerId = -1;
+    room.playersOrder = [];
+    console.log('RoomService#endRound().');
 }
 
 /*

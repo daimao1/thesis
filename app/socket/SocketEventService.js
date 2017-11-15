@@ -1,6 +1,7 @@
 'use strict';
 const RoomService = require('../room/RoomService');
 const PlayerService = require('../player/PlayerService');
+const Constants = require('../Constants');
 
 exports.initBasicHandlers = initBasicHandlers;
 exports.sendPlayersInfoToGame = sendPlayersInfoToGame;
@@ -79,7 +80,7 @@ function addGameDefaultHandlers(socketNamespace) {
         //it means that you have to init first miniGame!
         //and collect results
         const orderFromMinigame = [0,1];
-        RoomService.setPlayersOrderFromMinigame(orderFromMinigame, socketNamespace.roomId);
+        RoomService.setPlayersOrderFromMinigame([...orderFromMinigame], socketNamespace.roomId);
         let playerTurnId = RoomService.nextPlayerTurn(socketNamespace.roomId);
         //and next you have to send 'youTurn' event to game and to the right player!
         socketNamespace.gameSocket.emit('nextPlayerTurn', playerTurnId);
@@ -88,11 +89,12 @@ function addGameDefaultHandlers(socketNamespace) {
         socketNamespace.gameSocket.on('endPlayerTurn', () => {
             let playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
             if (playerId === -1) {
+                RoomService.endRound(socketNamespace.roomId);
                 //new minigame
-                RoomService.setPlayersOrderFromMinigame(orderFromMinigame, socketNamespace.roomId);
+                RoomService.setPlayersOrderFromMinigame([...orderFromMinigame], socketNamespace.roomId);
                 playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
             }
-            if (playerId !== -1){
+            if (playerId > -1 && playerId < Constants.MAX_PLAYERS){
                 socketNamespace.gameSocket.emit('nextPlayerTurn', playerId);
             }
         });
