@@ -174,6 +174,7 @@ function getPlayerFromRoom(roomId, playerInRoomId) {
     if(player === undefined){
         throw new Error('RoomService#getPlayerFromRoom(): cannot find player.');
     }
+    return player;
 }
 
 function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
