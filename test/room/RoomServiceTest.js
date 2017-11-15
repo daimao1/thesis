@@ -1,7 +1,7 @@
-process.env = test;
+process.env = 'test';
 const expect = require('chai').expect;
 // const assert = require('chai').assert;
-const RoomService = require('../../app/room/RoomService');
+const RoomService = require('../../app/room/RoomService'); //TODO block connection to database
 //const Room = require('../../app/room/Room');
 //const Player = require('../../app/player/Player');
 
