@@ -196,7 +196,7 @@ function receiveNextPlayerTurn (id) {
   console.log('Odebrano socket nextPlayerTurn')
   console.log('ID: '+id)
 
-  currentPlayer.id = id
+
   switch (id) {
     case 0:
       currentPlayer = player1
@@ -220,6 +220,7 @@ function receiveNextPlayerTurn (id) {
       break
     case 5:
   }
+  currentPlayer.id = id
   console.log('Ustawiono aktualnego gracza: ' + currentPlayer)
 }
 
