@@ -151,13 +151,12 @@ function addPlayersToBoard (number) {
   }
 }
 
-function movePlayer (playerData) {
-  currentPlayer.id = playerData.id //
-  currentPlayer.value = playerData.value
+function movePlayer (diceValue) {
+  currentPlayer.value = diceValue
   currentPlayer.name = allPlayers[currentPlayer.id].name
   console.log('Odebrano socketa z serwera. Id ' + currentPlayer.id + ' ilośc wyrzuconych oczek: ' + currentPlayer.value) //
   tween = board.add.tween(currentPlayer.body)
-  let destination = +currentPlayer.fieldNumber + +playerData.value
+  let destination = +currentPlayer.fieldNumber + +diceValue
   if (destination >= 288)
     destination = 288
   console.log('Ruszysz się na pole nr: ' + destination)
@@ -176,6 +175,9 @@ function movePlayer (playerData) {
     isPlayerOnSpecialGrid(currentPlayer)
   })
   console.log('Player id:' + currentPlayer.id + ' fieldNumber: ' + currentPlayer.fieldNumber)
+
+  socket.emit('endPlayerTurn')
+  console.log('Wysłano socket endPlayerTurn do serwera')
 }
 
 function receivePlayersInfo (playersInfo) {
@@ -193,6 +195,8 @@ function receivePlayersInfo (playersInfo) {
 function receiveNextPlayerTurn (id) {
   console.log('Odebrano socket nextPlayerTurn')
   console.log('ID: '+id)
+
+  currentPlayer.id = id
   switch (id) {
     case 0:
       currentPlayer = player1
@@ -339,7 +343,7 @@ function showTurn () {
   if (typeof turnMessage !== 'undefined') {
     turnMessage.destroy()
   }
-  turnMessage = board.add.bitmapText(1, 1, 'desyrel', 'TURN:  ' + currentPlayer.name, 64)
+  turnMessage = board.add.bitmapText(1, 1, 'desyrel', 'Gracz:  ' + currentPlayer.name, 64)
   turnMessage.fontSize = 55
   turnMessage.fixedToCamera = true
   turnMessage.cameraOffset.setTo(iWidth / 7, iHeight / 1.2)
@@ -349,7 +353,7 @@ function showDice () {
   if (typeof diceMessage !== 'undefined') {
     diceMessage.destroy()
   }
-  diceMessage = board.add.bitmapText(1, 1, 'desyrel-pink', 'GOAL:  ' + currentPlayer.value, 64)
+  diceMessage = board.add.bitmapText(1, 1, 'desyrel-pink', 'Kostka:  ' + currentPlayer.value, 64)
   diceMessage.fontSize = 55
   diceMessage.fixedToCamera = true
   diceMessage.cameraOffset.setTo(iWidth / 1.7, iHeight / 1.2)
