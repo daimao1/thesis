@@ -66,7 +66,10 @@ class Room {
     }
 
     nextPlayerTurn() {
-        this.currentPlayerId = this.playerOrder.pop();
+        const playerId = this.playerOrder.pop();
+        if(playerId === undefined){
+            this.currentPlayerId = -1;
+        }
         console.log(`Room[${this.id}]#newPlayerTurn(): currentPlayerId = [${this.currentPlayerId}].`);
 
         return this.currentPlayerId;
