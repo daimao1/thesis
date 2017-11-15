@@ -63,7 +63,7 @@ Board.preload = function () {
   board.load.spritesheet('avatar3', '../assets/sprites/avatar3.png')
   board.load.spritesheet('avatar4', '../assets/sprites/avatar4.png')
   board.load.spritesheet('avatar5', '../assets/sprites/avatar5.png')
-  board.load.spritesheet('avatar6', '../assets/sprites/avatar6.png')
+  board.load.spritesheet('avatar6', '../assets/sprites/avatar6.png')//dupa123
   board.load.bitmapFont('desyrel', '../assets/fonts/bitmapFonts/desyrel.png', '../assets/fonts/bitmapFonts/desyrel.xml')
   board.load.bitmapFont('desyrel-pink', '../assets/fonts/bitmapFonts/desyrel-pink.png', '../assets/fonts/bitmapFonts/desyrel-pink.xml')
 
@@ -151,6 +151,8 @@ function addPlayersToBoard (number) {
   }
 }
 
+
+//TODO naprawić ruch pozostałych graczy - przesunięcie tak, aby awatary się nie pokrywały
 function movePlayer (diceValue) {
   currentPlayer.value = diceValue
   currentPlayer.name = allPlayers[currentPlayer.id].name
@@ -196,7 +198,6 @@ function receiveNextPlayerTurn (id) {
   console.log('Odebrano socket nextPlayerTurn')
   console.log('ID: '+id)
 
-
   switch (id) {
     case 0:
       currentPlayer = player1
@@ -221,6 +222,8 @@ function receiveNextPlayerTurn (id) {
     case 5:
   }
   currentPlayer.id = id
+  currentPlayer.name = allPlayers[currentPlayer.id].name//
+  showTurn(); //zakomentować gdyby było coś nie tak :D
   console.log('Ustawiono aktualnego gracza: ' + currentPlayer)
 }
 

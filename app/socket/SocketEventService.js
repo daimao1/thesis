@@ -78,7 +78,7 @@ function addGameDefaultHandlers(socketNamespace) {
         //what does it mean
         //it means that you have to init first miniGame!
         //and collect results
-        const orderFromMinigame = [0,1];
+        const orderFromMinigame = [0];
         RoomService.setPlayersOrderFromMinigame(orderFromMinigame, socketNamespace.roomId);
         let playerTurnId = RoomService.nextPlayerTurn(socketNamespace.roomId);
         //and next you have to send 'youTurn' event to game and to the right player!
