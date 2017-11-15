@@ -63,7 +63,7 @@ function addPlayerDefaultHandlers(player, socketNamespace){
         socketNamespace.gameSocket.emit('stopTime', player.in_room_id);
     });
     player.socket.on('diceValue', function (value) {
-        socketNamespace.gameSocket.emit('playerDice', {id: player.in_room_id, value: value});
+        socketNamespace.gameSocket.emit('playerDice', value);
     });
 }
 
@@ -78,15 +78,21 @@ function addGameDefaultHandlers(socketNamespace) {
         //what does it mean
         //it means that you have to init first miniGame!
         //and collect results
-        const orderFromMinigame = [0];
+        const orderFromMinigame = [0,1];
         RoomService.setPlayersOrderFromMinigame(orderFromMinigame, socketNamespace.roomId);
         let playerTurnId = RoomService.nextPlayerTurn(socketNamespace.roomId);
         //and next you have to send 'youTurn' event to game and to the right player!
         socketNamespace.gameSocket.emit('nextPlayerTurn', playerTurnId);
-        //TODO send to player
+        // find player and send 'yourTurn'
 
         socketNamespace.gameSocket.on('endPlayerTurn', () => {
-            socketNamespace.gameSocket.emit('nextPlayerTurn', RoomService.nextPlayerTurn(socketNamespace.roomId));
+            let playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
+            if(playerId === undefined) {
+                //new minigame
+                RoomService.setPlayersOrderFromMinigame(orderFromMinigame, socketNamespace.roomId);
+                playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
+            }
+            socketNamespace.gameSocket.emit('nextPlayerTurn', playerId);
         });
 
 

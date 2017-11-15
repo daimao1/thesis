@@ -3,12 +3,12 @@
 
 3.0 Serwer -> game 'nextPlayerTurn' (id)
 3.1 Gra - wyświetla: Tura gracza {id}
-3.2 Serwer -> player 'youTurn'(ilomaKostkami) i czekam na 'diceValue'
+3.2 Serwer -> player 'yourTurn'(ilomaKostkami) i czekam na 'diceValue'
 3.3 Android - uruchomienie aktywności 'dice' lub więcej kostek
 3.4 Android -> serwer 'diceValue' (diceValue)
 3.5 Serwer odbiera 'diceValue'
 3.6 Serwer -> game 'playerDice'(id, diceValue)
-3.7 Gra - ruch awatara  
+3.7 Gra - ruch awatara  4
     3.7.1 Gra -> serwer 'finish'
     3.7.2 Gra -> serwer 'specialGrid'('nazwa')
 3.8 Serwer odbiera opcjonalny event
