@@ -81,7 +81,6 @@ module.exports = function (app, passport) {
                 room: room
             });
         }
-
     });
 
     //logout
@@ -123,7 +122,7 @@ function isLoggedIn(req, res, next) {
     }
 
     // if they aren't redirect them to the home page
-    console.log("Access forbidden!");
+    console.log("Routes: someone trying to get unathorized access!");
     res.redirect('/');
 }
 

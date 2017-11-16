@@ -1,6 +1,3 @@
-/**
- * Created by Tobiasz on 2017-07-12.
- */
 // passport session setup
 // required for persistent login sessions
 // passport needs ability to serialize and unserialize users out of session
