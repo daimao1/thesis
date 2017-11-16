@@ -1,11 +1,11 @@
 const mysql = require('mysql');
 const connection = mysql.createConnection({
-    host: 'us-cdbr-iron-east-05.cleardb.net',
-    user: 'ba7796f0de13d2',
-    password: '6e704ee6',
+    host: 'kavfu5f7pido12mr.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+    user: "o8rlhocwjocffey7",
+    password: 'rjsjihhk7f058rzg'
 });
 const db = {
-    name: 'heroku_f993dad1a7fd975',
+    name: 'iv2gmnvg8cx5ssrf',
     admins_table: 'administrators',
     players_table: 'players',
     rooms_table: 'rooms',
