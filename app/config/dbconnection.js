@@ -1,12 +1,9 @@
 "use strict";
 const mysql = require('mysql');
 let connection;
-const productionUrl = {
-    host: 'us-cdbr-iron-east-05.cleardb.net',
-    user: 'ba7796f0de13d2',
-    password: '6e704ee6',
-    database: 'heroku_f993dad1a7fd975'
-};
+
+const productionUrl = process.env.JAWSDB_URL;
+
 const localTestUrl = {
     host: '127.0.0.1',
     user: 'root',

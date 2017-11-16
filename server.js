@@ -37,7 +37,7 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
-require('./app/routes.js')(app, passport); //ROUTING
+require('./app/Routes.js')(app, passport); //ROUTING
 
 server.listen(process.env.PORT || 8081, function () {
     console.log('Listening on *: ' + server.address().port);
