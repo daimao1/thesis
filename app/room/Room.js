@@ -12,7 +12,7 @@ class Room {
         this.administrator_id = adminId;
         this.socketNamespace = socketNamespace;
         this.players = [];
-        this.playerOrder = [];
+        this.playersOrder = [];
         this.currentPlayerId = -1;
         //this.game_number = Room.generateGameNumber();
 
@@ -61,12 +61,12 @@ class Room {
     }
 
     setNewPlayersOrder(order) {
-        this.playerOrder = order;
+        this.playersOrder = order;
         console.log(`Room[${this.id}]#setNewPlayersOrder(): new order.`);
     }
 
     nextPlayerTurn() {
-        const playerId = this.playerOrder.pop();
+        const playerId = this.playersOrder.pop();
         if(playerId === undefined) {
           this.currentPlayerId = -1;
         } else {
