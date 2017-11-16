@@ -6,7 +6,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt'); //to password hash
 const saltRounds = 8; //bcrypt hash param (cost: ~40 hashes per sec with 2GHz cpu)
 
-const db = require('./dbConnection');
+const db = require('./dbconnection');
 const dbConnection = db.getConnection(); // db to table names and query exec
 
 module.exports = function(passport) {
