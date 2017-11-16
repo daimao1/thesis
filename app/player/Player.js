@@ -1,46 +1,34 @@
-/**
- * Created by Damian Kozieł on 15.09.2017.
- */
+class Player {
 
-class Player{
-  constructor(playerName, fieldNumber, positionX, positionY){
-    this.playerName = playerName;
-    this.fieldNumber = fieldNumber;
-    this.positionX = positionX;
-    this.positionY = positionY;
-  }
+    constructor(roomId, socket, name) {
+        /**
+         * Fields must have the same names as fields in database
+         */
+        this.id = undefined;
+        //this.device_id = deviceId;
+        this.room_id = roomId;
+        this.socket = socket;
+        this.name = name;
+        this.in_room_id = undefined;
+        //fieldNumber
+    }
 
-  setName(playerName){
-    this.playerName = playerName;
-  }
+    setId(id) {
+        if(id === undefined) {
+            throw new Error(`Player#setId(): id undefined.`);
+        }
+        if(this.id !== undefined) {
+            throw new Error(`Player#setId(): this player already have id.`);
+        }
+        this.id = id;
+    }
 
-  getName(){
-    return this.playerName;
-  }
-
-  setFieldNumber(fieldNumer){
-    this.fieldNumber = fieldNumer;
-  }
-
-  getFieldNumber(){
-    return this.fieldNumber;
-  }
-
-  setPositionX(positionX){
-    this.positionX = positionX;
-  }
-
-  getPositionX(){
-    return this.positionX;
-  }
-
-  setPositionY(positionY){
-    this.positionY = positionY;
-  }
-
-  getPositionY(){
-    return this.positionY;
-  }
-
+    // setName(name) {
+    //     if (this.name !== undefined) {
+    //         throw new Error(`Player[${this.id}]#setName(): this player already have a name.`);
+    //     }
+    //     this.name = name;
+    // }
 }
+
 module.exports = Player;

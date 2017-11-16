@@ -1,42 +1,83 @@
-/**
- * Created by Tobiasz on 2017-07-12.
- */
+"use strict";
 const mysql = require('mysql');
-
-const url = {
-    host     : 'us-cdbr-iron-east-05.cleardb.net',
-    user     : 'ba7796f0de13d2',
-    password : '6e704ee6',
-    database : 'heroku_f993dad1a7fd975',
-    port:3306
+let connection;
+const productionUrl = {
+    host: 'us-cdbr-iron-east-05.cleardb.net',
+    user: 'ba7796f0de13d2',
+    password: '6e704ee6',
+    database: 'heroku_f993dad1a7fd975'
 };
+const localTestUrl = {
+    host: '127.0.0.1',
+    user: 'root',
+    password: '',
+    database: 'pollub73_test'
+};
+const localDevUrl = {
+    host: '127.0.0.1',
+    user: 'root',
+    password: '',
+    database: 'pollub73'
+};
+let url;
 
-function handleDisconnect() {
-  const connection = mysql.createConnection(url);
-  connection.connect(function (err) {
-    if (!err) {
-      console.log("Database is connected as id: " + connection.threadId);
-    } else {
-      //throw new Error(`Cannot connect to database! Connection url: [${Object.keys(url)}][${Object.values(url)}]`);
-      setTimeout(handleDisconnect, 2000);
+function setUrl() {
+    console.log('node env: ' + process.env.NODE_ENV);
+    switch (process.env.NODE_ENV) {
+        case 'development':
+            url = localDevUrl;
+            console.log('Database url set to development.');
+            break;
+        case 'test':
+            url = localTestUrl;
+            console.log('Database url set to test.');
+            break;
+        case 'production':
+            url = productionUrl;
+            console.log('WARNING: Database url set to production!');
+            console.log('WARNING: Every db operation will be executed in production database!');
+            break;
+        default:
+            console.log('NODE_ENV undefined. Database url set to development.');
+            url = localDevUrl;
     }
-  });
+    return url;
+}
 
-  connection.on('error', function(err) {
-    console.log('db error', err);
-    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-      handleDisconnect();                         // lost due to either server restart, or a
-    } else {                                      // connnection idle timeout (the wait_timeout
-      throw err;                                  // server variable configures this)
+function connectToDatabase() {
+    const newConnection = mysql.createConnection(url);
+    newConnection.connect(function (err) {
+        if (!err) {
+            console.log("Database is connected as id: " + connection.threadId);
+        } else {
+            throw err;
+            //throw new Error(`Cannot connect to database! Connection url: [${Object.keys(url)}][${Object.values(url)}]`);
+        }
+    });
+    return newConnection;
+}
+
+
+function getConnection() {
+    if (connection === undefined) {
+        setUrl();
+        console.log('Creating new db connection...');
+        connection = connectToDatabase();
     }
-  });
-  module.exports = { connection, url,
-    database: 'heroku_f993dad1a7fd975',
+    return connection;
+}
+
+function endConnection() {
+    if (connection !== undefined) {
+        console.log('End db connection.');
+        connection.end();
+    }
+}
+
+module.exports = {
+    getConnection, endConnection,
     admins_table: 'administrators',
     players_table: 'players',
     rooms_table: 'rooms',
     quiz_table: 'quiz'
-  };
-}
-handleDisconnect();
-
+};

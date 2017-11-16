@@ -1,5 +1,5 @@
 var Client = {};
-Client.socket = io.connect(); // By default to localhost?
+Client.socket = io.connect('/23'); // By default to localhost?
 
 Client.sendTest = function () {
     console.log("test send");
