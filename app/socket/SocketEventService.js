@@ -75,7 +75,11 @@ function addGameDefaultHandlers(socketNamespace) {
     });
 
     socketNamespace.gameSocket.on('gameReady', function () {
-        const orderFromMinigame = [0];
+        const orderFromMinigame = [];
+        const playersDTOs = RoomService.getPlayersInfoDTO(socketNamespace.roomId);
+        for (let i = 0, len = playersDTOs.length; i < len; i++) {
+            orderFromMinigame.push(i);
+        }
         RoomService.setPlayersOrderFromMinigame([...orderFromMinigame], socketNamespace.roomId);
         let playerTurnId = RoomService.nextPlayerTurn(socketNamespace.roomId);
         socketNamespace.gameSocket.emit('nextPlayerTurn', playerTurnId);
