@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha --recursive",
-    "start": "SET NODE_ENV=development && node server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
