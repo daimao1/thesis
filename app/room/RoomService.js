@@ -154,7 +154,6 @@ function getPlayersInfoDTO(roomId) {
 
     const room = getRoomByIdUnauthorized(roomId);
 
-    //TODO test it!
     let playersInfo = [];
     room.players.forEach( (player, index) => {
         playersInfo[index] = { name: player.name, id: player.in_room_id };
