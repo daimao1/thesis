@@ -1,12 +1,9 @@
 "use strict";
 const mysql = require('mysql');
 let connection;
-const productionUrl = {
-    host: 'kavfu5f7pido12mr.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
-    user: 'o8rlhocwjocffey7',
-    password: 'rjsjihhk7f058rzg',
-    database: 'iv2gmnvg8cx5ssrf'
-};
+
+const productionUrl = process.env.JAWSDB_URL;
+
 const localTestUrl = {
     host: '127.0.0.1',
     user: 'root',
