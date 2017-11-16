@@ -187,7 +187,7 @@ function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
     if (room.currentPlayerId !== -1) {
         throw new Error(`Room[${room.id}]#setNewPlayersOrder(): current round is not finished.`);
     }
-    if (Constants.PLAYER_ORDER === Constants.PLAYER_ORDER.FIRST_TO_LAST) {
+    if (Constants.PLAYER_ORDER === Constants.PLAYER_ORDERS_OPTIONS.FIRST_TO_LAST) {
         room.setNewPlayersOrder(orderFromMiniGame); // Array is loaded from the end, so first player from mini game will be last.
     } else {
         // FIRST_TO_FIRST, first player from mini game will be first in board game
