@@ -15,11 +15,14 @@ exports.getById = getById;
 exports.addPlayerToRoom = addPlayerToRoom;
 exports.removeAllPlayers = removeAllPlayers;
 exports.removePlayer = removePlayer;
-exports.getPlayersInfoDTO = getPlayersInfoDTO;
+exports.getPlayersDTOs = getPlayersDTOs;
 exports.getPlayerFromRoom = getPlayerFromRoom;
 exports.nextPlayerTurn = nextPlayerTurn;
 exports.setPlayersOrderFromMinigame = setPlayersOrderFromMinigame;
 exports.endRound = endRound;
+exports.saveGameState = saveGameState;
+exports.markGameAsStarted = markGameAsStarted;
+exports.isGameStarted = isGameStarted;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -137,24 +140,6 @@ function getRoomBySocketNamespace(socketNamespace) {
     return roomToReturn;
 }
 
-function getPlayersInfoDTO(roomId) {
-    if(roomId === undefined){
-        throw new Error('RoomService#getPlayersInfoDTO(): roomId undefined');
-    }
-
-    const room = getRoomByIdUnauthorized(roomId);
-
-    let playersInfo = [];
-    room.players.forEach( (player, index) => {
-        playersInfo[index] = { name: player.name, id: player.in_room_id };
-    });
-    if(playersInfo.length === 0){
-        throw new Error('RoomService#getPlayersInfoDTO(): there are no players in the room');
-    } else {
-        return playersInfo;
-    }
-}
-
 function getPlayerFromRoom(roomId, playerInRoomId) {
     if(roomId === undefined || playerInRoomId === undefined){
         throw new Error('RoomService#getPlayerFromRoom(): roomId or playerId undefined.');
@@ -193,6 +178,59 @@ function endRound(roomId) {
     room.currentPlayerId = -1;
     room.playersOrder = [];
     console.log('RoomService#endRound().');
+}
+
+function saveGameState(playerId, field, roomId) {
+    if(field === undefined) {
+        throw new Error('RoomService#saveGameState(): field undefined.');
+    }
+
+    field = +field;
+
+    const playerToSave = getPlayerFromRoom(roomId, playerId);
+    playerToSave.field_number = field;
+
+    //RoomDao.updateRoom();
+    //PlayerDao.updatePlayer();
+    console.log(`RoomService#saveGameState(): saved player[${playerToSave.in_room_id}], room[${roomId}], field[${playerToSave.field_number}]`);
+}
+
+// function loadGameState(roomId){
+//     //const room = RoomDao.getRoomById(roomId); // podmienić obiekt w tablicy na nowy - to będzie trunde
+//     //const player = room.players[playerId].id //
+//
+//     const gameState = getPlayersDTOs(roomId);
+//
+//     return gameState;
+// }
+
+function getPlayersDTOs(roomId) {
+    if(roomId === undefined){
+        throw new Error('RoomService#getPlayersInfoDTO(): roomId undefined.');
+    }
+
+    const room = getRoomByIdUnauthorized(roomId);
+
+    let playersDTOs = [];
+    room.players.forEach( (player, index) => {
+        playersDTOs[index] = { id: player.in_room_id, name: player.name, field: player.field_number };
+    });
+    if(playersDTOs.length === 0){
+        throw new Error('RoomService#getPlayersInfoDTO(): there are no players in the room');
+    }
+    if(playersDTOs.length !== room.players.length){
+        throw new Error('RoomService#getPlayersInfoDTO(): creating DTO failed.');
+    } else {
+        return playersDTOs;
+    }
+}
+
+function isGameStarted(roomId) {
+    return getRoomByIdUnauthorized(roomId).isGameStarted;
+}
+
+function markGameAsStarted(roomId){
+    getRoomByIdUnauthorized(roomId).isGameStarted = true;
 }
 
 /*

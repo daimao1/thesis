@@ -14,6 +14,7 @@ class Room {
         this.players = [];
         this.playersOrder = [];
         this.currentPlayerId = -1;
+        this.isGameStarted = false;
         //this.game_number = Room.generateGameNumber();
 
         if (socketNamespace === undefined) {

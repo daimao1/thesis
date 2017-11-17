@@ -10,7 +10,7 @@ class Player {
         this.socket = socket;
         this.name = name;
         this.in_room_id = undefined;
-        //fieldNumber
+        this.field_number = 0;
     }
 
     setId(id) {
