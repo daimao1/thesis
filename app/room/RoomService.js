@@ -9,7 +9,7 @@ let roomList = [];
 loadDataFromDb();
 
 exports.newRoom = newRoom;
-exports.deleteById = deleteById;
+exports.deleteOne = deleteOne;
 exports.getByAdminId = getByAdminId;
 exports.getById = getById;
 exports.addPlayerToRoom = addPlayerToRoom;
@@ -49,18 +49,12 @@ function newRoom(roomName, adminId) {
     });
 }
 
-function deleteById(id) {
-    /*
-    * Operator '+id' means: If 'id' is a string, parse to number
-    * It is important, because 'id' from request params is a string
-    * And in this case comparision below does not work
-    */
-    id = +id;
+function deleteOne(roomToDelete) {
 
     for (let [index, room] of roomList.entries()) {
-        if (room.id === id) {
+        if (room.id === roomToDelete.id) {
             roomList.splice(index, 1);
-            RoomDao.deleteById(id).then(logDeleteSuccess).catch(reject => {
+            RoomDao.deleteById(roomToDelete.id).then(logDeleteSuccess).catch(reject => {
                 throw reject;
             });
             break;
@@ -79,11 +73,7 @@ function getByAdminId(id) {
 }
 
 function getById(roomId, adminId) {
-    /*
-    * Operator '+id' means: If 'id' is a string, parse to number
-    * It is important, because 'id' from request params is a string
-    * And in this case comparision below does not work
-    */
+
     roomId = +roomId;
     adminId = +adminId;
 
@@ -142,7 +132,7 @@ function getRoomBySocketNamespace(socketNamespace) {
         throw new Error(`RoomService: cannot find room with socketNamespace.roomId[${socketNamespace.roomId}].`);
     }
     if(roomToReturn.id !== socketNamespace.roomId) {
-        throw new Error(`FATAL ERROR RoomService: unexpected state.`);
+        throw new Error(`RoomService: really unexpected state. Go home.`);
     }
     return roomToReturn;
 }
