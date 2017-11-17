@@ -119,7 +119,7 @@ function addPlayersToBoard (number) {
     }
   }
 
-  if(resume === true) {
+  if(resume === false) {
     switch (number) {
       case 6:
         player6 = board.add.sprite(grids[0][0] + 70, grids[0][1] + 47, 'avatar6')
@@ -160,45 +160,45 @@ function addPlayersToBoard (number) {
     }
   }
   else{
-
+    let returnedField
     switch (number) {
       case 6:
-        let returnedField = allPlayers[allPlayers[5]].field
+        returnedField = allPlayers[allPlayers[5]].field
         player6 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1] + 47, 'avatar6')
         player6.fieldNumber = returnedField
        // player6.name = allPlayers[5]
         board.physics.p2.enable(player6)
         player6.body.clearCollision()
       case 5:
-        let returnedField = allPlayers[allPlayers[4]].field
+        returnedField = allPlayers[allPlayers[4]].field
         player5 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1] + 47, 'avatar5')
         player5.fieldNumber = returnedField
       //  player5.name = allPlayers[4]
         board.physics.p2.enable(player5)
         player5.body.clearCollision()
       case 4:
-        let returnedField = allPlayers[allPlayers[3]].field
+        returnedField = allPlayers[allPlayers[3]].field
         player4 = board.add.sprite(grids[returnedField][0], grids[returnedField][1] + 47, 'avatar4')
         player4.fieldNumber = returnedField
       //  player4.name = allPlayers[3]
         board.physics.p2.enable(player4)
         player4.body.clearCollision()
       case 3:
-        let returnedField = allPlayers[allPlayers[2]].field
+        returnedField = allPlayers[allPlayers[2]].field
         player3 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1], 'avatar3')
         player3.fieldNumber = returnedField
       //  player3.name = allPlayers[2]
         board.physics.p2.enable(player3)
         player3.body.clearCollision()
       case 2:
-        let returnedField = allPlayers[allPlayers[1]].field
+        returnedField = allPlayers[allPlayers[1]].field
         player2 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1], 'avatar2')
         player2.fieldNumber = returnedField
      //   player2.name = allPlayers[1]
         board.physics.p2.enable(player2)
         player2.body.clearCollision()
       case 1:
-        let returnedField = allPlayers[allPlayers[0]].field
+        returnedField = allPlayers[allPlayers[0]].field
         player1 = board.add.sprite(grids[returnedField][0], grids[returnedField][1], 'avatar1')
         player1.fieldNumber = returnedField
      //   player1.name = allPlayers[0]
