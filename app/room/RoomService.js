@@ -120,7 +120,7 @@ function removePlayer(player) {
     if (player === undefined) {
         throw new Error("RoomService#removePlayer(): player undefined");
     }
-    getRoomByIdUnauthorized(player.roomId).removePlayer(player);
+    getRoomByIdUnauthorized(player.room_id).removePlayer(player);
 }
 
 function getRoomBySocketNamespace(socketNamespace) {
