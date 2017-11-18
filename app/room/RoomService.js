@@ -243,7 +243,7 @@ function isGameStarted(roomId) {
 function markGameAsStarted(roomId){
     const room = getRoomByIdUnauthorized(roomId);
     room.isGameStarted = true;
-    room.numerOfPlayers = room.players.length;
+    room.numberOfPlayers = room.players.length;
 }
 
 /*
