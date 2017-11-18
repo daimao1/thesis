@@ -85,7 +85,7 @@ function addGameDefaultHandlers(socketNamespace) {
         socketNamespace.gameSocket.emit('nextPlayerTurn', playerTurnId);
 
         socketNamespace.gameSocket.on('endPlayerTurn', (playerToSaveId, field) => {
-            RoomService.endRound(socketNamespace.roomId);
+            RoomService.endTurn(socketNamespace.roomId);
 
             RoomService.saveGameState(playerToSaveId, field, socketNamespace.roomId);
 
