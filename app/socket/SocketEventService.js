@@ -85,6 +85,7 @@ function addGameDefaultHandlers(socketNamespace) {
         socketNamespace.gameSocket.emit('nextPlayerTurn', playerTurnId);
 
         socketNamespace.gameSocket.on('endPlayerTurn', (playerToSaveId, field) => {
+            RoomService.endRound(socketNamespace.roomId);
 
             RoomService.saveGameState(playerToSaveId, field, socketNamespace.roomId);
 
@@ -96,6 +97,8 @@ function addGameDefaultHandlers(socketNamespace) {
                 RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
                 playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
             }
+
+
             if (playerId > -1 && playerId < Constants.MAX_PLAYERS) {
                 socketNamespace.gameSocket.emit('nextPlayerTurn', playerId);
             }

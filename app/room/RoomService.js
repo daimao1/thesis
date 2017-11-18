@@ -23,6 +23,7 @@ exports.endRound = endRound;
 exports.saveGameState = saveGameState;
 exports.markGameAsStarted = markGameAsStarted;
 exports.isGameStarted = isGameStarted;
+exports.endTurn = endTurn;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -170,7 +171,17 @@ function setPlayersOrderFromMiniGame(orderFromMiniGame, roomId) {
 }
 
 function nextPlayerTurn(roomId) {
-    return getRoomByIdUnauthorized(roomId).nextPlayerTurn();
+    const room = getRoomByIdUnauthorized(roomId);
+    if(room.turnInProgress === true) {
+        return room.currentPlayerId;
+    } else {
+        room.turnInProgress = true;
+        return room.nextPlayerTurn();
+    }
+}
+
+function endTurn(roomId) {
+    getRoomByIdUnauthorized(roomId).turnInProgress = false;
 }
 
 function endRound(roomId) {
