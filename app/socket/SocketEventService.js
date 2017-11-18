@@ -92,6 +92,7 @@ function addGameDefaultHandlers(socketNamespace) {
             let playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
             //if it was last player - start new round
             if (playerId === -1) {
+                RoomService.endTurn(socketNamespace.roomId);
                 RoomService.endRound(socketNamespace.roomId);
                 orderFromMiniGame = startMiniGame(socketNamespace);
                 RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
