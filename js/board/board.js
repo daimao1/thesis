@@ -87,7 +87,6 @@ Board.create = function () {
   map.scale.setTo(0.9)
   board.physics.startSystem(Phaser.Physics.P2JS)
   addPlayersToBoard(numberOfPlayers)
-
   socket.emit('gameReady')
 }
 
@@ -124,37 +123,31 @@ function addPlayersToBoard (number) {
       case 6:
         player6 = board.add.sprite(grids[0][0] + 70, grids[0][1] + 47, 'avatar6')
         player6.fieldNumber = 0
-     //   player6.name = allPlayers[5]
         board.physics.p2.enable(player6)
         player6.body.clearCollision()
       case 5:
         player5 = board.add.sprite(grids[0][0] + 35, grids[0][1] + 47, 'avatar5')
         player5.fieldNumber = 0
-     //   player5.name = allPlayers[4]
         board.physics.p2.enable(player5)
         player5.body.clearCollision()
       case 4:
         player4 = board.add.sprite(grids[0][0], grids[0][1] + 47, 'avatar4')
         player4.fieldNumber = 0
-     //   player4.name = allPlayers[3]
         board.physics.p2.enable(player4)
         player4.body.clearCollision()
       case 3:
         player3 = board.add.sprite(grids[0][0] + 70, grids[0][1], 'avatar3')
         player3.fieldNumber = 0
-    //    player3.name = allPlayers[2]
         board.physics.p2.enable(player3)
         player3.body.clearCollision()
       case 2:
         player2 = board.add.sprite(grids[0][0] + 35, grids[0][1], 'avatar2')
         player2.fieldNumber = 0
-    //    player2.name = allPlayers[1]
         board.physics.p2.enable(player2)
         player2.body.clearCollision()
       case 1:
         player1 = board.add.sprite(grids[0][0], grids[0][1], 'avatar1')
         player1.fieldNumber = 0
-    //    player1.name = allPlayers[0]
         board.physics.p2.enable(player1)
         player1.body.clearCollision()
     }
@@ -166,42 +159,36 @@ function addPlayersToBoard (number) {
         returnedField = allPlayers[allPlayers[5]].field
         player6 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1] + 47, 'avatar6')
         player6.fieldNumber = returnedField
-       // player6.name = allPlayers[5]
         board.physics.p2.enable(player6)
         player6.body.clearCollision()
       case 5:
         returnedField = allPlayers[allPlayers[4]].field
         player5 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1] + 47, 'avatar5')
         player5.fieldNumber = returnedField
-      //  player5.name = allPlayers[4]
         board.physics.p2.enable(player5)
         player5.body.clearCollision()
       case 4:
         returnedField = allPlayers[allPlayers[3]].field
         player4 = board.add.sprite(grids[returnedField][0], grids[returnedField][1] + 47, 'avatar4')
         player4.fieldNumber = returnedField
-      //  player4.name = allPlayers[3]
         board.physics.p2.enable(player4)
         player4.body.clearCollision()
       case 3:
         returnedField = allPlayers[allPlayers[2]].field
         player3 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1], 'avatar3')
         player3.fieldNumber = returnedField
-      //  player3.name = allPlayers[2]
         board.physics.p2.enable(player3)
         player3.body.clearCollision()
       case 2:
         returnedField = allPlayers[allPlayers[1]].field
         player2 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1], 'avatar2')
         player2.fieldNumber = returnedField
-     //   player2.name = allPlayers[1]
         board.physics.p2.enable(player2)
         player2.body.clearCollision()
       case 1:
         returnedField = allPlayers[allPlayers[0]].field
         player1 = board.add.sprite(grids[returnedField][0], grids[returnedField][1], 'avatar1')
         player1.fieldNumber = returnedField
-     //   player1.name = allPlayers[0]
         board.physics.p2.enable(player1)
         player1.body.clearCollision()
     }
@@ -220,22 +207,56 @@ function movePlayer (diceValue) {
     destination = 288
   console.log('Ruszysz się na pole nr: ' + destination)
   showTurnAndDice()
+  let shiftX, shiftY
+  switch(currentPlayer.id){
+    case 0:
+      shiftX = 0
+      shiftY = 0
+      break
+    case 1:
+      shiftX = 35
+      shiftY = 0
+      break
+    case 2:
+      shiftX = 70
+      shiftY = 0
+      break
+    case 3:
+      shiftX = 0
+      shiftY = 47
+      break
+    case 4:
+      shiftX = 35
+      shiftY = 47
+      break
+    case 5:
+      shiftX = 70
+      shiftY = 47
+      break
+  }
+
   for (let i = currentPlayer.fieldNumber; i <= destination; i++) {
     tween.to({
-      x: grids[i][0],
-      y: grids[i][1]
+      x: grids[i][0]+shiftX,
+      y: grids[i][1]+shiftY
     }, 800)
     effect_special.play()
   }
   tween.start()
-  let distance = destination - currentPlayer.fieldNumber
+  showTurn(currentPlayer.name)
   currentPlayer.fieldNumber = destination
-  board.time.events.add(distance * 1600, function () {
-    isPlayerOnSpecialGrid(currentPlayer)
-  })
+  tween.onComplete.add(afterPlayerMove, this)
   console.log('Player id:' + currentPlayer.id + ' fieldNumber: ' + currentPlayer.fieldNumber)
+}
+function afterPlayerMove(){
+  console.log('Gracz zakończył ruch')
 
-  socket.emit('endPlayerTurn',currentPlayer.id, currentPlayer.fieldNumber)
+  isPlayerOnSpecialGrid(currentPlayer)
+  turnMessage.destroy()
+  setTimeout(function(){
+    socket.emit('endPlayerTurn',currentPlayer.id, currentPlayer.fieldNumber)
+  },3000)
+
   console.log('Wysłano socket endPlayerTurn do serwera')
 }
 
@@ -246,7 +267,6 @@ function receivePlayersInfo (playersInfo) {
   allPlayers.forEach((player) => console.log('PlayerName: ' +
     player.name + ' PlayerInRoomId ' + player.id + ' playerField' + player.field))
   console.log('ile wszystkich graczy w pokoju: ' + allPlayers.length)
-
   numberOfPlayers = allPlayers.length
 }
 
@@ -256,31 +276,34 @@ function receiveNextPlayerTurn (id) {
 
   switch (id) {
     case 0:
-      currentPlayer = player1
-      board.camera.follow(player1)
+      setCurrentPlayer(player1);
       break
     case 1:
-      currentPlayer = player2
-      board.camera.follow(player2)
+      setCurrentPlayer(player2);
       break
     case 2:
-      currentPlayer = player3
-      board.camera.follow(player3)
+      setCurrentPlayer(player3);
       break
     case 3:
-      currentPlayer = player4
-      board.camera.follow(player4)
+      setCurrentPlayer(player4);
       break
     case 4:
-      currentPlayer = player5
-      board.camera.follow(player5)
+      setCurrentPlayer(player5);
       break
     case 5:
   }
   currentPlayer.id = id
   currentPlayer.name = allPlayers[currentPlayer.id].name
-  showTurn();
+  showTurn(currentPlayer.name);
   console.log('Ustawiono aktualnego gracza: ' + currentPlayer)
+}
+
+function setCurrentPlayer(player){
+  currentPlayer = player
+    board.camera.follow(player)
+    if(diceMessage !== undefined) {
+      diceMessage.destroy()
+    }
 }
 
 function isPlayerOnSpecialGrid (currentPlayer) {
@@ -357,6 +380,7 @@ function isPlayerOnSpecialGrid (currentPlayer) {
       makeWinner()
       break
   }
+
 }
 
 function goThreeFieldsBack () {
@@ -399,11 +423,11 @@ function showTurnAndDice () {
   showDice()
 }
 
-function showTurn () {
+function showTurn (playerName) {
   if (typeof turnMessage !== 'undefined') {
     turnMessage.destroy()
   }
-  turnMessage = board.add.bitmapText(1, 1, 'desyrel', 'Gracz:  ' + currentPlayer.name, 64)
+  turnMessage = board.add.bitmapText(1, 1, 'desyrel', 'Gracz:  ' + playerName, 64)
   turnMessage.fontSize = 55
   turnMessage.fixedToCamera = true
   turnMessage.cameraOffset.setTo(iWidth / 7, iHeight / 1.2)
