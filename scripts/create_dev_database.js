@@ -41,6 +41,9 @@ connection.query(`
         \`name\` VARCHAR(20),
         \`administrator_id\` INT NOT NULL,
         \`game_number\` INT,
+        \`numberOfPlayers\` INT,
+        \`currentPlayerId\` INT,
+        \`isGameStarted\` TINYINT,
         PRIMARY KEY (\`id\`,\`administrator_id\`),
         UNIQUE INDEX \`game_number_UNIQUE\` (\`game_number\`),
         INDEX \`FK_ROOMS_ADMINISTRATORS_IDX\` (\`administrator_id\` ASC),
@@ -65,7 +68,6 @@ connection.query(`
     CREATE TABLE \`${db.name}\`.\`${db.players_table}\` (
         \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         \`name\` VARCHAR(20) NOT NULL,
-        \`device_id\` VARCHAR(40) NOT NULL,
         \`room_id\` INT UNSIGNED,
         \`in_room_id\` INT UNSIGNED NOT NULL,
         \`field_number\` INT UNSIGNED,

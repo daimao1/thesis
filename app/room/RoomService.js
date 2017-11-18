@@ -9,17 +9,21 @@ let roomList = [];
 loadDataFromDb();
 
 exports.newRoom = newRoom;
-exports.deleteById = deleteById;
+exports.deleteOne = deleteOne;
 exports.getByAdminId = getByAdminId;
 exports.getById = getById;
 exports.addPlayerToRoom = addPlayerToRoom;
 exports.removeAllPlayers = removeAllPlayers;
 exports.removePlayer = removePlayer;
-exports.getPlayersInfoDTO = getPlayersInfoDTO;
+exports.getPlayersDTOs = getPlayersDTOs;
 exports.getPlayerFromRoom = getPlayerFromRoom;
 exports.nextPlayerTurn = nextPlayerTurn;
-exports.setPlayersOrderFromMinigame = setPlayersOrderFromMinigame;
+exports.setPlayersOrderFromMiniGame = setPlayersOrderFromMiniGame;
 exports.endRound = endRound;
+exports.saveGameState = saveGameState;
+exports.markGameAsStarted = markGameAsStarted;
+exports.isGameStarted = isGameStarted;
+exports.endTurn = endTurn;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -49,18 +53,12 @@ function newRoom(roomName, adminId) {
     });
 }
 
-function deleteById(id) {
-    /*
-    * Operator '+id' means: If 'id' is a string, parse to number
-    * It is important, because 'id' from request params is a string
-    * And in this case comparision below does not work
-    */
-    id = +id;
+function deleteOne(roomToDelete) {
 
     for (let [index, room] of roomList.entries()) {
-        if (room.id === id) {
+        if (room.id === roomToDelete.id) {
             roomList.splice(index, 1);
-            RoomDao.deleteById(id).then(logDeleteSuccess).catch(reject => {
+            RoomDao.deleteById(roomToDelete.id).then(logDeleteSuccess).catch(reject => {
                 throw reject;
             });
             break;
@@ -79,11 +77,7 @@ function getByAdminId(id) {
 }
 
 function getById(roomId, adminId) {
-    /*
-    * Operator '+id' means: If 'id' is a string, parse to number
-    * It is important, because 'id' from request params is a string
-    * And in this case comparision below does not work
-    */
+
     roomId = +roomId;
     adminId = +adminId;
 
@@ -127,7 +121,7 @@ function removePlayer(player) {
     if (player === undefined) {
         throw new Error("RoomService#removePlayer(): player undefined");
     }
-    getRoomByIdUnauthorized(player.roomId).removePlayer(player);
+    getRoomByIdUnauthorized(player.room_id).removePlayer(player);
 }
 
 function getRoomBySocketNamespace(socketNamespace) {
@@ -142,27 +136,9 @@ function getRoomBySocketNamespace(socketNamespace) {
         throw new Error(`RoomService: cannot find room with socketNamespace.roomId[${socketNamespace.roomId}].`);
     }
     if(roomToReturn.id !== socketNamespace.roomId) {
-        throw new Error(`FATAL ERROR RoomService: unexpected state.`);
+        throw new Error(`RoomService: really unexpected state. Go home.`);
     }
     return roomToReturn;
-}
-
-function getPlayersInfoDTO(roomId) {
-    if(roomId === undefined){
-        throw new Error('RoomService#getPlayersInfoDTO(): roomId undefined');
-    }
-
-    const room = getRoomByIdUnauthorized(roomId);
-
-    let playersInfo = [];
-    room.players.forEach( (player, index) => {
-        playersInfo[index] = { name: player.name, id: player.in_room_id };
-    });
-    if(playersInfo.length === 0){
-        throw new Error('RoomService#getPlayersInfoDTO(): there are no players in the room');
-    } else {
-        return playersInfo;
-    }
 }
 
 function getPlayerFromRoom(roomId, playerInRoomId) {
@@ -176,7 +152,7 @@ function getPlayerFromRoom(roomId, playerInRoomId) {
     return player;
 }
 
-function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
+function setPlayersOrderFromMiniGame(orderFromMiniGame, roomId) {
 
     const room = getRoomByIdUnauthorized(roomId);
 
@@ -195,7 +171,17 @@ function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
 }
 
 function nextPlayerTurn(roomId) {
-    return getRoomByIdUnauthorized(roomId).nextPlayerTurn();
+    const room = getRoomByIdUnauthorized(roomId);
+    if(room.turnInProgress === true) {
+        return room.currentPlayerId;
+    } else {
+        room.turnInProgress = true;
+        return room.nextPlayerTurn();
+    }
+}
+
+function endTurn(roomId) {
+    getRoomByIdUnauthorized(roomId).turnInProgress = false;
 }
 
 function endRound(roomId) {
@@ -203,6 +189,61 @@ function endRound(roomId) {
     room.currentPlayerId = -1;
     room.playersOrder = [];
     console.log('RoomService#endRound().');
+}
+
+function saveGameState(playerId, field, roomId) {
+    if(field === undefined) {
+        throw new Error('RoomService#saveGameState(): field undefined.');
+    }
+
+    field = +field;
+
+    const playerToSave = getPlayerFromRoom(roomId, playerId);
+    playerToSave.field_number = field;
+
+    //RoomDao.updateRoom();
+    //PlayerDao.updatePlayer();
+    console.log(`RoomService#saveGameState(): saved player[${playerToSave.in_room_id}], room[${roomId}], field[${playerToSave.field_number}]`);
+}
+
+// function loadGameState(roomId){
+//     //const room = RoomDao.getRoomById(roomId); // podmienić obiekt w tablicy na nowy - to będzie trunde
+//     //const player = room.players[playerId].id //
+//
+//     const gameState = getPlayersDTOs(roomId);
+//
+//     return gameState;
+// }
+
+function getPlayersDTOs(roomId) {
+    if(roomId === undefined){
+        throw new Error('RoomService#getPlayersInfoDTO(): roomId undefined.');
+    }
+
+    const room = getRoomByIdUnauthorized(roomId);
+
+    let playersDTOs = [];
+    room.players.forEach( (player, index) => {
+        playersDTOs[index] = { id: player.in_room_id, name: player.name, field: player.field_number };
+    });
+    if(playersDTOs.length === 0){
+        throw new Error('RoomService#getPlayersInfoDTO(): there are no players in the room');
+    }
+    if(playersDTOs.length !== room.players.length){
+        throw new Error('RoomService#getPlayersInfoDTO(): creating DTO failed.');
+    } else {
+        return playersDTOs;
+    }
+}
+
+function isGameStarted(roomId) {
+    return getRoomByIdUnauthorized(roomId).isGameStarted;
+}
+
+function markGameAsStarted(roomId){
+    const room = getRoomByIdUnauthorized(roomId);
+    room.isGameStarted = true;
+    room.numerOfPlayers = room.players.length;
 }
 
 /*

@@ -6,32 +6,32 @@ const Constants = require('../Constants');
 exports.initBasicHandlers = initBasicHandlers;
 exports.sendPlayersInfoToGame = sendPlayersInfoToGame;
 
-function initBasicHandlers(socket, socketNamespace){
+function initBasicHandlers(socket, socketNamespace) {
     socket.on('playerName', (playerName) => {
         newPlayer(socket, socketNamespace, playerName);
     });
 
     socket.on('markGame', () => {
-       newGame(socket, socketNamespace);
+        if(RoomService.isGameStarted(socketNamespace.roomId)) {
+            console.log(`SocketEventService: room[${socketNamespace.roomId}] game (board) resumed.`);
+        } else {
+            RoomService.markGameAsStarted(socketNamespace.roomId);
+            console.log('SocketEventService: new game board started.');
+        }
+        socketNamespace.gameSocket = socket;
+        addGameDisconnectHandler(socketNamespace);
+        addGameDefaultHandlers(socketNamespace);
+        sendPlayersInfoToGame(socketNamespace);
     });
 }
 
-function newPlayer(socket, socketNamespace, name){
-    socket.join('players');
+function newPlayer(socket, socketNamespace, name) {
+    //socket.join('players');
     console.log('SocketEventHandler: handle \'playerName\' event - creating new player.');
     const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name);
     addPlayerDisconnectHandler(player);
     addPlayerDefaultHandlers(player, socketNamespace);
 }
-
-function newGame(socket, socketNamespace){
-    console.log('SocketIO/N/EventHandler: game connection initialized.');
-    socketNamespace.gameSocket = socket;
-    addGameDisconnectHandler(socket);
-    sendPlayersInfoToGame(socketNamespace);
-    addGameDefaultHandlers(socketNamespace);
-}
-
 
 function addPlayerDisconnectHandler(player) {
     player.socket.on('disconnect', () => {
@@ -41,23 +41,21 @@ function addPlayerDisconnectHandler(player) {
     });
 }
 
-function addGameDisconnectHandler(socket){
-    socket.on('disconnect', () => {
-        //TODO implement
-        throw new Error('Game socket disconnected! Not implemented!');
+function addGameDisconnectHandler(socketNamespace) {
+    socketNamespace.gameSocket.on('disconnect', () => {
+        console.log(`SocketEventService: room[${socketNamespace.roomId}] game disconnect.`);
+        //throw new Error('Game socket disconnected! Not implemented!');
     });
 }
 
-function sendPlayersInfoToGame(socketNamespace){
-    if(socketNamespace === undefined) {
+function sendPlayersInfoToGame(socketNamespace) {
+    if (socketNamespace === undefined) {
         throw new Error('SocketEventService#sendRoomInfoToGame(): socketNamespace undefined.');
     }
-
-    const playersInfo = RoomService.getPlayersInfoDTO(socketNamespace.roomId);
-    socketNamespace.gameSocket.emit('playersInfo', playersInfo);
+    socketNamespace.gameSocket.emit('playersInfo', RoomService.getPlayersDTOs(socketNamespace.roomId));
 }
 
-function addPlayerDefaultHandlers(player, socketNamespace){
+function addPlayerDefaultHandlers(player, socketNamespace) {
 
     //TODO after jump to StopTimeGame
     player.socket.on('stopButton', function () {
@@ -75,25 +73,34 @@ function addGameDefaultHandlers(socketNamespace) {
     });
 
     socketNamespace.gameSocket.on('gameReady', function () {
-        const orderFromMinigame = [];
-        const playersDTOs = RoomService.getPlayersInfoDTO(socketNamespace.roomId);
-        for (let i = 0, len = playersDTOs.length; i < len; i++) {
-            orderFromMinigame.push(i);
+        let orderFromMiniGame = [];
+
+        try {
+            orderFromMiniGame = startMiniGame(socketNamespace);
+            RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
+        } catch(error) {
+            console.error(error);
         }
-        RoomService.setPlayersOrderFromMinigame([...orderFromMinigame], socketNamespace.roomId);
         let playerTurnId = RoomService.nextPlayerTurn(socketNamespace.roomId);
         socketNamespace.gameSocket.emit('nextPlayerTurn', playerTurnId);
 
-        socketNamespace.gameSocket.on('endPlayerTurn', () => {
+        socketNamespace.gameSocket.on('endPlayerTurn', (playerToSaveId, field) => {
+            RoomService.endTurn(socketNamespace.roomId);
+
+            RoomService.saveGameState(playerToSaveId, field, socketNamespace.roomId);
+
             let playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
             //if it was last player - start new round
             if (playerId === -1) {
+                RoomService.endTurn(socketNamespace.roomId);
                 RoomService.endRound(socketNamespace.roomId);
-                //new minigame
-                RoomService.setPlayersOrderFromMinigame([...orderFromMinigame], socketNamespace.roomId);
+                orderFromMiniGame = startMiniGame(socketNamespace);
+                RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
                 playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
             }
-            if (playerId > -1 && playerId < Constants.MAX_PLAYERS){
+
+
+            if (playerId > -1 && playerId < Constants.MAX_PLAYERS) {
                 socketNamespace.gameSocket.emit('nextPlayerTurn', playerId);
             }
         });
@@ -103,4 +110,16 @@ function addGameDefaultHandlers(socketNamespace) {
         //If think that i have to wait for signal from game that this player end his move?
         //Exactly, and init move of the next player. If this was last player, then you have to end this round, and init next minigame.
     });
+}
+
+function startMiniGame(socketNamespace) {
+    console.log(`SocketEventService#startMiniGame(): start mini-game in room[${socketNamespace.roomId}]...`);
+
+    const playersOrder = [];
+    const playersDTOs = RoomService.getPlayersDTOs(socketNamespace.roomId);
+    for (let i = 0, len = playersDTOs.length; i < len; i++) {
+        playersOrder.push(i);
+    }
+
+    return playersOrder;
 }

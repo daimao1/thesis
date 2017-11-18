@@ -58,24 +58,41 @@ module.exports = function (app, passport) {
         });
     });
 
-    //Create new game room from form
+    //Create new game room
     app.post('/room', isLoggedIn, function (req, res) {
-        RoomService.newRoom(req.body.room_name, req.user.id);
+        try {
+            RoomService.newRoom(req.body.room_name, req.user.id);
+        } catch(error) {
+            console.error(error);
+            badRequest(res);
+        }
         res.redirect('/profile');
     });
 
     //delete room
     app.delete('/room/:id', isLoggedIn, function (req, res) {
-        RoomService.deleteById(+req.params.id);
+        let room;
+        try{
+            room = RoomService.getById(+req.params.id, +req.user.id);
+            RoomService.deleteOne(room);
+        } catch(error) {
+            console.error(error);
+            badRequest(res);
+        }
         res.end();
     });
 
     //single room
     app.get('/room/:id', isLoggedIn, function (req, res) {
-        const room = RoomService.getById(+req.params.id, +req.user.id);
+        let room;
+        try {
+            room = RoomService.getById(+req.params.id, +req.user.id);
+        } catch(error){
+            console.error(error);
+            badRequest(res);
+        }
         if(room === undefined) {
-            res.setHeader('Content-Type', 'text/plain');
-            res.status(404).send('Not found');
+            badRequest(res);
         } else {
             res.render('room.ejs', {
                 room: room
@@ -109,10 +126,14 @@ module.exports = function (app, passport) {
 
     //404
     app.use(function (req, res) {
-        res.setHeader('Content-Type', 'text/plain');
-        res.status(404).send('Not found');
+        badRequest(res);
     });
 };
+
+function badRequest(res){
+    res.setHeader('Content-Type', 'text/plain');
+    res.status(404).send('Not found');
+}
 
 function isLoggedIn(req, res, next) {
 
