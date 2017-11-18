@@ -18,7 +18,7 @@ exports.removePlayer = removePlayer;
 exports.getPlayersDTOs = getPlayersDTOs;
 exports.getPlayerFromRoom = getPlayerFromRoom;
 exports.nextPlayerTurn = nextPlayerTurn;
-exports.setPlayersOrderFromMinigame = setPlayersOrderFromMinigame;
+exports.setPlayersOrderFromMiniGame = setPlayersOrderFromMiniGame;
 exports.endRound = endRound;
 exports.saveGameState = saveGameState;
 exports.markGameAsStarted = markGameAsStarted;
@@ -151,7 +151,7 @@ function getPlayerFromRoom(roomId, playerInRoomId) {
     return player;
 }
 
-function setPlayersOrderFromMinigame(orderFromMiniGame, roomId) {
+function setPlayersOrderFromMiniGame(orderFromMiniGame, roomId) {
 
     const room = getRoomByIdUnauthorized(roomId);
 
