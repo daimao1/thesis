@@ -75,9 +75,12 @@ function addGameDefaultHandlers(socketNamespace) {
     socketNamespace.gameSocket.on('gameReady', function () {
         let orderFromMiniGame = [];
 
-        // orderFromMiniGame = startMiniGame(socketNamespace);
-        // RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
-
+        try {
+            orderFromMiniGame = startMiniGame(socketNamespace);
+            RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
+        } catch(error) {
+            console.error(error);
+        }
         let playerTurnId = RoomService.nextPlayerTurn(socketNamespace.roomId);
         socketNamespace.gameSocket.emit('nextPlayerTurn', playerTurnId);
 
