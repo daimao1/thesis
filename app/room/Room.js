@@ -12,6 +12,7 @@ class Room {
         this.administrator_id = adminId;
         this.socketNamespace = socketNamespace;
         this.players = [];
+        this.numberOfPlayers = undefined;
         this.playersOrder = [];
         this.currentPlayerId = -1;
         this.isGameStarted = false;

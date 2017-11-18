@@ -230,7 +230,9 @@ function isGameStarted(roomId) {
 }
 
 function markGameAsStarted(roomId){
-    getRoomByIdUnauthorized(roomId).isGameStarted = true;
+    const room = getRoomByIdUnauthorized(roomId);
+    room.isGameStarted = true;
+    room.numerOfPlayers = room.players.length;
 }
 
 /*

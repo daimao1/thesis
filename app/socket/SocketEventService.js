@@ -13,21 +13,20 @@ function initBasicHandlers(socket, socketNamespace) {
 
     socket.on('markGame', () => {
         if(RoomService.isGameStarted(socketNamespace.roomId)) {
-            console.log(`SocketIO/N/EventHandler: game (board) with roomId: [${socketNamespace.roomId}] resumed.`);
-        }
-        else {
+            console.log(`SocketEventService: room[${socketNamespace.roomId}] game (board) resumed.`);
+        } else {
             RoomService.markGameAsStarted(socketNamespace.roomId);
-            console.log('SocketIO/N/EventHandler: game connection initialized.');
+            console.log('SocketEventService: new game board started.');
         }
         socketNamespace.gameSocket = socket;
-        addGameDisconnectHandler(socket);
+        addGameDisconnectHandler(socketNamespace);
         addGameDefaultHandlers(socketNamespace);
         sendPlayersInfoToGame(socketNamespace);
     });
 }
 
 function newPlayer(socket, socketNamespace, name) {
-    socket.join('players');
+    //socket.join('players');
     console.log('SocketEventHandler: handle \'playerName\' event - creating new player.');
     const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name);
     addPlayerDisconnectHandler(player);
@@ -42,10 +41,10 @@ function addPlayerDisconnectHandler(player) {
     });
 }
 
-function addGameDisconnectHandler(socket) {
-    socket.on('disconnect', () => {
-        //TODO implement
-        throw new Error('Game socket disconnected! Not implemented!');
+function addGameDisconnectHandler(socketNamespace) {
+    socketNamespace.gameSocket.on('disconnect', () => {
+        console.log(`SocketEventService: room[${socketNamespace.roomId}] game disconnect.`);
+        //throw new Error('Game socket disconnected! Not implemented!');
     });
 }
 
