@@ -50,10 +50,11 @@ let socket
 let tween
 let turnMessage, diceMessage
 let background_sound, effect_special
+let shiftX, shiftY
 
 let numberOfPlayers
 let player1, player2, player3, player4, player5, player6
-let allPlayers=[]
+let allPlayers = []
 
 Board.preload = function () {
   board.load.image('plansza', '../assets/map/plansza.png') //załaduj planszę
@@ -108,17 +109,16 @@ let setEventHandlers = function () {
   socket.on('nextPlayerTurn', receiveNextPlayerTurn)
 }
 
-
 function addPlayersToBoard (number) {
   let resume = false
-  for(let i=0; i<allPlayers.length; i++){
-    if(allPlayers[i].field > 0){
-     resume = true
+  for (let i = 0; i < allPlayers.length; i++) {
+    if (allPlayers[i].field > 0) {
+      resume = true
       break
     }
   }
 
-  if(resume === false) {
+  if (resume === false) {
     switch (number) {
       case 6:
         player6 = board.add.sprite(grids[0][0] + 70, grids[0][1] + 47, 'avatar6')
@@ -152,41 +152,41 @@ function addPlayersToBoard (number) {
         player1.body.clearCollision()
     }
   }
-  else{
+  else {
     let returnedField
     switch (number) {
       case 6:
-        returnedField = allPlayers[allPlayers[5]].field
+        returnedField = allPlayers[5].field
         player6 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1] + 47, 'avatar6')
         player6.fieldNumber = returnedField
         board.physics.p2.enable(player6)
         player6.body.clearCollision()
       case 5:
-        returnedField = allPlayers[allPlayers[4]].field
+        returnedField = allPlayers[4].field
         player5 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1] + 47, 'avatar5')
         player5.fieldNumber = returnedField
         board.physics.p2.enable(player5)
         player5.body.clearCollision()
       case 4:
-        returnedField = allPlayers[allPlayers[3]].field
+        returnedField = allPlayers[3].field
         player4 = board.add.sprite(grids[returnedField][0], grids[returnedField][1] + 47, 'avatar4')
         player4.fieldNumber = returnedField
         board.physics.p2.enable(player4)
         player4.body.clearCollision()
       case 3:
-        returnedField = allPlayers[allPlayers[2]].field
+        returnedField = allPlayers[2].field
         player3 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1], 'avatar3')
         player3.fieldNumber = returnedField
         board.physics.p2.enable(player3)
         player3.body.clearCollision()
       case 2:
-        returnedField = allPlayers[allPlayers[1]].field
+        returnedField = allPlayers[1].field
         player2 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1], 'avatar2')
         player2.fieldNumber = returnedField
         board.physics.p2.enable(player2)
         player2.body.clearCollision()
       case 1:
-        returnedField = allPlayers[allPlayers[0]].field
+        returnedField = allPlayers[0].field
         player1 = board.add.sprite(grids[returnedField][0], grids[returnedField][1], 'avatar1')
         player1.fieldNumber = returnedField
         board.physics.p2.enable(player1)
@@ -195,8 +195,6 @@ function addPlayersToBoard (number) {
   }
 }
 
-
-//TODO naprawić ruch pozostałych graczy - przesunięcie tak, aby awatary się nie pokrywały
 function movePlayer (diceValue) {
   currentPlayer.value = diceValue
   currentPlayer.name = allPlayers[currentPlayer.id].name
@@ -207,8 +205,7 @@ function movePlayer (diceValue) {
     destination = 288
   console.log('Ruszysz się na pole nr: ' + destination)
   showTurnAndDice()
-  let shiftX, shiftY
-  switch(currentPlayer.id){
+  switch (currentPlayer.id) {
     case 0:
       shiftX = 0
       shiftY = 0
@@ -237,8 +234,8 @@ function movePlayer (diceValue) {
 
   for (let i = currentPlayer.fieldNumber; i <= destination; i++) {
     tween.to({
-      x: grids[i][0]+shiftX,
-      y: grids[i][1]+shiftY
+      x: grids[i][0] + shiftX,
+      y: grids[i][1] + shiftY
     }, 800)
     effect_special.play()
   }
@@ -248,14 +245,15 @@ function movePlayer (diceValue) {
   tween.onComplete.add(afterPlayerMove, this)
   console.log('Player id:' + currentPlayer.id + ' fieldNumber: ' + currentPlayer.fieldNumber)
 }
-function afterPlayerMove(){
+
+function afterPlayerMove () {
   console.log('Gracz zakończył ruch')
 
   isPlayerOnSpecialGrid(currentPlayer)
   turnMessage.destroy()
-  setTimeout(function(){
-    socket.emit('endPlayerTurn',currentPlayer.id, currentPlayer.fieldNumber)
-  },3000)
+  setTimeout(function () {
+    socket.emit('endPlayerTurn', currentPlayer.id, currentPlayer.fieldNumber)
+  }, 3000)
 
   console.log('Wysłano socket endPlayerTurn do serwera')
 }
@@ -272,38 +270,38 @@ function receivePlayersInfo (playersInfo) {
 
 function receiveNextPlayerTurn (id) {
   console.log('Odebrano socket nextPlayerTurn')
-  console.log('ID: '+id)
+  console.log('ID: ' + id)
 
   switch (id) {
     case 0:
-      setCurrentPlayer(player1);
+      setCurrentPlayer(player1)
       break
     case 1:
-      setCurrentPlayer(player2);
+      setCurrentPlayer(player2)
       break
     case 2:
-      setCurrentPlayer(player3);
+      setCurrentPlayer(player3)
       break
     case 3:
-      setCurrentPlayer(player4);
+      setCurrentPlayer(player4)
       break
     case 4:
-      setCurrentPlayer(player5);
+      setCurrentPlayer(player5)
       break
     case 5:
   }
   currentPlayer.id = id
   currentPlayer.name = allPlayers[currentPlayer.id].name
-  showTurn(currentPlayer.name);
+  showTurn(currentPlayer.name)
   console.log('Ustawiono aktualnego gracza: ' + currentPlayer)
 }
 
-function setCurrentPlayer(player){
+function setCurrentPlayer (player) {
   currentPlayer = player
-    board.camera.follow(player)
-    if(diceMessage !== undefined) {
-      diceMessage.destroy()
-    }
+  board.camera.follow(player)
+  if (diceMessage !== undefined) {
+    diceMessage.destroy()
+  }
 }
 
 function isPlayerOnSpecialGrid (currentPlayer) {
@@ -388,8 +386,8 @@ function goThreeFieldsBack () {
   let k = 1
   for (let j = 0; j < 3; j++) {
     tween.to({
-      x: grids[currentPlayer.fieldNumber - k][0],
-      y: grids[currentPlayer.fieldNumber - k][1]
+      x: grids[currentPlayer.fieldNumber - k][0]+shiftX,
+      y: grids[currentPlayer.fieldNumber - k][1]+shiftY
     }, 800)
     k++
 
@@ -404,8 +402,8 @@ function goThreeFieldsForward () {
   let m = 1
   for (let j = 0; j < 3; j++) {
     tween.to({
-      x: grids[currentPlayer.fieldNumber + m][0],
-      y: grids[currentPlayer.fieldNumber + m][1]
+      x: grids[currentPlayer.fieldNumber + m][0]+shiftX,
+      y: grids[currentPlayer.fieldNumber + m][1]+shiftY
     }, 800)
     m++
   }
