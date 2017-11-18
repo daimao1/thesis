@@ -2,6 +2,7 @@
 const RoomService = require('../room/RoomService');
 const PlayerService = require('../player/PlayerService');
 const Constants = require('../Constants');
+const MiniGames = require('../game/MiniGameService');
 
 exports.initBasicHandlers = initBasicHandlers;
 exports.sendPlayersInfoToGame = sendPlayersInfoToGame;
@@ -23,10 +24,15 @@ function initBasicHandlers(socket, socketNamespace) {
         addGameDefaultHandlers(socketNamespace);
         sendPlayersInfoToGame(socketNamespace);
     });
+
+    socket.on('markStopTimeGame', ()=> {
+        socketNamespace.gameSocket = socket;
+        MiniGames.startMiniGame(Constants.MINI_GAMES.STOP_TIME, socketNamespace);
+    });
 }
 
 function newPlayer(socket, socketNamespace, name) {
-    //socket.join('players');
+    socket.join('players');
     console.log('SocketEventHandler: handle \'playerName\' event - creating new player.');
     const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name);
     addPlayerDisconnectHandler(player);
@@ -98,7 +104,6 @@ function addGameDefaultHandlers(socketNamespace) {
                 RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
                 playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
             }
-
 
             if (playerId > -1 && playerId < Constants.MAX_PLAYERS) {
                 socketNamespace.gameSocket.emit('nextPlayerTurn', playerId);
