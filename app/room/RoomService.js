@@ -162,6 +162,7 @@ function setPlayersOrderFromMiniGame(orderFromMiniGame, roomId) {
     if (room.currentPlayerId !== -1) {
         throw new Error(`Room[${room.id}]#setNewPlayersOrder(): current round is not finished.`);
     }
+    setPlayersSpecialOrder(orderFromMiniGame, room);
     if (Constants.PLAYER_ORDER === Constants.PLAYER_ORDERS_OPTIONS.FIRST_TO_LAST) {
         room.setNewPlayersOrder(orderFromMiniGame); // Array is loaded from the end, so first player from mini game will be last.
     } else {
@@ -170,14 +171,29 @@ function setPlayersOrderFromMiniGame(orderFromMiniGame, roomId) {
     }
 }
 
+//Set 'special' order for first 2 players from mini game - this players get extra dices
+function setPlayersSpecialOrder(playersOrder, room) {
+    if(room.numberOfPlayers === 2){
+        room.players[playersOrder[0]].extraDices = 1;
+    } else {
+        room.players[playersOrder[0]].extraDices = 2;
+        room.players[playersOrder[1]].extraDices = 1;
+    }
+}
+
 function nextPlayerTurn(roomId) {
     const room = getRoomByIdUnauthorized(roomId);
+    let playerId;
     if(room.turnInProgress === true) {
-        return room.currentPlayerId;
+        playerId = room.currentPlayerId;
     } else {
         room.turnInProgress = true;
-        return room.nextPlayerTurn();
+        playerId = room.nextPlayerTurn();
     }
+    if(playerId === -1){
+        return undefined;
+    }
+    return room.players[playerId];
 }
 
 function endTurn(roomId) {
@@ -185,6 +201,7 @@ function endTurn(roomId) {
 }
 
 function endRound(roomId) {
+    endTurn(roomId);
     const room = getRoomByIdUnauthorized(roomId);
     room.currentPlayerId = -1;
     room.playersOrder = [];
@@ -227,7 +244,7 @@ function getPlayersDTOs(roomId) {
         playersDTOs[index] = { id: player.in_room_id, name: player.name, field: player.field_number };
     });
     if(playersDTOs.length === 0){
-        throw new Error('RoomService#getPlayersInfoDTO(): there are no players in the room');
+        throw new Error('RoomService#getPlayersInfoDTO(): there are no players in the room.');
     }
     if(playersDTOs.length !== room.players.length){
         throw new Error('RoomService#getPlayersInfoDTO(): creating DTO failed.');
@@ -243,7 +260,7 @@ function isGameStarted(roomId) {
 function markGameAsStarted(roomId){
     const room = getRoomByIdUnauthorized(roomId);
     room.isGameStarted = true;
-    room.numerOfPlayers = room.players.length;
+    room.numberOfPlayers = room.players.length;
 }
 
 /*
