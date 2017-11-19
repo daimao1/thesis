@@ -2,7 +2,7 @@
 const RoomService = require('../room/RoomService');
 const PlayerService = require('../player/PlayerService');
 const Constants = require('../Constants');
-const MiniGames = require('../game/MiniGameService');
+const MiniGameService = require('../game/MiniGameService');
 
 exports.initBasicHandlers = initBasicHandlers;
 exports.sendPlayersInfoToGame = sendPlayersInfoToGame;
@@ -27,7 +27,7 @@ function initBasicHandlers(socket, socketNamespace) {
 
     socket.on('markStopTimeGame', ()=> {
         socketNamespace.gameSocket = socket;
-        MiniGames.startMiniGame(Constants.MINI_GAMES.STOP_TIME, socketNamespace);
+        MiniGameService.startMiniGame(Constants.MINI_GAMES.STOP_TIME, socketNamespace);
     });
 }
 
@@ -74,40 +74,23 @@ function addPlayerDefaultHandlers(player, socketNamespace) {
 
 function addGameDefaultHandlers(socketNamespace) {
     socketNamespace.gameSocket.on('specialGrid', function (gridData) {
+        // gridData === Constants.MINI_GAMES.STOP_TIME
         const playerToNotify = RoomService.getPlayerFromRoom(socketNamespace.roomId, gridData.playerId);
         playerToNotify.socket.emit('specialGrid', gridData.gridName);
     });
 
     socketNamespace.gameSocket.on('gameReady', function () {
-        let orderFromMiniGame = [];
-
         try {
-            orderFromMiniGame = startMiniGame(socketNamespace);
-            RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
+            MiniGameService.startMiniGame('mockMiniGame', socketNamespace);
         } catch(error) {
             console.error(error);
         }
-        let playerTurnId = RoomService.nextPlayerTurn(socketNamespace.roomId);
-        socketNamespace.gameSocket.emit('nextPlayerTurn', playerTurnId);
+        nextPlayerTurn(socketNamespace);
 
         socketNamespace.gameSocket.on('endPlayerTurn', (playerToSaveId, field) => {
             RoomService.endTurn(socketNamespace.roomId);
-
             RoomService.saveGameState(playerToSaveId, field, socketNamespace.roomId);
-
-            let playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
-            //if it was last player - start new round
-            if (playerId === -1) {
-                RoomService.endTurn(socketNamespace.roomId);
-                RoomService.endRound(socketNamespace.roomId);
-                orderFromMiniGame = startMiniGame(socketNamespace);
-                RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
-                playerId = RoomService.nextPlayerTurn(socketNamespace.roomId);
-            }
-
-            if (playerId > -1 && playerId < Constants.MAX_PLAYERS) {
-                socketNamespace.gameSocket.emit('nextPlayerTurn', playerId);
-            }
+            nextPlayerTurn(socketNamespace);
         });
 
         //Next you have to wait for diceValue event from player.
@@ -117,14 +100,28 @@ function addGameDefaultHandlers(socketNamespace) {
     });
 }
 
-function startMiniGame(socketNamespace) {
-    console.log(`SocketEventService#startMiniGame(): start mini-game in room[${socketNamespace.roomId}]...`);
-
-    const playersOrder = [];
-    const playersDTOs = RoomService.getPlayersDTOs(socketNamespace.roomId);
-    for (let i = 0, len = playersDTOs.length; i < len; i++) {
-        playersOrder.push(i);
+function nextPlayerTurn(socketNamespace) {
+    let player = RoomService.nextPlayerTurn(socketNamespace.roomId);
+    if (player === undefined) {
+        RoomService.endRound(socketNamespace.roomId);
+        MiniGameService.startMiniGame('default', socketNamespace);
+        player = RoomService.nextPlayerTurn(socketNamespace.roomId);
+    }
+    if (player.in_room_id > -1 && player.in_room_id < Constants.MAX_PLAYERS) {
+        socketNamespace.gameSocket.emit('nextPlayerTurn', player.in_room_id);
+        socketNamespace.namespace.to('players').emit('playerTurn', {playerName: player.name});
+    } else {
+        throw new Error('SocketEventService#nextPlayerTurn: player undefined.');
     }
 
-    return playersOrder;
+    //Notify android about mini-game with 1 sec delay
+    setTimeout(() => {
+        if(player.extraDices === 2) {
+            socketNamespace.namespace.to(player.socket.id).emit('threeDices');
+        } else if(player.extraDices === 1) {
+            socketNamespace.namespace.to(player.socket.id).emit('twoDices');
+        } else {
+            socketNamespace.namespace.to(player.socket.id).emit('dice');
+        }
+    }, 1000);
 }
