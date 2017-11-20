@@ -1,6 +1,6 @@
 {
   "name": "thesis",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "server.js",
   "authors": "Tomasz Korga, Tobiasz Kaciuczyk, Damian Kozieł",
   "license": "MIT",

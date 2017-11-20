@@ -36,7 +36,13 @@ function newPlayer(socket, socketNamespace, name) {
     console.log('SocketEventHandler: handle \'playerName\' event - creating new player.');
     const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name);
     addPlayerDisconnectHandler(player);
-    addPlayerDefaultHandlers(player, socketNamespace);
+
+    player.socket.on('diceValue', function (value) {
+        const currentPlayerId = RoomService.getCurrentPlayerId(socketNamespace.roomId);
+        if(currentPlayerId === player.in_room_id) {
+            socketNamespace.gameSocket.emit('playerDice', value);
+        }
+    });
 }
 
 function addPlayerDisconnectHandler(player) {
@@ -61,30 +67,14 @@ function sendPlayersInfoToGame(socketNamespace) {
     socketNamespace.gameSocket.emit('playersInfo', RoomService.getPlayersDTOs(socketNamespace.roomId));
 }
 
-function addPlayerDefaultHandlers(player, socketNamespace) {
-
-    //TODO after jump to StopTimeGame
-    player.socket.on('stopButton', function () {
-        socketNamespace.gameSocket.emit('stopTime', player.in_room_id);
-    });
-    player.socket.on('diceValue', function (value) {
-        socketNamespace.gameSocket.emit('playerDice', value);
-    });
-}
-
 function addGameDefaultHandlers(socketNamespace) {
-    socketNamespace.gameSocket.on('specialGrid', function (gridData) {
-        // gridData === Constants.MINI_GAMES.STOP_TIME
-        const playerToNotify = RoomService.getPlayerFromRoom(socketNamespace.roomId, gridData.playerId);
-        playerToNotify.socket.emit('specialGrid', gridData.gridName);
-    });
-
     socketNamespace.gameSocket.on('gameReady', function () {
         try {
             MiniGameService.startMiniGame('mockMiniGame', socketNamespace);
         } catch(error) {
             console.error(error);
         }
+
         nextPlayerTurn(socketNamespace);
 
         socketNamespace.gameSocket.on('endPlayerTurn', (playerToSaveId, field) => {
@@ -92,11 +82,29 @@ function addGameDefaultHandlers(socketNamespace) {
             RoomService.saveGameState(playerToSaveId, field, socketNamespace.roomId);
             nextPlayerTurn(socketNamespace);
         });
+    });
 
-        //Next you have to wait for diceValue event from player.
-        //When this player send a event to you, then you have to send playerDice event to the game.
-        //If think that i have to wait for signal from game that this player end his move?
-        //Exactly, and init move of the next player. If this was last player, then you have to end this round, and init next minigame.
+    socketNamespace.gameSocket.on('specialGrid', function (gridData) {
+        if(gridData.gridName === Constants.SPECIAL_GRIDS.CHALLENGE4){
+            challenge(4, socketNamespace, gridData.playerId);
+        } else if (gridData.gridName === Constants.SPECIAL_GRIDS.CHALLENGE5) {
+            challenge(5, socketNamespace, gridData.playerId);
+        } else if (gridData.gridName === Constants.SPECIAL_GRIDS.CHALLENGE6){
+            challenge(6, socketNamespace, gridData.playerId);
+        }
+    });
+}
+
+function challenge(challengeType, socketNamespace, playerId) {
+    const player = RoomService.getPlayerFromRoom(socketNamespace.roomId, playerId);
+    player.socket.emit('challengeDice');
+    player.socket.on('challengeDiceValue', (value) => {
+        if(value >= challengeType) {
+            socketNamespace.gameSocket.emit('challengePass', player.in_room_id);
+            player.socket.off('challengeDiceValue');
+        } else {
+            socketNamespace.gameSocket.emit('challengeNotPass', player.in_room_id);
+        }
     });
 }
 
@@ -114,7 +122,7 @@ function nextPlayerTurn(socketNamespace) {
         throw new Error('SocketEventService#nextPlayerTurn: player undefined.');
     }
 
-    //Notify android about mini-game with 1 sec delay
+    //Invoke android activity with 1 sec delay
     setTimeout(() => {
         if(player.extraDices === 2) {
             socketNamespace.namespace.to(player.socket.id).emit('threeDices');
@@ -123,5 +131,5 @@ function nextPlayerTurn(socketNamespace) {
         } else {
             socketNamespace.namespace.to(player.socket.id).emit('dice');
         }
-    }, 1000);
+    }, 500);
 }

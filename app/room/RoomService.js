@@ -24,6 +24,8 @@ exports.saveGameState = saveGameState;
 exports.markGameAsStarted = markGameAsStarted;
 exports.isGameStarted = isGameStarted;
 exports.endTurn = endTurn;
+exports.getAllPlayersFromRoom = getAllPlayersFromRoom;
+exports.getCurrentPlayerId = getCurrentPlayerId;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -95,7 +97,6 @@ function getById(roomId, adminId) {
         throw new Error(`RoomService: admin[${adminId}] is not the owner of room[${roomId}]`);
     }
     else if (roomToReturn.socketNamespace === undefined) {
-        //TODO przenieść to gdzieś, getter to nie jest dobre miejsce
         roomToReturn.addSocketNamespace(new SocketNamespace(roomToReturn.id));
     }
     return roomToReturn;
@@ -196,6 +197,10 @@ function nextPlayerTurn(roomId) {
     return room.players[playerId];
 }
 
+function getCurrentPlayerId(roomId) {
+    return getRoomByIdUnauthorized(roomId).currentPlayerId;
+}
+
 function endTurn(roomId) {
     getRoomByIdUnauthorized(roomId).turnInProgress = false;
 }
@@ -261,6 +266,10 @@ function markGameAsStarted(roomId){
     const room = getRoomByIdUnauthorized(roomId);
     room.isGameStarted = true;
     room.numberOfPlayers = room.players.length;
+}
+
+function getAllPlayersFromRoom(roomId){
+    return getRoomByIdUnauthorized(roomId).players;
 }
 
 /*
