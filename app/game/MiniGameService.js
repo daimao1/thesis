@@ -18,6 +18,13 @@ function stopTime(socketNamespace) {
     socketNamespace.gameSocket.emit('playersInfo', playersDTOs);
     socketNamespace.gameSocket.on('stopTimeGameReady', function () {
         console.log('MiniGameService#stopTime(): stop-time-game ready.');
+
+        const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
+        players.forEach( (player) => {
+            player.socket.on('stopButton', () => {
+                socketNamespace.gameSocket.emit('stopTime', player.in_room_id);
+            });
+        });
     });
 
     let orderFromMiniGame = createDefaultOrder(socketNamespace.roomId);
