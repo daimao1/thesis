@@ -38,23 +38,23 @@ module.exports = function (app, passport) {
     );
 
     //SignUp page
-    app.get('/signup', isNotLoggedIn, function(req, res) {
+    app.get('/signup', isNotLoggedIn, function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render('signup.ejs', { message: req.flash('signupMessage') });
+        res.render('signup.ejs', {message: req.flash('signupMessage')});
     });
     // process the signup form
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect : '/profile', // redirect to the secure profile section
-        failureRedirect : '/signup', // redirect back to the signup page if there is an error
-        failureFlash : true // allow flash messages
+        successRedirect: '/profile', // redirect to the secure profile section
+        failureRedirect: '/signup', // redirect back to the signup page if there is an error
+        failureFlash: true // allow flash messages
     }));
 
     //Admin profile - secured
-    app.get('/profile', isLoggedIn, function(req, res) {
+    app.get('/profile', isLoggedIn, function (req, res) {
         const rooms = RoomService.getByAdminId(req.user.id); //Load rooms list
         res.render('profile.ejs', {
-            user : req.user, // get the user out of session and pass to template
-            rooms : rooms
+            user: req.user, // get the user out of session and pass to template
+            rooms: rooms
         });
     });
 
@@ -62,7 +62,7 @@ module.exports = function (app, passport) {
     app.post('/room', isLoggedIn, function (req, res) {
         try {
             RoomService.newRoom(req.body.room_name, req.user.id);
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             badRequest(res);
         }
@@ -72,10 +72,10 @@ module.exports = function (app, passport) {
     //delete room
     app.delete('/room/:id', isLoggedIn, function (req, res) {
         let room;
-        try{
+        try {
             room = RoomService.getById(+req.params.id, +req.user.id);
             RoomService.deleteOne(room);
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             badRequest(res);
         }
@@ -87,11 +87,11 @@ module.exports = function (app, passport) {
         let room;
         try {
             room = RoomService.getById(+req.params.id, +req.user.id);
-        } catch(error){
+        } catch (error) {
             console.error(error);
             badRequest(res);
         }
-        if(room === undefined) {
+        if (room === undefined) {
             badRequest(res);
         } else {
             res.render('room.ejs', {
@@ -101,23 +101,43 @@ module.exports = function (app, passport) {
     });
 
     //logout
-    app.get('/logout', function(req, res) {
+    app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');
     });
 
     //board
     app.get('/board/:id', isLoggedIn, function (req, res) {
-        //res.sendFile(__dirname + '/views/stoptimegame.html');
-        res.render('board.ejs', {
-            id: req.params.id
-        });
+        let isError = false;
+        try {
+            RoomService.getById(+req.params.id, +req.user.id);
+        } catch (error) {
+            isError = true;
+            console.error(error);
+            badRequest(res);
+        }
+        if (!isError) {
+            res.render('board.ejs', {
+                id: req.params.id
+            });
+        }
     });
 
     //Stop-time minigame
-    app.get('/stoptimegame', function (req, res) {
-        //res.sendFile(__dirname + '/views/stoptimegame.html');
-        res.render('stoptimegame.ejs');
+    app.get('/stoptimegame/:id', isLoggedIn, function (req, res) {
+        let isError = false;
+        try {
+            RoomService.getById(+req.params.id, +req.user.id);
+        } catch (error) {
+            isError = true;
+            console.error(error);
+            badRequest(res);
+        }
+        if (!isError) {
+            res.render('stoptimegame.ejs', {
+                id: req.params.id
+            });
+        }
     });
 
     app.get('/check-system-status', (req, res) => {
@@ -130,7 +150,7 @@ module.exports = function (app, passport) {
     });
 };
 
-function badRequest(res){
+function badRequest(res) {
     res.setHeader('Content-Type', 'text/plain');
     res.status(404).send('Not found');
 }
@@ -147,8 +167,8 @@ function isLoggedIn(req, res, next) {
     res.redirect('/');
 }
 
-function isNotLoggedIn(req, res, next){
-    if(req.isUnauthenticated()) {
+function isNotLoggedIn(req, res, next) {
+    if (req.isUnauthenticated()) {
         return next();
     }
     res.redirect('/');
