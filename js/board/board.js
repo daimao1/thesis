@@ -208,8 +208,8 @@ function movePlayer (diceValue) {
   console.log('newDestination'+newDestination)
   difference = 0
   if (newDestination > -1) {
-    destination = newDestination
     difference = destination - newDestination
+    destination = newDestination
     console.log('difference = '+difference)
   }
 
