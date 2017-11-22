@@ -48,9 +48,10 @@ let iWidth = window.innerWidth
 let mapBackground
 let socket
 let tween
-let turnMessage, diceMessage
+let turnMessage, diceMessage, message
 let background_sound, effect_special
 let shiftX, shiftY
+let difference
 
 let numberOfPlayers
 let player1, player2, player3, player4, player5, player6
@@ -107,6 +108,8 @@ let setEventHandlers = function () {
   socket.on('playerDice', movePlayer)
   socket.on('playersInfo', receivePlayersInfo)
   socket.on('nextPlayerTurn', receiveNextPlayerTurn)
+ // socket.on('challengePass', )
+ // socket.on('challengeNotPass')
 }
 
 function addPlayersToBoard (number) {
@@ -198,13 +201,43 @@ function addPlayersToBoard (number) {
 function movePlayer (diceValue) {
   currentPlayer.value = diceValue
   currentPlayer.name = allPlayers[currentPlayer.id].name
-  console.log('Odebrano socketa z serwera. Id ' + currentPlayer.id + ' ilośc wyrzuconych oczek: ' + currentPlayer.value)
+  console.log('Odebrano socketa z serwera. Id ' + currentPlayer.id + ' ilość wyrzuconych oczek: ' + currentPlayer.value)
   tween = board.add.tween(currentPlayer.body)
   let destination = +currentPlayer.fieldNumber + +diceValue
+  let newDestination = lookForChallenges(+currentPlayer.fieldNumber, destination)
+  console.log('newDestination'+newDestination)
+  difference = 0
+  if (newDestination > -1) {
+    destination = newDestination
+    difference = destination - newDestination
+    console.log('difference = '+difference)
+  }
+
   if (destination >= 288)
     destination = 288
   console.log('Ruszysz się na pole nr: ' + destination)
   showTurnAndDice()
+  changePlayerPosition(destination)
+  showTurn(currentPlayer.name)
+  tween.onComplete.add(afterPlayerMove, this)
+  console.log('Player id:' + currentPlayer.id + ' fieldNumber: ' + currentPlayer.fieldNumber)
+}
+
+function changePlayerPosition(destination){
+  console.log('Przesuwanie...');
+  shiftPlayer()
+  for (let i = currentPlayer.fieldNumber; i <= destination; i++) {
+    tween.to({
+      x: grids[i][0] + shiftX,
+      y: grids[i][1] + shiftY
+    }, 800)
+    effect_special.play()
+  }
+  currentPlayer.fieldNumber = destination
+  tween.start()
+}
+
+function shiftPlayer(){
   switch (currentPlayer.id) {
     case 0:
       shiftX = 0
@@ -231,31 +264,35 @@ function movePlayer (diceValue) {
       shiftY = 47
       break
   }
-
-  for (let i = currentPlayer.fieldNumber; i <= destination; i++) {
-    tween.to({
-      x: grids[i][0] + shiftX,
-      y: grids[i][1] + shiftY
-    }, 800)
-    effect_special.play()
-  }
-  tween.start()
-  showTurn(currentPlayer.name)
-  currentPlayer.fieldNumber = destination
-  tween.onComplete.add(afterPlayerMove, this)
-  console.log('Player id:' + currentPlayer.id + ' fieldNumber: ' + currentPlayer.fieldNumber)
 }
 
 function afterPlayerMove () {
   console.log('Gracz zakończył ruch')
 
-  isPlayerOnSpecialGrid(currentPlayer)
+  const isPlayerOnChallengeGrid = isPlayerOnSpecialGrid(currentPlayer)
+  if(isPlayerOnChallengeGrid === false) {
+    endPlayerTurn();
+  }
+}
+
+function endPlayerTurn() {
   turnMessage.destroy()
   setTimeout(function () {
     socket.emit('endPlayerTurn', currentPlayer.id, currentPlayer.fieldNumber)
   }, 3000)
 
   console.log('Wysłano socket endPlayerTurn do serwera')
+}
+
+function lookForChallenges(currentField, dest) {
+  console.log('lookForChallenges')
+  let challengeFields=[31,71,44,118,174,224,283]
+  for(let field = currentField; field<= dest; field++) {
+    if(challengeFields.includes(field)){
+      return field
+    }
+  }
+  return -1
 }
 
 function receivePlayersInfo (playersInfo) {
@@ -346,18 +383,27 @@ function isPlayerOnSpecialGrid (currentPlayer) {
     case 31:
     case 71:
       console.log('Znajdujesz się na polu WYZWANIE 4')
+      showMessage('Wyrzuc 4 lub wiecej oczek aby przejsc dalej')
       socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'challenge4'})
+      challengeHandler()
+      return true;
       break
     case 44:
     case 118:
     case 174:
       console.log('Znajdujesz się na polu WYZWANIE 5')
+      showMessage('Wyrzuc 5 lub wiecej oczek aby przejsc dalej')
       socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'challenge5'})
+      challengeHandler()
+      return true;
       break
     case 224:
     case 283:
       console.log('Znajdujesz się na polu WYZWANIE 6')
+      showMessage('Wyrzuc 6 oczek aby przejsc dalej')
       socket.emit('specialGrid', {playerId: currentPlayer.id, gridName: 'challenge6'})
+      challengeHandler()
+      return true;
       break
     case 53:
     case 133:
@@ -378,7 +424,28 @@ function isPlayerOnSpecialGrid (currentPlayer) {
       makeWinner()
       break
   }
+  return false;
+}
 
+function challengeHandler(){
+  socket.on('challengePass',function(){
+    if(difference > 0) {
+      console.log('ChallengePass')
+      const dest = +currentPlayer.fieldNumber + +difference;
+      changePlayerPosition(dest)
+      tween.onComplete.add(endPlayerTurn, this)
+      socket.off('challengePass');
+      socket.off('challangeNotPass');
+    }
+  })
+  socket.on('challengeNotPass', function(){
+    console.log('ChallengeNotPass')
+    showMessage('Challenge failure')
+    difference = 0;
+    endPlayerTurn();
+    socket.off('challengePass');
+    socket.off('challangeNotPass');
+  })
 }
 
 function goThreeFieldsBack () {
@@ -440,3 +507,13 @@ function showDice () {
   diceMessage.fixedToCamera = true
   diceMessage.cameraOffset.setTo(iWidth / 1.7, iHeight / 1.2)
 }
+
+/*function showMessage(text_message) {
+  if () {
+    message.destroy()
+  }
+  message = board.add.bitmapText(1, 1, 'desyrel', 'Gracz:  ' + playerName, 64)
+  message.fontSize = 55
+  message.fixedToCamera = true
+  message.cameraOffset.setTo(iWidth / 7, iHeight / 1.2)
+}*/
