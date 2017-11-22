@@ -1,6 +1,6 @@
 process.env.NODE_ENV = 'test';
-const expect = require('chai').expect;
 const assert = require('chai').assert;
+const expect = require('chai').expect;
 const Room = require('../../app/room/Room');
 const Player = require('../../app/player/Player');
 
@@ -14,8 +14,7 @@ describe("Room", function () {
     before(function () {
         fakeSocketNamespace = {roomId: 1};
         room = new Room(1, "GameName", 1, fakeSocketNamespace);
-        player1 = new Player(1, 1, undefined);
-        player1.setName('FirstGamer');
+        player1 = new Player(1, undefined, 'FirstGamer');
     });
 
     describe("#addPlayer()", function () {

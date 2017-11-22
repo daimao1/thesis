@@ -23,7 +23,7 @@ describe('PlayerDao', function () {
     describe('#savePlayer()', function () {
         it('should return id of inserted row', function (done) {
             console.log('test1');
-            PlayerDao.savePlayer(name_1, 0, 1, 0)
+            PlayerDao.savePlayer(name_1, 1, 1)
                 .then(function (insertedId) {
                     assert(insertedId !== undefined);
                     assert.equal(insertedId, 2); // second player
