@@ -508,12 +508,9 @@ function showDice () {
   diceMessage.cameraOffset.setTo(iWidth / 1.7, iHeight / 1.2)
 }
 
-/*function showMessage(text_message) {
-  if () {
-    message.destroy()
-  }
-  message = board.add.bitmapText(1, 1, 'desyrel', 'Gracz:  ' + playerName, 64)
+function showMessage(text_message) {
+  message = board.add.bitmapText(1, 1, 'desyrel', text_message, 64)
   message.fontSize = 55
   message.fixedToCamera = true
-  message.cameraOffset.setTo(iWidth / 7, iHeight / 1.2)
-}*/
+  message.cameraOffset.setTo(iWidth / 7, iHeight / 4.5)
+}
