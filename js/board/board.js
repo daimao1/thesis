@@ -408,7 +408,7 @@ function goThreeFieldsForward () {
     m++
   }
   tween.start()
-  currentPlayer.fieldNumber = currentPlayer.fieldNumber - 3
+  currentPlayer.fieldNumber = currentPlayer.fieldNumber + 3
   console.log('Player 1: fieldNumber: ' + currentPlayer.fieldNumber)
 }
 
