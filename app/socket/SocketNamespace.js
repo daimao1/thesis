@@ -9,7 +9,6 @@ class SocketNamespace {
         this.io = IoContainer.getIO();
         this.roomId = roomId;
         this.namespace = this.createNewNamespace(roomId);
-
         this.gameSocket = undefined;
         console.log(`SocketIO/N: New socket namespace: [/${this.roomId}]`);
 
@@ -29,8 +28,6 @@ class SocketNamespace {
 
         this.namespace.on('connection', (socket) => {
             console.log(`SocketIO/N: Socket namespace id[${roomId}]: new client connected: socket.id = [${socket.id}]`);
-
-            //const player = PlayerService.newPlayer(roomId, socket);
 
             SocketEventService.initBasicHandlers(socket, this);
         });

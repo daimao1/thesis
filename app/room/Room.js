@@ -78,12 +78,6 @@ class Room {
         console.log(`Room[${this.id}]#newPlayerTurn(): currentPlayerId = [${this.currentPlayerId}].`);
         return this.currentPlayerId;
     }
-
-    // static generateGameNumber(){
-    //     //TODO logika generowania
-    //     //można też całkiem to olać i korzystać z id
-    //     return '1231';
-    // }
 }
 
 module.exports = Room;

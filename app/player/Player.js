@@ -11,6 +11,7 @@ class Player {
         this.name = name;
         this.in_room_id = undefined;
         this.field_number = 0;
+        this.extraDices = undefined; //this player get extra dices - 1 or 2
     }
 
     setId(id) {
