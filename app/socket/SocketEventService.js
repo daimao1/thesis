@@ -100,9 +100,9 @@ function challenge(challengeType, socketNamespace, playerId) {
     player.socket.emit('challengeDice');
     player.socket.once('challengeDiceValue', (value) => {
         if(value >= challengeType) {
-            socketNamespace.gameSocket.emit('challengePass', player.in_room_id);
+            socketNamespace.gameSocket.emit('challengeResult', true, player.in_room_id);
         } else {
-            socketNamespace.gameSocket.emit('challengeNotPass', player.in_room_id);
+            socketNamespace.gameSocket.emit('challengeResult', false, player.in_room_id);
         }
     });
 }
