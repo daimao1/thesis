@@ -98,10 +98,9 @@ function addGameDefaultHandlers(socketNamespace) {
 function challenge(challengeType, socketNamespace, playerId) {
     const player = RoomService.getPlayerFromRoom(socketNamespace.roomId, playerId);
     player.socket.emit('challengeDice');
-    player.socket.on('challengeDiceValue', (value) => {
+    player.socket.once('challengeDiceValue', (value) => {
         if(value >= challengeType) {
             socketNamespace.gameSocket.emit('challengePass', player.in_room_id);
-            player.socket.off('challengeDiceValue');
         } else {
             socketNamespace.gameSocket.emit('challengeNotPass', player.in_room_id);
         }

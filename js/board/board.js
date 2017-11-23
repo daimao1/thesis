@@ -428,23 +428,19 @@ function isPlayerOnSpecialGrid (currentPlayer) {
 }
 
 function challengeHandler(){
-  socket.on('challengePass',function(){
+  socket.once('challengePass',function(){
     if(difference > 0) {
       console.log('ChallengePass')
       const dest = +currentPlayer.fieldNumber + +difference;
       changePlayerPosition(dest)
       tween.onComplete.add(endPlayerTurn, this)
-      socket.off('challengePass');
-      socket.off('challangeNotPass');
     }
   })
-  socket.on('challengeNotPass', function(){
+  socket.once('challengeNotPass', function(){
     console.log('ChallengeNotPass')
     showMessage('Challenge failure')
     difference = 0;
     endPlayerTurn();
-    socket.off('challengePass');
-    socket.off('challangeNotPass');
   })
 }
 
