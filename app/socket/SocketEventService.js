@@ -8,6 +8,12 @@ exports.initBasicHandlers = initBasicHandlers;
 exports.sendPlayersInfoToGame = sendPlayersInfoToGame;
 
 function initBasicHandlers(socket, socketNamespace) {
+
+    socket.on('error', (error) => {
+        console.error('SocketEventService: socket connection error:');
+        throw error;
+    });
+
     socket.on('playerName', (playerName) => {
         newPlayer(socket, socketNamespace, playerName);
     });
@@ -122,7 +128,7 @@ function nextPlayerTurn(socketNamespace) {
         throw new Error('SocketEventService#nextPlayerTurn: player undefined.');
     }
 
-    //Invoke android activity with 1 sec delay
+    //Invoke android activity with 0,5 sec delay
     setTimeout(() => {
         if(player.extraDices === 2) {
             socketNamespace.namespace.to(player.socket.id).emit('threeDices');
