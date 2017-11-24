@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thesis</title>
+</head>
+<body>
+<h1>Thesis game</h1>
+<h3><%= room.name %></h3>
+<p>Numer gry: <%= room.id %></p>
+<p>Wprowadź ten numer w aplikacji na urządzeniu z systemem android.</p>
+<br>
+<p>Podłączone urządzenia:</p>
+<% if(room.players === undefined && room.players.length > 0) { %>
+<p>Brak podłączonych urządzeń</p>
+<% } else { %>
+<ul>
+    <% room.players.forEach(function(player) { %>
+    <li>
+        <p>Nick: <%= player.name %>, socket.id: <%= player.socket.id %> </p>
+    </li>
+    <% }) %>
+</ul>
+<% } %>
+<button>Odśwież</button>
+<a href="/board/<%= room.id %>">Wejdź do gry</a>
+</body>
+</html>

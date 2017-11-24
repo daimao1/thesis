@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<title>Thesis</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+    body, h1 {
+        font-family: "Raleway", sans-serif
+    }
+    body, html {
+        height: 100%
+    }
+    .bgimg {
+        background-image: url('img/forestbridge.jpg');
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
+    input {
+        background-color: rgba(0, 0, 0, 0.1);
+        color: white;
+        border: none;
+    }
+</style>
+<script>
+    function deleteRoom(id) {
+        const req = new XMLHttpRequest();
+        req.open('DELETE', '/room/' + id, true);
+        req.send(null);
+
+        location.reload();
+    }
+</script>
+<body>
+
+<div class="bgimg w3-display-container <%if(!isUserLogged){%>w3-animate-opacity<%}%> w3-text-white">
+    <% if(isUserLogged) { %>
+    <div class="w3-display-topright w3-padding-large w3-large">
+        <p>
+            <span class="w3-leftbar w3-rightbar w3-padding">
+                <i class="fa fa-user-circle w3-margin-right"></i>
+                <%= user.email %>
+            </span>
+            <a href="/logout" class="w3-rightbar w3-padding">Sign out</a>
+        </p>
+    </div>
+    <% } %>
+    <div class="w3-display-middle">
+        <h1 class="w3-jumbo <%if(!isUserLogged){%>w3-animate-top<%}%> w3-center">Thesis</h1>
+        <hr class="w3-border-grey" style="margin:auto;width:70%">
+
+        <% if(isUserLogged) { %>
+        <% if(rooms.length > 0) { %>
+        <p class="w3-large w3-center">Your games:</p>
+        <div class="w3-panel w3-rightbar w3-leftbar">
+        <ul class="w3-ul w3-card-4">
+            <% rooms.forEach(function(room) { %>
+            <li class="w3-display-container">
+                <a href="/room/<%= room.id %>"> <%= room.name %> </a>
+                <span onclick="deleteRoom(<%= room.id %>)"
+                      class="w3-btn w3-display-right fa fa-times"></span>
+            </li>
+            <% }) %>
+        </ul>
+        </div>
+        <% } %>
+        <br>
+        <p class="w3-large w3-center">Create new game:</p>
+        <form class="w3-center" action="/room" method="post" id="create_room_form">
+            <input class="w3-input w3-center" type="text" name="room_name" id="room_name" placeholder="Name" size="25" required />
+            <input class="w3-button w3-round-large" type="submit" id="confirm" value="Create" />
+        </form>
+        <% } else { %>
+        <p class="w3-large w3-center">
+            <a href="/login" class="w3-button w3-border w3-round-large">Sign in</a>
+        </p>
+        <p class="w3-large w3-center">
+            <a href="/signup" class="w3-button w3-border w3-round-large">Sing up</a>
+        </p>
+        <% } %>
+    </div>
+</div>
+</body>
+</html>
