@@ -1,18 +1,19 @@
 'use strict';
 const PlayerDao = require('./PlayerDao');
-//const SocketNamespace = require('../socket/SocketNamespace');
-//const RoomService = require('../room/RoomService');
 const Player = require('../player/Player');
 const RoomService = require('../room/RoomService');
 
 exports.newPlayer = newPlayer;
 exports.removeFromDb = removeFromDb;
 
-function newPlayer(roomId, socket, name) {
+function newPlayer(roomId, socket, name, deviceName) {
     if (name === undefined || roomId === undefined || socket === undefined) {
         throw new Error('PlayerService#newPlayer(): player name, roomId or socket undefined.');
     }
-    const player = new Player(roomId, socket, name);
+    if(deviceName === undefined){
+        deviceName = "Android";
+    }
+    const player = new Player(roomId, socket, name, deviceName);
     RoomService.addPlayerToRoom(player);
 
     console.log(`PlayerService#newPlayer(): Socket.id: [${socket.id}], name: [${player.name}]`);

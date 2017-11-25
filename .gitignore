@@ -3,3 +3,4 @@ node_modules
 .flowconfig
 .env
 scripts/create_prod_database.js
+.nyc_output

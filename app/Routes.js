@@ -5,12 +5,12 @@ module.exports = function (app, passport) {
 
     //Home page
     app.get('/', function (req, res) {
-        res.render('homepage.ejs', {user: req.user, isUserLogged: req.isAuthenticated()});
-    });
-
-    //phaser test
-    app.get('/test', function (req, res) {
-        res.render('index.ejs');
+        if(req.isAuthenticated()) {
+            const rooms = RoomService.getByAdminId(req.user.id); //Load rooms list
+            res.render('index.ejs', {user: req.user, rooms: rooms, isUserLogged: true});
+        } else {
+            res.render('index.ejs', {isUserLogged: false});
+        }
     });
 
     //Login page
@@ -21,7 +21,7 @@ module.exports = function (app, passport) {
     app.post(
         '/login',
         passport.authenticate('local-login', {
-            successRedirect: '/profile', // redirect to the secure profile section
+            successRedirect: '/', // redirect to home
             failureRedirect: '/login', // redirect back to the signup page if there is an error
             failureFlash: true // allow flash messages
         }),
@@ -44,19 +44,10 @@ module.exports = function (app, passport) {
     });
     // process the signup form
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/profile', // redirect to the secure profile section
+        successRedirect: '/', // redirect to home
         failureRedirect: '/signup', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
     }));
-
-    //Admin profile - secured
-    app.get('/profile', isLoggedIn, function (req, res) {
-        const rooms = RoomService.getByAdminId(req.user.id); //Load rooms list
-        res.render('profile.ejs', {
-            user: req.user, // get the user out of session and pass to template
-            rooms: rooms
-        });
-    });
 
     //Create new game room
     app.post('/room', isLoggedIn, function (req, res) {
@@ -66,7 +57,7 @@ module.exports = function (app, passport) {
             console.error(error);
             badRequest(res);
         }
-        res.redirect('/profile');
+        res.redirect('/');
     });
 
     //delete room
@@ -95,6 +86,7 @@ module.exports = function (app, passport) {
             badRequest(res);
         } else {
             res.render('room.ejs', {
+                user: req.user,
                 room: room
             });
         }

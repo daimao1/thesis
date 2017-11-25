@@ -43,15 +43,15 @@ function dropAndCreateDatabase() {
         //create administrators table
         connection.query(`
             CREATE TABLE \`${db.name}\`.\`${db.admins_table}\` (\
-                \`id\` INT NOT NULL AUTO_INCREMENT, \
-                \`email\` VARCHAR(30) NOT NULL, \
-                \`password\` CHAR(100) NOT NULL, \
-                PRIMARY KEY (\`id\`), \
-                UNIQUE INDEX \`email_UNIQUE\` (\`email\` ASC) \
-            )`,
+            \`id\` INT NOT NULL AUTO_INCREMENT, \
+            \`email\` VARCHAR(30) NOT NULL, \
+            \`password\` CHAR(100) NOT NULL, \
+            PRIMARY KEY (\`id\`), \
+            UNIQUE INDEX \`email_UNIQUE\` (\`email\` ASC) \
+        )`,
             function (err) {
                 if (err) {
-                    throw err;
+                    console.error(err.message);
                 }
                 else {
                     console.log('Success: table ' + db.admins_table + ' created!');
@@ -59,13 +59,16 @@ function dropAndCreateDatabase() {
             }
         );
 
-        //create rooms table
+//create rooms table
         connection.query(`
             CREATE TABLE \`${db.name}\`.\`${db.rooms_table}\` (
                 \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
                 \`name\` VARCHAR(20),
                 \`administrator_id\` INT NOT NULL,
                 \`game_number\` INT,
+                \`numberOfPlayers\` INT,
+                \`currentPlayerId\` INT,
+                \`isGameStarted\` TINYINT,
                 PRIMARY KEY (\`id\`,\`administrator_id\`),
                 UNIQUE INDEX \`game_number_UNIQUE\` (\`game_number\`),
                 INDEX \`FK_ROOMS_ADMINISTRATORS_IDX\` (\`administrator_id\` ASC),
@@ -77,7 +80,7 @@ function dropAndCreateDatabase() {
             )`,
             function (err) {
                 if (err) {
-                    throw err;
+                    console.error(err.message);
                 }
                 else {
                     console.log('Success: table ' + db.rooms_table + ' created!');
@@ -85,12 +88,11 @@ function dropAndCreateDatabase() {
             }
         );
 
-        //create players table
+//create players table
         connection.query(`
             CREATE TABLE \`${db.name}\`.\`${db.players_table}\` (
                 \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
                 \`name\` VARCHAR(20) NOT NULL,
-                \`device_id\` VARCHAR(40) NOT NULL,
                 \`room_id\` INT UNSIGNED,
                 \`in_room_id\` INT UNSIGNED NOT NULL,
                 \`field_number\` INT UNSIGNED,
@@ -111,7 +113,7 @@ function dropAndCreateDatabase() {
             }
         );
 
-        //create quiz table
+//create quiz table
         connection.query(`
             CREATE TABLE \`${db.name}\`.\`${db.quiz_table}\` (
                 \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -158,7 +160,7 @@ function dropAndCreateDatabase() {
         );
         connection.query(
             'INSERT INTO ' + db.name + '.' + db.players_table + ' SET ?',
-            {name: 'testPlayer', device_id: 0, room_id: 1, in_room_id: 0},
+            {name: 'testPlayer', room_id: 1, in_room_id: 0},
             function (error) {
                 if (error) {
                     throw error;

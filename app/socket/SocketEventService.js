@@ -8,8 +8,14 @@ exports.initBasicHandlers = initBasicHandlers;
 exports.sendPlayersInfoToGame = sendPlayersInfoToGame;
 
 function initBasicHandlers(socket, socketNamespace) {
-    socket.on('playerName', (playerName) => {
-        newPlayer(socket, socketNamespace, playerName);
+
+    socket.on('error', (error) => {
+        console.error('SocketEventService: socket connection error:');
+        throw error;
+    });
+
+    socket.on('player', (playerData) => {
+        newPlayer(socket, socketNamespace, playerData.name, playerData.device_name);
     });
 
     socket.on('markGame', () => {
@@ -31,10 +37,10 @@ function initBasicHandlers(socket, socketNamespace) {
     });
 }
 
-function newPlayer(socket, socketNamespace, name) {
+function newPlayer(socket, socketNamespace, name, deviceName) {
     socket.join('players');
     console.log('SocketEventHandler: handle \'playerName\' event - creating new player.');
-    const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name);
+    const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name, deviceName);
     addPlayerDisconnectHandler(player);
 
     player.socket.on('diceValue', function (value) {
@@ -98,12 +104,11 @@ function addGameDefaultHandlers(socketNamespace) {
 function challenge(challengeType, socketNamespace, playerId) {
     const player = RoomService.getPlayerFromRoom(socketNamespace.roomId, playerId);
     player.socket.emit('challengeDice');
-    player.socket.on('challengeDiceValue', (value) => {
+    player.socket.once('challengeDiceValue', (value) => {
         if(value >= challengeType) {
-            socketNamespace.gameSocket.emit('challengePass', player.in_room_id);
-            player.socket.off('challengeDiceValue');
+            socketNamespace.gameSocket.emit('challengeResult', true, player.in_room_id);
         } else {
-            socketNamespace.gameSocket.emit('challengeNotPass', player.in_room_id);
+            socketNamespace.gameSocket.emit('challengeResult', false, player.in_room_id);
         }
     });
 }
@@ -122,7 +127,7 @@ function nextPlayerTurn(socketNamespace) {
         throw new Error('SocketEventService#nextPlayerTurn: player undefined.');
     }
 
-    //Invoke android activity with 1 sec delay
+    //Invoke android activity with 0,5 sec delay
     setTimeout(() => {
         if(player.extraDices === 2) {
             socketNamespace.namespace.to(player.socket.id).emit('threeDices');
