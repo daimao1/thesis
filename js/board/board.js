@@ -332,6 +332,8 @@ function receiveNextPlayerTurn(id) {
     currentPlayer.name = allPlayers[currentPlayer.id].name
     showTurn(currentPlayer.name)
     console.log('Ustawiono aktualnego gracza: ' + currentPlayer)
+  if(message !== undefined)
+    message.destroy()
 }
 
 function setCurrentPlayer(player) {
@@ -440,8 +442,16 @@ function challengeHandler() {
                 changePlayerPosition(dest)
             } else {
                 console.log('ChallengeNotPass')
-                showMessage('Challenge failure')
                 difference = 0;
+                //go one field back
+              tween = board.add.tween(currentPlayer.body)
+              tween.to({
+                x: grids[currentPlayer.fieldNumber - 1][0] + shiftX,
+                y: grids[currentPlayer.fieldNumber - 1][1] + shiftY
+              }, 800)
+              tween.start()
+              currentPlayer.fieldNumber = currentPlayer.fieldNumber - 1
+              console.log('Player '+currentPlayer.name+': fieldNumber: ' + currentPlayer.fieldNumber)
                 endPlayerTurn();
             }
         }
@@ -457,11 +467,10 @@ function goThreeFieldsBack() {
             y: grids[currentPlayer.fieldNumber - k][1] + shiftY
         }, 800)
         k++
-
     }
     tween.start()
     currentPlayer.fieldNumber = currentPlayer.fieldNumber - 3
-    console.log('Player 1: fieldNumber: ' + currentPlayer.fieldNumber)
+    console.log('Player '+currentPlayer.name+': fieldNumber: ' + currentPlayer.fieldNumber)
 }
 
 function goThreeFieldsForward() {
