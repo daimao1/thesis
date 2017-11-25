@@ -54,7 +54,7 @@
             <ul class="w3-ul  w3-card-4">
                 <% room.players.forEach(function(player) { %>
                 <li class="w3-display-container">
-                    <%= player.in_room_id + 1 + ". " + player.name %>
+                    <%= player.in_room_id + 1 + ". " + player.name %>, <%= player.device_name%>
                 </li>
                 <% }); %>
             </ul>

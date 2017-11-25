@@ -18,6 +18,10 @@ function initBasicHandlers(socket, socketNamespace) {
         newPlayer(socket, socketNamespace, playerName);
     });
 
+    socket.on('player', (playerData) => {
+        newPlayer(socket, socketNamespace, playerData.name, playerData.device_name);
+    });
+
     socket.on('markGame', () => {
         if(RoomService.isGameStarted(socketNamespace.roomId)) {
             console.log(`SocketEventService: room[${socketNamespace.roomId}] game (board) resumed.`);
@@ -37,10 +41,10 @@ function initBasicHandlers(socket, socketNamespace) {
     });
 }
 
-function newPlayer(socket, socketNamespace, name) {
+function newPlayer(socket, socketNamespace, name, deviceName) {
     socket.join('players');
     console.log('SocketEventHandler: handle \'playerName\' event - creating new player.');
-    const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name);
+    const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name, deviceName);
     addPlayerDisconnectHandler(player);
 
     player.socket.on('diceValue', function (value) {
