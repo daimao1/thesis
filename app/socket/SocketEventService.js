@@ -14,10 +14,6 @@ function initBasicHandlers(socket, socketNamespace) {
         throw error;
     });
 
-    socket.on('playerName', (playerName) => {
-        newPlayer(socket, socketNamespace, playerName);
-    });
-
     socket.on('player', (playerData) => {
         newPlayer(socket, socketNamespace, playerData.name, playerData.device_name);
     });
