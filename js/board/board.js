@@ -202,7 +202,6 @@ function movePlayer(diceValue) {
     currentPlayer.value = diceValue
     currentPlayer.name = allPlayers[currentPlayer.id].name
     console.log('Odebrano socketa z serwera. Id ' + currentPlayer.id + ' ilość wyrzuconych oczek: ' + currentPlayer.value)
-    tween = board.add.tween(currentPlayer.body)
     let destination = +currentPlayer.fieldNumber + +diceValue
     let newDestination = lookForChallenges(+currentPlayer.fieldNumber, destination)
     console.log('newDestination' + newDestination)
@@ -216,11 +215,11 @@ function movePlayer(diceValue) {
     showTurnAndDice()
     changePlayerPosition(destination)
     showTurn(currentPlayer.name)
-    tween.onComplete.add(afterPlayerMove, this)
     console.log('Player id:' + currentPlayer.id + ' fieldNumber: ' + currentPlayer.fieldNumber)
 }
 
 function changePlayerPosition(destination) {
+  tween = board.add.tween(currentPlayer.body)
     console.log('Przesuwanie...');
     if (destination >= 288)
         destination = 288
@@ -234,6 +233,7 @@ function changePlayerPosition(destination) {
     }
     currentPlayer.fieldNumber = destination
     tween.start()
+    tween.onComplete.add(afterPlayerMove, this)
 }
 
 function shiftPlayer() {
@@ -278,6 +278,8 @@ function endPlayerTurn() {
     turnMessage.destroy()
     setTimeout(function () {
         socket.emit('endPlayerTurn', currentPlayer.id, currentPlayer.fieldNumber)
+      if(message !== undefined)
+      message.destroy()
     }, 3000)
 
     console.log('Wysłano socket endPlayerTurn do serwera')
