@@ -109,7 +109,9 @@ function addPlayerToRoom(player) {
     if (room === undefined) {
         throw new Error('RoomService#addPlayerToRoom(): Room undefined');
     }
-    else {
+    else if(room.isGameStarted === true) {
+        throw new Error('RoomService#addPlayerToRoom(): cannot add new player, game is already started.');
+    } else {
         room.addPlayer(player);
     }
 }
