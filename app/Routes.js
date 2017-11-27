@@ -132,6 +132,32 @@ module.exports = function (app, passport) {
         }
     });
 
+    app.get('/quiz/:id', isLoggedIn, function (req, res) {
+        let isError = false;
+        try {
+           RoomService.getById(+req.params.id, +req.user.id);
+        } catch (error) {
+            isError = true;
+            console.error(error);
+            badRequest(res);
+        }
+        if (!isError) {
+
+            const question = {
+                content: "Czy często myjesz nogi w miesiącu grudniu?",
+                answer1: "O tak, bardzo często",
+                answer2: "Głupie pytanie",
+                answer3: "Często myję",
+                answer4: "Czasami"
+            };
+
+            res.render('quiz/basic_question.ejs', {
+                id: req.params.id,
+                question: question
+            });
+        }
+    });
+
     app.get('/check-system-status', (req, res) => {
         res.status(200).send();
     });
