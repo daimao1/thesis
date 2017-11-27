@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head id=<%= id %>></head>
+<title>Quiz - Thesis</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+    body, h1 {
+        font-family: "Raleway", sans-serif
+    }
+
+    body, html {
+        height: 100%
+    }
+
+    .bgimg {
+        background-image: url('/assets/pictures/quiz/bg.jpg');
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
+
+    .w3-border {
+        border-color: darkgray !important;
+    }
+</style>
+<body>
+
+<div class="bgimg w3-display-container w3-text-white">
+
+    <div class="w3-display-topleft w3-padding-large">
+        <span class="w3-xxlarge">Quiz</span><br>
+        <span class="w3-xlarge">Game room: <%=id%></span>
+    </div>
+
+    <div class="w3-display-middle w3-center">
+        <h1 class="w3-xxlarge w3-animate-top w3-center"><%=question.content%></h1>
+        <hr class="w3-border-grey" style="margin:auto;width:100%;border-color:darkgrey!important;">
+        <div class="w3-xlarge">
+            <div class="w3-half w3-container">
+                <p class="w3-border w3-padding">
+                    <b style="color: goldenrod;">A.</b> <%=question.answer1%>
+                </p>
+            </div>
+            <div class="w3-half w3-container">
+                <p class="w3-border w3-padding">
+                    <b style="color: goldenrod;">B.</b> <%=question.answer2%>
+                </p>
+            </div>
+            <div class="w3-half w3-container">
+                <p class="w3-border w3-padding">
+                    <b style="color: goldenrod;">C.</b> <%=question.answer3%>
+                </p>
+            </div>
+            <div class="w3-half w3-container">
+                <p class="w3-border w3-padding">
+                    <b style="color: goldenrod;">D.</b> <%=question.answer4%>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
