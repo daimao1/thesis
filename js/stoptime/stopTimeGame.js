@@ -1,6 +1,7 @@
 let StopTimeGame = {}
 let roomId = document.head.id
 
+let player1, player2, player3, player4, player5, player6
 let text
 let iHeight
 let iWidth
@@ -19,6 +20,9 @@ let zz = []
 
 let allPlayers
 let numberOfPlayers
+let counter = []
+let textCounter = []
+let timerEvents = []
 
 StopTimeGame.preload = function () {
   stopTimeGame.load.spritesheet('button_blue', 'assets/buttons/circle_blue.png')
@@ -31,6 +35,13 @@ StopTimeGame.preload = function () {
   stopTimeGame.load.image('star', 'assets/pictures/stoptime/star.png')
   stopTimeGame.load.bitmapFont('desyrel-pink', 'assets/fonts/bitmapFonts/desyrel-pink.png', 'assets/fonts/bitmapFonts/desyrel-pink.xml')
 
+  stopTimeGame.load.spritesheet('avatar1', '../assets/sprites/avatar1.png') //załaduj awatary
+  stopTimeGame.load.spritesheet('avatar2', '../assets/sprites/avatar2.png')
+  stopTimeGame.load.spritesheet('avatar3', '../assets/sprites/avatar3.png')
+  stopTimeGame.load.spritesheet('avatar4', '../assets/sprites/avatar4.png')
+  stopTimeGame.load.spritesheet('avatar5', '../assets/sprites/avatar5.png')
+  stopTimeGame.load.spritesheet('avatar6', '../assets/sprites/avatar6.png')
+
   socket = io.connect('/' + roomId)
   setHandlers()
   socket.emit('markStopTimeGame')
@@ -40,13 +51,98 @@ StopTimeGame.create = function () {
   iHeight = window.innerHeight
   iWidth = window.innerWidth
 
-  generateBackgroundAnimation()
   goFullScreen()
-  createButtons(numberOfPlayers)
-  random_number = randomInt(5, 14)
+
+  random_number = randomInt(7, 17)
   showTimeDestinationText(random_number)
+  generateBackgroundAnimation()
+  createButtonsWithAvatars(6)
+  resetPlayersTime(6)
+  makeTimers(6)
+  hideTimersWithDelay(6)
   socket.emit('stopTimeGameReady')
+  }
+
+function makeTimers(number) {
+  for (let i = 0; i < number; i++) {
+    counter[i] = 0
+
+    switch(number) {
+      case 6:
+        showTextCounter(0,0.05, 0.75)
+        showTextCounter(1,0.23, 0.75)
+        showTextCounter(2,0.40, 0.75)
+        showTextCounter(3,0.57, 0.75)
+        showTextCounter(4,0.74, 0.75)
+        showTextCounter(5,0.91, 0.75)
+        break
+      case 5:
+        showTextCounter(0,0.14, 0.75)
+        showTextCounter(1,0.31, 0.75)
+        showTextCounter(2,0.48, 0.75)
+        showTextCounter(3,0.66, 0.75)
+        showTextCounter(4,0.82, 0.75)
+break
+      case 4:
+        showTextCounter(0,0.2, 0.75)
+        showTextCounter(1,0.38, 0.75)
+        showTextCounter(2,0.55, 0.75)
+        showTextCounter(3,0.73, 0.75)
+        break
+      case 3:
+        showTextCounter(0,0.29, 0.75)
+        showTextCounter(1,0.47, 0.75)
+        showTextCounter(2,0.64, 0.75)
+        break
+      case 2:
+        showTextCounter(0,0.38, 0.75)
+        showTextCounter(1,0.57, 0.75)
+      break
+
+    }
+    timerEvents[i] = stopTimeGame.time.events.loop(Phaser.Timer.SECOND, updateCounter, this, i)
+
+  }
 }
+
+function showTextCounter(num,x,y){
+  textCounter[num] = stopTimeGame.add.text(iWidth * x, iHeight * y, '', {
+    font: "45px Arial",
+    fill: "#ffffff",
+    align: "center"
+  })
+}
+
+function updateCounter(index) {
+  counter[index]++;
+  textCounter[index].setText(counter[index]);
+}
+function resetPlayersTime(number) {
+  switch(number){
+    case 6:
+      player6.time=0
+    case 5:
+      player5.time=0
+    case 4:
+      player4.time=0
+    case 3:
+      player3.time=0
+    case 2:
+      player2.time=0
+      player1.time=0
+  }
+}
+
+function hideTimersWithDelay(num) {
+  const hide = Math.ceil(random_number/3)*1000
+  console.log(hide)
+  setTimeout(function() {
+  for(let i = 0; i<num; i++) {
+    textCounter[i].visible = false;
+  }
+}, hide)
+}
+
 
 StopTimeGame.update = function () {
   for (let i = 0; i < max; i++) {
@@ -80,7 +176,7 @@ function goFullScreen () {
   stopTimeGame.scale.scaleMode = Phaser.ScaleManager.RESIZE
 }
 
-function createButtons (numberOfPlayers) {
+function createButtonsWithAvatars (numberOfPlayers) {
   switch(numberOfPlayers){
     case 6:
     button_blue = stopTimeGame.add.button(iWidth * 0.03, iHeight * 0.57, 'button_blue')
@@ -111,7 +207,9 @@ function createButtons (numberOfPlayers) {
     case 2:
       button_blue = stopTimeGame.add.button(iWidth * 0.35, iHeight * 0.57, 'button_blue')
       button_yellow = stopTimeGame.add.button(iWidth * 0.54, iHeight * 0.57, 'button_yellow')
+      break
   }
+  addAvatars(numberOfPlayers)
 
 
   // stop1_text = stopTimeGame.add.text(iWidth * 0.137, iHeight * 0.63, 'STOP')
@@ -149,6 +247,42 @@ function showTimeDestinationText (random_number) {
 function randomInt (low, high) {
   return Math.floor(Math.random() * (high - low) + low)
 }
+
+function addAvatars (number){
+  switch (number) {
+    case 2:
+      player1 = stopTimeGame.add.sprite(iWidth * 0.37, iHeight * 0.57, 'avatar1')
+      player2 = stopTimeGame.add.sprite(iWidth * 0.56, iHeight * 0.57, 'avatar2')
+      break
+    case 3:
+      player1 = stopTimeGame.add.sprite(iWidth * 0.28, iHeight * 0.57, 'avatar1')
+      player2 = stopTimeGame.add.sprite(iWidth * 0.46, iHeight * 0.57, 'avatar2')
+      player3 = stopTimeGame.add.sprite(iWidth * 0.63, iHeight * 0.57, 'avatar3')
+      break
+    case 4:
+      player1 = stopTimeGame.add.sprite(iWidth * 0.19, iHeight * 0.57, 'avatar1')
+      player2 = stopTimeGame.add.sprite(iWidth * 0.37, iHeight * 0.57, 'avatar2')
+      player3 = stopTimeGame.add.sprite(iWidth * 0.54, iHeight * 0.57, 'avatar3')
+      player4 = stopTimeGame.add.sprite(iWidth * 0.72, iHeight * 0.57, 'avatar4')
+      break
+    case 5:
+      player1 = stopTimeGame.add.sprite(iWidth * 0.13, iHeight * 0.57, 'avatar1')
+      player2 = stopTimeGame.add.sprite(iWidth * 0.30, iHeight * 0.57, 'avatar2')
+      player3 = stopTimeGame.add.sprite(iWidth * 0.47, iHeight * 0.57, 'avatar3')
+      player4 = stopTimeGame.add.sprite(iWidth * 0.65, iHeight * 0.57, 'avatar4')
+      player5 = stopTimeGame.add.sprite(iWidth * 0.81, iHeight * 0.57, 'avatar5')
+      break
+    case 6:
+      player1 = stopTimeGame.add.sprite(iWidth * 0.05, iHeight * 0.57, 'avatar1')
+      player2 = stopTimeGame.add.sprite(iWidth * 0.22, iHeight * 0.57, 'avatar2')
+      player3 = stopTimeGame.add.sprite(iWidth * 0.39, iHeight * 0.57, 'avatar3')
+      player4 = stopTimeGame.add.sprite(iWidth * 0.56, iHeight * 0.57, 'avatar4')
+      player5 = stopTimeGame.add.sprite(iWidth * 0.73, iHeight * 0.57, 'avatar5')
+      player6 = stopTimeGame.add.sprite(iWidth * 0.90, iHeight * 0.57, 'avatar6')
+
+  }
+}
+
 
 
 
