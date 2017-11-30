@@ -13,7 +13,7 @@ const db = {
 };
 
 connection.query('DROP DATABASE IF EXISTS ' + db.name);
-connection.query('CREATE DATABASE ' + db.name);
+connection.query('CREATE DATABASE ' + db.name + ' CHARACTER SET utf8 COLLATE utf8_polish_ci;');
 
 //create administrators table
 connection.query(`
