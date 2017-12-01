@@ -28,8 +28,15 @@ const MINI_GAMES = {
     BASIC_QUIZ: 'basicQuiz'
 };
 
+
+/**
+ * Time for answer a question in seconds
+ * */
+const QUESTION_TIME = 20;
+
 exports.PLAYER_ORDERS_OPTIONS = PLAYER_ORDERS_OPTIONS;
 exports.PLAYER_ORDER = PLAYER_ORDER;
 exports.MAX_PLAYERS = MAX_PLAYERS;
 exports.SPECIAL_GRIDS = SPECIAL_GRIDS;
 exports.MINI_GAMES = MINI_GAMES;
+exports.QUESTION_TIME = QUESTION_TIME;

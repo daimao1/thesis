@@ -41,8 +41,12 @@
             <% players.forEach( function(player, index) { %>
             <li><%=player.name%> <span class="w3-margin-left w3-spin fa fa-spinner" id="spin_icon<%=index%>"></span>
                 <span class="w3-margin-left w3-animate-top fa fa-check-circle-o" id="ok_icon<%=index%>"></span>
+                <span class="w3-margin-left w3-animate-top fa fa-times-circle" id="no_answer_icon<%=index%>"></span>
             </li>
-            <script>document.getElementById("ok_icon<%=index%>").style.display = "none";</script>
+            <script>
+                document.getElementById("ok_icon<%=index%>").style.display = "none";
+                document.getElementById("no_answer_icon<%=index%>").style.display = "none";
+            </script>
             <% }); %>
         </ul>
         <%}%>

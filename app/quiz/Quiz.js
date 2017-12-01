@@ -11,6 +11,7 @@ class Quiz {
         this.currentQuestion = undefined;
         //this.playersOrder = undefined;
         this.currentQuestionWinners = [];
+        //this.questionTimer = 0;
     }
 
     addQuestion(question){
