@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sign up - Thesis</title>
+    <title>Zarejestruj nowe konto - Thesis</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -32,7 +32,7 @@
 <div class="bgimg w3-display-container w3-text-white">
     <div class="w3-display-topright w3-padding-large w3-large">
         <p>
-            <a href="/" class="w3-leftbar w3-rightbar w3-padding">Home</a>
+            <a href="/" class="w3-leftbar w3-rightbar w3-padding">Strona główna</a>
         </p>
     </div>
     <div class="w3-display-middle">
@@ -44,13 +44,13 @@
         </div>
         <% } %>
         <form class="w3-large w3-center" action="" method="post" id="login_form">
-            <input class="w3-input" type="email" name="email" id="email" placeholder="Your email..." size="30" required
+            <input class="w3-input" type="email" name="email" id="email" placeholder="Adres email..." size="30" required
                    autofocus/>
-            <input class="w3-input" type="password" name="password" id="password" placeholder="Your password..."
+            <input class="w3-input" type="password" name="password" id="password" placeholder="Hasło..."
                    size="30" required/>
             <input class="w3-input" type="password" name="confirm_password" id="confirm_password"
-                   placeholder="Confirm your password..." size="30" required/>
-            <input class="w3-button w3-round-large" type="submit" id="confirm" value="Sign up"/>
+                   placeholder="Potwierdź hasło..." size="30" required/>
+            <input class="w3-button w3-round-large" type="submit" id="confirm" value="Zarejestruj"/>
         </form>
 
         <script>
@@ -59,7 +59,7 @@
 
             function validatePassword() {
                 if (password.value !== confirm_password.value) {
-                    confirm_password.setCustomValidity("Passwords don't match");
+                    confirm_password.setCustomValidity("Hasła nie pasują do siebie");
                 } else {
                     confirm_password.setCustomValidity('');
                 }
@@ -69,8 +69,8 @@
         </script>
 
         <p class="w3-large w3-center">
-            You already have an account?
-            <a href="/login">Sign in here.</a>
+            Masz już konto?
+            <a href="/login">Zaloguj się tutaj.</a>
         </p>
     </div>
 </div>
