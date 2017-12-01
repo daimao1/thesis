@@ -24,7 +24,8 @@ const SPECIAL_GRIDS = {
 };
 
 const MINI_GAMES = {
-    STOP_TIME: 'stopTime'
+    STOP_TIME: 'stopTime',
+    BASIC_QUIZ: 'basicQuiz'
 };
 
 exports.PLAYER_ORDERS_OPTIONS = PLAYER_ORDERS_OPTIONS;
