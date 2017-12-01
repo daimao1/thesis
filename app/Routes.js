@@ -134,8 +134,10 @@ module.exports = function (app, passport) {
 
     app.get('/quiz/:id', isLoggedIn, function (req, res) {
         let isError = false;
+        let players;
         try {
-           RoomService.getById(+req.params.id, +req.user.id);
+            RoomService.getById(+req.params.id, +req.user.id);
+            players = RoomService.getPlayersDTOs(+req.params.id);
         } catch (error) {
             isError = true;
             console.error(error);
@@ -143,16 +145,27 @@ module.exports = function (app, passport) {
         }
         if (!isError) {
 
+            const bqg = require('./quiz/basicQuiz/BasicQuizGame');
+            const quiz = bqg.startGame(+req.params.id);
+            const qstn = bqg.getNextQuestion(quiz.id, quiz);
+            let winners = bqg.getNamesOfQuizQuestionWinners(quiz);
+
+            if(winners.length === 0) {
+                winners = undefined;
+            }
+
             const question = {
-                content: "Czy często myjesz nogi w miesiącu grudniu?",
-                answer1: "O tak, bardzo często",
-                answer2: "Głupie pytanie",
-                answer3: "Często myję",
-                answer4: "Czasami"
+                content: qstn.content,
+                answer1: qstn.answers[0],
+                answer2: qstn.answers[1],
+                answer3: qstn.answers[2],
+                answer4: qstn.answers[3],
+                winners: winners
             };
 
             res.render('quiz/basic_question.ejs', {
                 id: req.params.id,
+                players: players,
                 question: question
             });
         }
@@ -181,7 +194,7 @@ function isLoggedIn(req, res, next) {
     }
 
     // if they aren't redirect them to the home page
-    console.log("Routes: someone trying to get unathorized access!");
+    console.log("Routes: someone trying to get unauthorized access!");
     res.redirect('/');
 }
 
