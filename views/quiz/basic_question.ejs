@@ -7,8 +7,10 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<% if(question.winners === undefined){ %>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="../../js/quiz/basic_question.js"></script>
+<% } %>
 <style>
     body, h1 {
         font-family: "Raleway", sans-serif
@@ -30,30 +32,33 @@
     }
 </style>
 <body>
-
+<span id="numberOfPlayers"><%= players.length %></span>
+<script>document.getElementById("numberOfPlayers").style.display = "none";</script>
 <div class="bgimg w3-display-container w3-text-white">
 
     <div class="w3-display-topleft w3-padding-large">
         <span class="w3-xxlarge">Quiz</span><br>
         <span class="w3-xlarge">Game room: </span><span class="w3-xxlarge"><%= id %></span>
-        <%if(question.winners === undefined){%>
+        <% if(question.winners === undefined){ %>
         <ul class="w3-large">
             <% players.forEach( function(player, index) { %>
-            <li><%=player.name%> <span class="w3-margin-left w3-spin fa fa-spinner" id="spin_icon<%=index%>"></span>
-                <span class="w3-margin-left w3-animate-top fa fa-check-circle-o" id="ok_icon<%=index%>"></span>
-                <span class="w3-margin-left w3-animate-top fa fa-times-circle" id="no_answer_icon<%=index%>"></span>
+            <li><%= player.name %> <span class="w3-margin-left w3-spin fa fa-spinner" id="spin_icon<%= index %>"></span>
+                <span style="color:green;" class="w3-margin-left w3-animate-top fa fa-check-circle-o"
+                      id="ok_icon<%= index %>"></span>
+                <span style="color:red;" class="w3-margin-left w3-animate-top fa fa-times-circle"
+                      id="no_answer_icon<%= index %>"></span>
             </li>
             <script>
-                document.getElementById("ok_icon<%=index%>").style.display = "none";
-                document.getElementById("no_answer_icon<%=index%>").style.display = "none";
+                document.getElementById("ok_icon<%= index %>").style.display = "none";
+                document.getElementById("no_answer_icon<%= index %>").style.display = "none";
             </script>
             <% }); %>
         </ul>
-        <%}%>
+        <% } %>
     </div>
 
     <div class="w3-display-middle w3-center">
-        <h1 class="w3-xxlarge <%if(question.winners === undefined){%>w3-animate-top<%}%> w3-center"><%= question.content %></h1>
+        <h1 class="w3-xxlarge <% if(question.winners === undefined){ %>w3-animate-top<% } %> w3-center"><%= question.content %></h1>
         <hr class="w3-border-grey" style="margin:auto;width:100%;border-color:darkgrey!important;">
         <div class="w3-xlarge">
             <div class="w3-half w3-container">
@@ -78,13 +83,24 @@
             </div>
         </div>
         <% if(question.winners === undefined){ %>
+        <span id="progressBarFragment">
         <progress class="w3-round" value="0" max="20" id="progressBar"></progress>
         <br>
         <span class="w3-xxlarge" id="timeValue">20</span>
+        </span>
+        <span id="loadingFragment">
+            <span class="w3-large">Ładowanie wyników</span><span
+                    class="w3-xlarge w3-spin w3-margin-left fa fa-spinner"></span>
+        </span>
+        <script>document.getElementById("loadingFragment").style.display = 'none';</script>
+        <% } else if(question.winners.length === 0) { %>
+        <div class="w3-animate-top">
+            <span class="w3-large">Niestety, nikt nie odpowiedział prawidłowo.</span>
+        </div>
         <% } else { %>
-            <div class="w3-animate-top">
-                Prawidłowo odpowiedzieli:
-                <div class="w3-panel w3-rightbar w3-leftbar">
+        <div class="w3-animate-top">
+            Prawidłowo odpowiedzieli:
+            <div class="w3-panel w3-rightbar w3-leftbar">
                 <ul class="w3-ul w3-card-4 w3-display-container w3-large">
                     <% question.winners.forEach( function(playerName) { %>
                     <li class="w3-large w3-display-container">
@@ -92,8 +108,8 @@
                     </li>
                     <% }) %>
                 </ul>
-                </div>
             </div>
+        </div>
         <% } %>
     </div>
 </div>

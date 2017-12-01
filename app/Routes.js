@@ -148,11 +148,7 @@ module.exports = function (app, passport) {
             const bqg = require('./quiz/basicQuiz/BasicQuizGame');
             const quiz = bqg.startGame(+req.params.id);
             const qstn = bqg.getNextQuestion(quiz);
-            let winners = bqg.getNamesOfQuizQuestionWinners(quiz);
-
-            if(winners.length === 0) {
-                winners = undefined;
-            }
+            let winners = bqg.getNamesOfQuizQuestionWinners(quiz); //return undefined when question not finished
 
             const question = {
                 content: qstn.content,

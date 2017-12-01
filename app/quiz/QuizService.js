@@ -10,6 +10,7 @@ exports.createQuiz = createQuiz;
 exports.getNextQuestion = getNextQuestion;
 exports.getQuizById = getQuizById;
 exports.collectResults = collectResults;
+exports.checkAnswers = checkAnswers;
 exports.endQuestion = endQuestion;
 
 function getNextQuestion(quiz) {
@@ -53,7 +54,7 @@ function createQuiz(questionsQuantity, roomId) {
 
     const players = RoomService.getPlayersDTOs(roomId);
     players.forEach((player) => {
-        quiz.playerScores.set(player.in_room_id, 0);
+        quiz.playerScores.set(player.id, 0);
     });
 
     quizzes.push(quiz);
@@ -65,18 +66,28 @@ function createQuiz(questionsQuantity, roomId) {
     return quiz;
 }
 
-function endQuestion(quiz) {
+function checkAnswers(quiz) {
     if(quiz.currentQuestion === undefined){
-        throw new Error(`This question has been finished earlier. RoomId: [${quiz.roomId}].`);
+        throw new Error(`QuizService[roomId:${quiz.roomId}]#endQuestion: question is already finished.`);
+    }
+    const playersDTOs = RoomService.getPlayersDTOs(quiz.roomId);
+    if(playersDTOs.length !== quiz.playerScores.size){
+        throw new Error(`QuizService[roomId:${quiz.roomId}]#endQuestion: incorrect state of quiz playerAnswers or playerScores.`);
+    }
+    if(playersDTOs.length !== quiz.playerAnswers.size){
+        playersDTOs.forEach((player)=>{
+           if(!quiz.playerAnswers.has(player.id)){
+               quiz.playerAnswers.set(player.id, -1);
+           }
+        });
     }
     quiz.playerAnswers.forEach((answerId, playerId) => {
-        if (quiz.currentQuestion.answers[answerId] === quiz.currentQuestion.correct_answer) {
+        if (answerId !== -1 && quiz.currentQuestion.answers[answerId] === quiz.currentQuestion.correct_answer) {
             quiz.playerScores.set(playerId, quiz.playerScores.get(playerId) + 1);
             const player = RoomService.getPlayerFromRoom(quiz.roomId, playerId);
             quiz.currentQuestionWinners.push(player.name);
         }
     });
-    quiz.currentQuestion = undefined;
 }
 
 function collectResults(quiz) {
@@ -97,8 +108,18 @@ function collectResults(quiz) {
         playerScores[index] = -1;
         playersOrder[i] = index;
     }
+    if(playersOrder.length !== RoomService.getPlayersDTOs(quiz.roomId).length){
+        throw new Error(`QuizService[roomId:${quiz.roomId}]#ecollectResults: unexpected playersOrder.`);
+    }
     quiz.playersOrder = playersOrder;
     return playersOrder;
+}
+
+function endQuestion(quiz) {
+    if(quiz.currentQuestion === undefined){
+        throw new Error(`QuizService[roomId:${quiz.roomId}]#endQuestion: this question has been finished earlier.`);
+    }
+    quiz.currentQuestion = undefined;
 }
 
 function compareNumbers(a, b) {

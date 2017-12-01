@@ -3,7 +3,15 @@ const socket = io.connect('/' + roomId);
 socket.emit('markQuiz', roomId);
 socket.on('playerQuizAnswer', playerQuizAnswer);
 socket.once('endQuestionTimeServer', endQuestionTimeServer);
+socket.once('questionResultsPrepared', onResultsPrepared);
 let endQuestionTimeServerFlag = false;
+let numberOfPlayers = 6;
+document.addEventListener('DOMContentLoaded', function() {
+    numberOfPlayers = +document.getElementById("numberOfPlayers").innerHTML;
+});
+let playerAnswers = 0;
+
+//TODO handle socket disconnect
 
 let timeLeft = 20;
 let downloadTimer = setInterval(function () {
@@ -22,6 +30,10 @@ function playerQuizAnswer(id) {
     console.log("Socket.io: receive playerQuizAnswerEvent");
     document.getElementById("spin_icon" + id).style.display = "none";
     document.getElementById("ok_icon" + id).style.display = "inline";
+    if(++playerAnswers === numberOfPlayers){
+        document.getElementById("progressBarFragment").style.display = "none";
+        document.getElementById("loadingFragment").style.display = "inline";
+    }
 }
 
 function endQuestionTimeServer() {
@@ -44,7 +56,7 @@ function endQuestionTime() {
         return;
     }
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < numberOfPlayers; i++) {
         if (document.getElementById("spin_icon" + i) === null) {
             break;
         } else if (document.getElementById("ok_icon" + i).style.display === "none") {
@@ -52,8 +64,12 @@ function endQuestionTime() {
             document.getElementById("no_answer_icon" + i).style.display = "inline";
         }
     }
-
-    //setTimeout(location.reload(), 2000);
-    setTimeout(console.log('location reload'), 2000);
+    document.getElementById("progressBarFragment").style.display = "none";
+    document.getElementById("loadingFragment").style.display = "inline";
 }
 
+function onResultsPrepared() {
+    setTimeout(function () {
+        location.reload();
+    }, 2000);
+}
