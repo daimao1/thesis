@@ -132,6 +132,41 @@ module.exports = function (app, passport) {
         }
     });
 
+    app.get('/quiz/:id', isLoggedIn, function (req, res) {
+        let isError = false;
+        let players;
+        try {
+            RoomService.getById(+req.params.id, +req.user.id);
+            players = RoomService.getPlayersDTOs(+req.params.id);
+        } catch (error) {
+            isError = true;
+            console.error(error);
+            badRequest(res);
+        }
+        if (!isError) {
+
+            const bqg = require('./quiz/basicQuiz/BasicQuizGame');
+            const quiz = bqg.startGame(+req.params.id);
+            const qstn = bqg.getNextQuestion(quiz);
+            let winners = bqg.getNamesOfQuizQuestionWinners(quiz); //return undefined when question not finished
+
+            const question = {
+                content: qstn.content,
+                answer1: qstn.answers[0],
+                answer2: qstn.answers[1],
+                answer3: qstn.answers[2],
+                answer4: qstn.answers[3],
+                winners: winners
+            };
+
+            res.render('quiz/basic_question.ejs', {
+                id: req.params.id,
+                players: players,
+                question: question
+            });
+        }
+    });
+
     app.get('/check-system-status', (req, res) => {
         res.status(200).send();
     });
@@ -155,7 +190,7 @@ function isLoggedIn(req, res, next) {
     }
 
     // if they aren't redirect them to the home page
-    console.log("Routes: someone trying to get unathorized access!");
+    console.log("Routes: someone trying to get unauthorized access!");
     res.redirect('/');
 }
 

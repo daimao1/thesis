@@ -15,15 +15,25 @@ function initBasicHandlers(socket, socketNamespace) {
     });
 
     socket.on('player', (playerData) => {
-        newPlayer(socket, socketNamespace, playerData.name, playerData.device_name);
+        try {
+            newPlayer(socket, socketNamespace, playerData.name, playerData.device_name);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    socket.on('markQuiz', (id) => {
+        if(id === socketNamespace.roomId){
+            socketNamespace.gameSocket = socket;
+        }
     });
 
     socket.on('markGame', () => {
-        if(RoomService.isGameStarted(socketNamespace.roomId)) {
+        if (RoomService.isGameStarted(socketNamespace.roomId)) {
             console.log(`SocketEventService: room[${socketNamespace.roomId}] game (board) resumed.`);
         } else {
             RoomService.markGameAsStarted(socketNamespace.roomId);
-            console.log('SocketEventService: new game board started.');
+            console.log('SocketEventService: new game started.');
         }
         socketNamespace.gameSocket = socket;
         addGameDisconnectHandler(socketNamespace);
@@ -31,7 +41,7 @@ function initBasicHandlers(socket, socketNamespace) {
         sendPlayersInfoToGame(socketNamespace);
     });
 
-    socket.on('markStopTimeGame', ()=> {
+    socket.on('markStopTimeGame', () => {
         socketNamespace.gameSocket = socket;
         MiniGameService.startMiniGame(Constants.MINI_GAMES.STOP_TIME, socketNamespace);
     });
@@ -45,7 +55,7 @@ function newPlayer(socket, socketNamespace, name, deviceName) {
 
     player.socket.on('diceValue', function (value) {
         const currentPlayerId = RoomService.getCurrentPlayerId(socketNamespace.roomId);
-        if(currentPlayerId === player.in_room_id) {
+        if (currentPlayerId === player.in_room_id) {
             socketNamespace.gameSocket.emit('playerDice', value);
         }
     });
@@ -77,7 +87,7 @@ function addGameDefaultHandlers(socketNamespace) {
     socketNamespace.gameSocket.on('gameReady', function () {
         try {
             MiniGameService.startMiniGame('mockMiniGame', socketNamespace);
-        } catch(error) {
+        } catch (error) {
             console.error(error);
         }
 
@@ -91,11 +101,11 @@ function addGameDefaultHandlers(socketNamespace) {
     });
 
     socketNamespace.gameSocket.on('specialGrid', function (gridData) {
-        if(gridData.gridName === Constants.SPECIAL_GRIDS.CHALLENGE4){
+        if (gridData.gridName === Constants.SPECIAL_GRIDS.CHALLENGE4) {
             challenge(4, socketNamespace, gridData.playerId);
         } else if (gridData.gridName === Constants.SPECIAL_GRIDS.CHALLENGE5) {
             challenge(5, socketNamespace, gridData.playerId);
-        } else if (gridData.gridName === Constants.SPECIAL_GRIDS.CHALLENGE6){
+        } else if (gridData.gridName === Constants.SPECIAL_GRIDS.CHALLENGE6) {
             challenge(6, socketNamespace, gridData.playerId);
         }
     });
@@ -105,7 +115,7 @@ function challenge(challengeType, socketNamespace, playerId) {
     const player = RoomService.getPlayerFromRoom(socketNamespace.roomId, playerId);
     player.socket.emit('challengeDice');
     player.socket.once('challengeDiceValue', (value) => {
-        if(value >= challengeType) {
+        if (value >= challengeType) {
             socketNamespace.gameSocket.emit('challengeResult', true, player.in_room_id);
         } else {
             socketNamespace.gameSocket.emit('challengeResult', false, player.in_room_id);
@@ -129,9 +139,9 @@ function nextPlayerTurn(socketNamespace) {
 
     //Invoke android activity with 0,5 sec delay
     setTimeout(() => {
-        if(player.extraDices === 2) {
+        if (player.extraDices === 2) {
             socketNamespace.namespace.to(player.socket.id).emit('threeDices');
-        } else if(player.extraDices === 1) {
+        } else if (player.extraDices === 1) {
             socketNamespace.namespace.to(player.socket.id).emit('twoDices');
         } else {
             socketNamespace.namespace.to(player.socket.id).emit('dice');

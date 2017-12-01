@@ -42,7 +42,7 @@ module.exports = function(passport) {
                     }
                     if (rows.length) {
                         //return done(null, false, console.log('That email is already taken.'));
-                        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                        return done(null, false, req.flash('signupMessage', 'Posiadasz już konto w naszym serwisie.'));
                     } else {
                         // if there is no user with that email
                         // create the user
@@ -81,11 +81,11 @@ module.exports = function(passport) {
                         return done(err);
                     }
                     if (!rows.length) {
-                        return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+                        return done(null, false, req.flash('loginMessage', 'Nie znaleźiono użytkownika.')); // req.flash is the way to set flashdata using connect-flash
                     }
                     // if the user is found but the password is wrong
                     if (!bcrypt.compareSync(password, rows[0].password)){
-                        return done(null, false, req.flash('loginMessage', 'Wrong password.')); // create the loginMessage and save it to session as flashdata
+                        return done(null, false, req.flash('loginMessage', 'Nie poprawne hasło.')); // create the loginMessage and save it to session as flashdata
                     }
                     // all is well, return successful user
                     return done(null, rows[0]);

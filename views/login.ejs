@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>Sign in - Thesis</title>
+<title>Logowanie - Thesis</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -16,7 +16,7 @@
     }
 
     .bgimg {
-        background-image: url('img/forestbridge.jpg');
+        background-image: url('../assets/pictures/forestbridge.jpg');
         min-height: 100%;
         background-position: center;
         background-size: cover;
@@ -33,7 +33,7 @@
 <div class="bgimg w3-display-container w3-text-white">
     <div class="w3-display-topright w3-padding-large w3-large">
         <p>
-            <a href="/" class="w3-leftbar w3-rightbar w3-padding">Home</a>
+            <a href="/" class="w3-leftbar w3-rightbar w3-padding">Strona główna</a>
         </p>
     </div>
     <div class="w3-display-middle">
@@ -45,15 +45,15 @@
         </div>
         <% } %>
         <form class="w3-large w3-center" action="" method="post" id="login_form">
-            <input class="w3-input" type="email" name="email" id="email" placeholder="Your email..." size="30" required
+            <input class="w3-input" type="email" name="email" id="email" placeholder="Adres email..." size="30" required
                    autofocus/>
-            <input class="w3-input" type="password" name="password" id="password" placeholder="Your password..."
+            <input class="w3-input" type="password" name="password" id="password" placeholder="Hasło..."
                    size="30" required/>
-            <input class="w3-button w3-round-large" type="submit" id="confirm" value="Sign in"/>
+            <input class="w3-button w3-round-large" type="submit" id="confirm" value="Zaloguj"/>
         </form>
         <p class="w3-large w3-center">
-            New to Thesis?
-            <a href="/signup">Register here.</a>
+            Nie masz jeszcze konta?
+            <a href="/signup">Zarejestruj się tutaj.</a>
         </p>
     </div>
 </div>

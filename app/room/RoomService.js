@@ -26,6 +26,7 @@ exports.isGameStarted = isGameStarted;
 exports.endTurn = endTurn;
 exports.getAllPlayersFromRoom = getAllPlayersFromRoom;
 exports.getCurrentPlayerId = getCurrentPlayerId;
+exports.getGameSocketFromRoom = getGameSocketFromRoom;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -36,7 +37,7 @@ function loadDataFromDb() {
         rows.forEach((row) => {
             roomList.push(new Room(row.id, row.name, row.administrator_id));
         });
-        console.log(`Data loaded from database successfully (Rooms table, set [${rows.length}] rows).`);
+        console.log(`Data loaded from database successfully (Rooms table, get [${rows.length}] rows).`);
     }).catch(reject => {
         throw reject;
     });
@@ -109,7 +110,9 @@ function addPlayerToRoom(player) {
     if (room === undefined) {
         throw new Error('RoomService#addPlayerToRoom(): Room undefined');
     }
-    else {
+    else if(room.isGameStarted === true) {
+        throw new Error('RoomService#addPlayerToRoom(): cannot add new player, game is already started.');
+    } else {
         room.addPlayer(player);
     }
 }
@@ -148,7 +151,7 @@ function getPlayerFromRoom(roomId, playerInRoomId) {
     }
     const player = getRoomByIdUnauthorized(roomId).players[playerInRoomId];
     if(player === undefined){
-        throw new Error('RoomService#getPlayerFromRoom(): cannot find player.');
+        throw new Error(`RoomService#getPlayerFromRoom(): cannot find player with id[${playerInRoomId}] in room[${roomId}].`);
     }
     return player;
 }
@@ -270,6 +273,10 @@ function markGameAsStarted(roomId){
 
 function getAllPlayersFromRoom(roomId){
     return getRoomByIdUnauthorized(roomId).players;
+}
+
+function getGameSocketFromRoom(roomId) {
+    return getRoomByIdUnauthorized(roomId).socketNamespace.gameSocket;
 }
 
 /*
