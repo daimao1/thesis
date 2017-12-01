@@ -2,12 +2,19 @@
 
 class Quiz {
 
-    constructor() {
-        /**
-         * Fields must have the same names as fields in database
-         */
-        this.id = undefined;
+    constructor(id, roomId) {
+        this.id = id;
+        this.roomId = roomId;
         this.questions = [];
+        this.playerScores = new Map();
+        this.playerAnswers = new Map();
+        this.currentQuestion = undefined;
+        //this.playersOrder = undefined;
+        this.currentQuestionWinners = [];
+    }
+
+    addQuestion(question){
+        this.questions.push(question);
     }
 }
 

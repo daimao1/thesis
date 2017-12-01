@@ -20,7 +20,12 @@ function initBasicHandlers(socket, socketNamespace) {
         } catch (error) {
             console.error(error);
         }
+    });
 
+    socket.on('markQuiz', (id) => {
+        if(id === socketNamespace.roomId){
+            socketNamespace.gameSocket = socket;
+        }
     });
 
     socket.on('markGame', () => {
