@@ -366,7 +366,7 @@ function stopButton (playerId) {
 }
 
 function showResultsOnScreen () {
-switch(numberOfPlayers){
+switch(numberOfPlayers) {
   case 2:
     showTextCounter(0, 0.38, 0.75, player1.time)
     showTextCounter(1, 0.57, 0.75, player2.time)
@@ -397,12 +397,12 @@ switch(numberOfPlayers){
     showTextCounter(4, 0.74, 0.75, player5.time)
     showTextCounter(5, 0.91, 0.75, player6.time)
     break
-
+}
 }
 function arrayWithResults(){
   let arrayWithPlayers=[]
   for(let i=0; i<5; i++)
   arrayWithPlayers[i] = counter[i]
   return arrayWithPlayers
-}
+
 }
