@@ -30,16 +30,16 @@ let startMessage
 let numberOfPlayersStopped
 
 StopTimeGame.preload = function () {
-  stopTimeGame.load.spritesheet('button_blue', 'assets/buttons/circle_blue.png')
-  stopTimeGame.load.spritesheet('button_yellow', 'assets/buttons/circle_yellow.png')
-  stopTimeGame.load.spritesheet('button_red', 'assets/buttons/circle_red.png')
-  stopTimeGame.load.spritesheet('button_green', 'assets/buttons/circle_green.png')
-  stopTimeGame.load.spritesheet('button_orange', 'assets/buttons/circle_orange.png')
-  stopTimeGame.load.spritesheet('button_pink', 'assets/buttons/circle_pink.png')
-  stopTimeGame.load.spritesheet('wood', 'assets/buttons/wood.png')
-  stopTimeGame.load.image('star', 'assets/pictures/stoptime/star.png')
-  stopTimeGame.load.bitmapFont('desyrel-pink', 'assets/fonts/bitmapFonts/desyrel-pink.png', 'assets/fonts/bitmapFonts/desyrel-pink.xml')
-  stopTimeGame.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/desyrel.png', 'assets/fonts/bitmapFonts/desyrel.xml')
+  stopTimeGame.load.spritesheet('button_blue', '../assets/buttons/circle_blue.png')
+  stopTimeGame.load.spritesheet('button_yellow', '../assets/buttons/circle_yellow.png')
+  stopTimeGame.load.spritesheet('button_red', '../assets/buttons/circle_red.png')
+  stopTimeGame.load.spritesheet('button_green', '../assets/buttons/circle_green.png')
+  stopTimeGame.load.spritesheet('button_orange', '../assets/buttons/circle_orange.png')
+  stopTimeGame.load.spritesheet('button_pink', '../assets/buttons/circle_pink.png')
+  stopTimeGame.load.spritesheet('wood', '../assets/buttons/wood.png')
+  stopTimeGame.load.image('star', '../assets/pictures/stoptime/star.png')
+  stopTimeGame.load.bitmapFont('desyrel-pink', '../assets/fonts/bitmapFonts/desyrel-pink.png', '../assets/fonts/bitmapFonts/desyrel-pink.xml')
+  stopTimeGame.load.bitmapFont('desyrel', '../assets/fonts/bitmapFonts/desyrel.png', '../assets/fonts/bitmapFonts/desyrel.xml')
 
   stopTimeGame.load.spritesheet('avatar1', '../assets/sprites/avatar1.png') //załaduj awatary
   stopTimeGame.load.spritesheet('avatar2', '../assets/sprites/avatar2.png')
