@@ -28,7 +28,7 @@ function initClicker(socketNamespace) {
             } else {
                 if(intervalCounter++ > 10){
                    clearInterval(interval);
-                   results = fillEmptyResults(results)
+                   results = fillEmptyResults(results);
                    collectResults(socketNamespace, results);
                 }
             }
@@ -40,7 +40,7 @@ function checkIsAllPlayersSentResults(socketNamespace, results){
     if(results.contains(undefined)){
         return false;
     } else {
-        collectResults(socketNamespace, results)
+        collectResults(socketNamespace, results);
         return true;
     }
 }
