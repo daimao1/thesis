@@ -16,7 +16,7 @@ let max = 130
 let xx = []
 let yy = []
 let zz = []
-//Czas ma się zatrzymywać! wysłać tablicę z ID i czas gracza.
+
 let allPlayers
 let numberOfPlayers
 let counter = []
@@ -28,7 +28,7 @@ let generalCounter
 let initMessage
 let startMessage
 let numberOfPlayersStopped
-
+let timerSound
 StopTimeGame.preload = function () {
   stopTimeGame.load.spritesheet('button_blue', '../assets/buttons/circle_blue.png')
   stopTimeGame.load.spritesheet('button_yellow', '../assets/buttons/circle_yellow.png')
@@ -48,6 +48,8 @@ StopTimeGame.preload = function () {
   stopTimeGame.load.spritesheet('avatar5', '../assets/sprites/avatar5.png')
   stopTimeGame.load.spritesheet('avatar6', '../assets/sprites/avatar6.png')
 
+  stopTimeGame.load.audio('timerSound', '../assets/audio/timerSound.mp3')
+
   socket = io.connect('/' + roomId)
   socket.emit('markStopTimeGame')
   setHandlers()
@@ -56,8 +58,9 @@ StopTimeGame.preload = function () {
 StopTimeGame.create = function () {
   iHeight = window.innerHeight
   iWidth = window.innerWidth
-
-  generalTimer = 0
+  timerSound = stopTimeGame.add.audio('timerSound')
+  timerSound.volume=0.4
+  generalCounter = 0
   numberOfPlayersStopped = 0
   goFullScreen()
   random_number = randomInt(7, 17)
@@ -72,16 +75,24 @@ StopTimeGame.create = function () {
   setTimeout(function () {
     showStartMessage()
     makeTimers(numberOfPlayers)
-   // hideTimersWithDelay(numberOfPlayers)
+    hideTimersWithDelay(numberOfPlayers)
+    timerSound.play()
     socket.emit('stopTimeStartTimer')
   }, 5200)
 
   setTimeout(function () {
     startMessage.destroy()
   }, 6800)
-  // setTimeout(function () {
-  //   console.log(generalCounter)
-  // }, 8000)
+
+  let temp = 6800+(random_number*1000)+7000
+
+  setTimeout(function () {
+    console.log('COUNTER: '+generalCounter)
+    showResultsOnScreen()
+    let arrayPlayers = arrayWithResults()
+    socket.emit('stopTimeResults',random_number,arrayPlayers)
+    console.log('Wyslano emit stopTimeResults')
+  }, temp)
 }
 
 function makeTimers (number) {
@@ -268,17 +279,26 @@ function addAvatars (number) {
     case 2:
       player1 = stopTimeGame.add.sprite(iWidth * 0.37, iHeight * 0.57, 'avatar1')
       player2 = stopTimeGame.add.sprite(iWidth * 0.56, iHeight * 0.57, 'avatar2')
+      showText(allPlayers[0].name,0.36,0.4)
+      showText(allPlayers[1].name,0.36,0.4)
       break
     case 3:
       player1 = stopTimeGame.add.sprite(iWidth * 0.28, iHeight * 0.57, 'avatar1')
       player2 = stopTimeGame.add.sprite(iWidth * 0.46, iHeight * 0.57, 'avatar2')
       player3 = stopTimeGame.add.sprite(iWidth * 0.63, iHeight * 0.57, 'avatar3')
+      showText(allPlayers[0].name,0.36,0.4)
+      showText(allPlayers[1].name,0.36,0.4)
+      showText(allPlayers[2].name,0.36,0.4)
       break
     case 4:
       player1 = stopTimeGame.add.sprite(iWidth * 0.19, iHeight * 0.57, 'avatar1')
       player2 = stopTimeGame.add.sprite(iWidth * 0.37, iHeight * 0.57, 'avatar2')
       player3 = stopTimeGame.add.sprite(iWidth * 0.54, iHeight * 0.57, 'avatar3')
       player4 = stopTimeGame.add.sprite(iWidth * 0.72, iHeight * 0.57, 'avatar4')
+      showText(allPlayers[0].name,0.36,0.4)
+      showText(allPlayers[1].name,0.36,0.4)
+      showText(allPlayers[2].name,0.36,0.4)
+      showText(allPlayers[3].name,0.36,0.4)
       break
     case 5:
       player1 = stopTimeGame.add.sprite(iWidth * 0.13, iHeight * 0.57, 'avatar1')
@@ -286,6 +306,11 @@ function addAvatars (number) {
       player3 = stopTimeGame.add.sprite(iWidth * 0.47, iHeight * 0.57, 'avatar3')
       player4 = stopTimeGame.add.sprite(iWidth * 0.65, iHeight * 0.57, 'avatar4')
       player5 = stopTimeGame.add.sprite(iWidth * 0.81, iHeight * 0.57, 'avatar5')
+      showText(allPlayers[0].name,0.36,0.4)
+      showText(allPlayers[1].name,0.36,0.4)
+      showText(allPlayers[2].name,0.36,0.4)
+      showText(allPlayers[3].name,0.36,0.4)
+      showText(allPlayers[4].name,0.36,0.4)
       break
     case 6:
       player1 = stopTimeGame.add.sprite(iWidth * 0.05, iHeight * 0.57, 'avatar1')
@@ -294,13 +319,26 @@ function addAvatars (number) {
       player4 = stopTimeGame.add.sprite(iWidth * 0.56, iHeight * 0.57, 'avatar4')
       player5 = stopTimeGame.add.sprite(iWidth * 0.73, iHeight * 0.57, 'avatar5')
       player6 = stopTimeGame.add.sprite(iWidth * 0.90, iHeight * 0.57, 'avatar6')
-
+      showText(allPlayers[0].name,0.36,0.4)
+      showText(allPlayers[1].name,0.36,0.4)
+      showText(allPlayers[2].name,0.36,0.4)
+      showText(allPlayers[3].name,0.36,0.4)
+      showText(allPlayers[4].name,0.36,0.4)
+      showText(allPlayers[5].name,0.36,0.4)
   }
 
 }
 
 function showTextCounter (num, x, y, text) {
   textCounter[num] = stopTimeGame.add.text(iWidth * x, iHeight * y, text, {
+    font: '45px Arial',
+    fill: '#ffffff',
+    align: 'center'
+  })
+}
+
+function showText(text,x,y){
+  stopTimeGame.add.text(iWidth * x, iHeight * y, text, {
     font: '45px Arial',
     fill: '#ffffff',
     align: 'center'
@@ -357,7 +395,7 @@ function stopButton (playerId) {
       break
   }
   numberOfPlayersStopped++
-  if (numberOfPlayersStopped === numberOfPlayers || (generalCounter > random_number + 7)) {
+  if (numberOfPlayersStopped === numberOfPlayers) {
     showResultsOnScreen()
     let arrayPlayers = arrayWithResults()
     socket.emit('stopTimeResults',random_number,arrayPlayers)
