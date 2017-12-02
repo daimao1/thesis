@@ -116,20 +116,20 @@ module.exports = function (app, passport) {
     });
 
     //Stop-time minigame
-    app.get('/stoptimegame/', function (req, res) {
-        /*let isError = false;
+    app.get('/stoptimegame/:id', function (req, res) {
+        let isError = false;
         try {
             RoomService.getById(+req.params.id, +req.user.id);
         } catch (error) {
             isError = true;
             console.error(error);
             badRequest(res);
-        }*/
-        // if (!isError) {
+        }
+        if (!isError) {
             res.render('stoptimegame.ejs', {
                 id: req.params.id
             });
-        // }
+        }
     });
 
     app.get('/check-system-status', (req, res) => {
