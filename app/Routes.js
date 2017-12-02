@@ -167,9 +167,9 @@ module.exports = function (app, passport) {
         }
     });
 
-    app.get('clicker/:id'){
+    app.get('clicker/:id', isLoggedIn, (req, res) => {
 
-    }
+    });
 
     app.get('/check-system-status', (req, res) => {
         res.status(200).send();
