@@ -64,7 +64,7 @@ function collectResults(socketNamespace, goal, results) {
     let sortedResults = playersResults.slice();
     sortedResults.sort(compareNumbers);
     console.error('sorted results:');
-    console.error(playersResults);
+    console.error(sortedResults);
 
 
     let playersOrder = [];
