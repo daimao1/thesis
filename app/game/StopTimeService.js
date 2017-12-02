@@ -28,7 +28,7 @@ function initGame(socketNamespace) {
             playerStopButton(player, socketNamespace);
         });
 
-        socketNamespace.on('stopTimeResults', (goal, results) => {
+        socketNamespace.gameSocket.on('stopTimeResults', (goal, results) => {
             collectResults(socketNamespace, goal, results);
         });
     });
