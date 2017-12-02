@@ -64,7 +64,6 @@ StopTimeGame.create = function () {
   generalCounter = 0
   numberOfPlayersStopped = 0
 
-  numberOfPlayers = 6
   goFullScreen()
   random_number = randomInt(7, 17)
   generateBackgroundAnimation()
