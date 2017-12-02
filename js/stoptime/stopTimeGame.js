@@ -404,7 +404,8 @@ function stopButton (playerId) {
   if (numberOfPlayersStopped === numberOfPlayers) {
     showResultsOnScreen()
     let arrayPlayers = arrayWithResults()
-    socket.emit('stopTimeResults', random_number, arrayPlayers)
+    let random_number_ms = random_number * 100
+    socket.emit('stopTimeResults', random_number_ms, arrayPlayers)
     console.log('Wyslano emit stopTimeResults')
   }
 }
