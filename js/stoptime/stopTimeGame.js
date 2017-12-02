@@ -177,7 +177,6 @@ function resetPlayersTime (number) {
       player2.isStopped = false
       player1.time = tempTime
       player1.isStopped = false
-      break
   }
 }
 
@@ -377,32 +376,32 @@ function stopButton (playerId) {
   timerEvents[playerId].stop()
   switch (playerId) {
     case 5:
-      player6.time = (counter[playerId]*0.01).toFixed(2)
+      player6.time = counter[playerId]
       player6.isStopped = true
       button_pink.alpha = 0.4
       break
     case 4:
-      player5.time = (counter[playerId]*0.01).toFixed(2)
+      player5.time = counter[playerId]
       player5.isStopped = true
       button_orange.alpha = 0.4
       break
     case 3:
-      player4.time = (counter[playerId]*0.01).toFixed(2)
+      player4.time = counter[playerId]
       player4.isStopped = true
       button_green.alpha = 0.4
       break
     case 2:
-      player3.time = (counter[playerId]*0.01).toFixed(2)
+      player3.time = counter[playerId]
       player3.isStopped = true
       button_red.alpha = 0.4
       break
     case 1:
-      player2.time = (counter[playerId]*0.01).toFixed(2)
+      player2.time = counter[playerId]
       player2.isStopped = true
       button_yellow.alpha = 0.4
       break
     case 0:
-      player1.time = (counter[playerId]*0.01).toFixed(2)
+      player1.time = counter[playerId]
       player1.isStopped = true
       button_blue.alpha = 0.4
       break
@@ -420,34 +419,34 @@ function stopButton (playerId) {
 function showResultsOnScreen () {
   switch (numberOfPlayers) {
     case 2:
-      showTextCounter(0, 0.38, 0.75, player1.time)
-      showTextCounter(1, 0.57, 0.75, player2.time)
+      showTextCounter(0, 0.38, 0.75, player1.time.toFixed(2))
+      showTextCounter(1, 0.57, 0.75, player2.time.toFixed(2))
       break
     case 3:
-      showTextCounter(0, 0.29, 0.75, player1.time)
-      showTextCounter(1, 0.47, 0.75, player2.time)
-      showTextCounter(2, 0.64, 0.75, player3.time)
+      showTextCounter(0, 0.29, 0.75, player1.time.toFixed(2))
+      showTextCounter(1, 0.47, 0.75, player2.time.toFixed(2))
+      showTextCounter(2, 0.64, 0.75, player3.time.toFixed(2))
       break
     case 4:
-      showTextCounter(0, 0.2, 0.75, player1.time)
-      showTextCounter(1, 0.38, 0.75, player2.time)
-      showTextCounter(2, 0.55, 0.75, player3.time)
-      showTextCounter(3, 0.73, 0.75, player4.time)
+      showTextCounter(0, 0.2, 0.75, player1.time.toFixed(2))
+      showTextCounter(1, 0.38, 0.75, player2.time.toFixed(2))
+      showTextCounter(2, 0.55, 0.75, player3.time.toFixed(2))
+      showTextCounter(3, 0.73, 0.75, player4.time.toFixed(2))
       break
     case 5:
-      showTextCounter(0, 0.14, 0.75, player1.time)
-      showTextCounter(1, 0.31, 0.75, player2.time)
-      showTextCounter(2, 0.48, 0.75, player3.time)
-      showTextCounter(3, 0.66, 0.75, player4.time)
-      showTextCounter(4, 0.82, 0.75, player5.time)
+      showTextCounter(0, 0.14, 0.75, player1.time.toFixed(2))
+      showTextCounter(1, 0.31, 0.75, player2.time.toFixed(2))
+      showTextCounter(2, 0.48, 0.75, player3.time.toFixed(2))
+      showTextCounter(3, 0.66, 0.75, player4.time.toFixed(2))
+      showTextCounter(4, 0.82, 0.75, player5.time.toFixed(2))
       break
     case 6:
-      showTextCounter(0, 0.05, 0.75, player1.time)
-      showTextCounter(1, 0.23, 0.75, player2.time)
-      showTextCounter(2, 0.40, 0.75, player3.time)
-      showTextCounter(3, 0.57, 0.75, player4.time)
-      showTextCounter(4, 0.74, 0.75, player5.time)
-      showTextCounter(5, 0.91, 0.75, player6.time)
+      showTextCounter(0, 0.05, 0.75, player1.time.toFixed(2))
+      showTextCounter(1, 0.23, 0.75, player2.time.toFixed(2))
+      showTextCounter(2, 0.40, 0.75, player3.time.toFixed(2))
+      showTextCounter(3, 0.57, 0.75, player4.time.toFixed(2))
+      showTextCounter(4, 0.74, 0.75, player5.time.toFixed(2))
+      showTextCounter(5, 0.91, 0.75, player6.time.toFixed(2))
       break
   }
 }
