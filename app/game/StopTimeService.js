@@ -9,14 +9,13 @@ function initGame(socketNamespace) {
     console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: emitting playerDTOs to game.`);
 
     const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
-    //gamesMap.set(socketNamespace.roomId, game);
 
     players.forEach((player) => {
         player.socket.emit('stopTimeGame');
     });
     console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: notify players about stop-time-game.`);
 
-    socketNamespace.gameSocket.on('stopTimeStartTimer', () => {
+    socketNamespace.gameSocket.once('stopTimeStartTimer', () => {
 
         console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: stop-time-game timer start counting.`);
         players.forEach((player) => {
@@ -28,14 +27,11 @@ function initGame(socketNamespace) {
             playerStopButton(player, socketNamespace);
         });
 
-        socketNamespace.gameSocket.on('stopTimeResults', (goal, results) => {
+        socketNamespace.gameSocket.once('stopTimeResults', (goal, results) => {
             console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: handle 'stopTimeResults' event.`);
             collectResults(socketNamespace, goal, results);
         });
     });
-    // let orderFromMiniGame = createDefaultOrder(socketNamespace.roomId);
-    // RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
-    // console.log(`SocketEventService#startMiniGame(): start mini-game in room[${socketNamespace.roomId}]...`);
 }
 
 function playerStopButton(player, socketNamespace) {
