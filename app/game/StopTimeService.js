@@ -58,12 +58,12 @@ function collectResults(socketNamespace, goal, results) {
         const diff = goal - results[i];
         playersResults[i] = Math.abs(diff);
     }
-    console.error('StopTimeService[roomId:${socketNamespace.roomId}]#collectResults: playerResults:');
+    console.error(`StopTimeService[roomId:${socketNamespace.roomId}]#collectResults: playerResults:`);
     console.error(playersResults);
 
     let sortedResults = playersResults.slice();
     sortedResults.sort(compareNumbers);
-    console.error('StopTimeService[roomId:${socketNamespace.roomId}]#collectResults: sortedResults:');
+    console.error(`StopTimeService[roomId:${socketNamespace.roomId}]#collectResults: sortedResults:`);
     console.error(sortedResults);
 
 
