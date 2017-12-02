@@ -30,6 +30,8 @@ let startMessage
 let numberOfPlayersStopped
 let timerSound
 
+let buttonArray = []
+
 StopTimeGame.preload = function () {
   stopTimeGame.load.spritesheet('button_blue', '../assets/buttons/circle_blue.png')
   stopTimeGame.load.spritesheet('button_yellow', '../assets/buttons/circle_yellow.png')
@@ -80,7 +82,8 @@ StopTimeGame.create = function () {
     hideTimersWithDelay(numberOfPlayers)
     timerSound.play()
     socket.emit('stopTimeStartTimer')
-  }, 5200)
+
+  }, 5400)
 
   setTimeout(function () {
     startMessage.destroy()
@@ -89,6 +92,8 @@ StopTimeGame.create = function () {
   let temp = 6800 + (random_number * 1000) + 7000
 
   setTimeout(function () {
+    for (let i = 0; i < numberOfPlayers; i++)
+      timerEvents[i].stop()
     console.log('COUNTER: ' + generalCounter)
     showResultsOnScreen()
     let arrayPlayers = arrayWithResults()
@@ -139,7 +144,7 @@ function makeTimers (number) {
 
     }
     timerEvents[i] = stopTimeGame.time.create(false)
-    timerEvents[i].loop(Phaser.Timer.SECOND/100, updateCounter, this, i)
+    timerEvents[i].loop(Phaser.Timer.SECOND / 100, updateCounter, this, i)
     timerEvents[i].start()
   }
 }
@@ -150,11 +155,9 @@ function updateGeneralCounter () {
 
 function updateCounter (index) {
   counter[index]++
-  textCounter[index].setText((counter[index]*0.01).toFixed(2))
+  textCounter[index].setText((counter[index] * 0.01).toFixed(2))
   console.log(counter[index])
 }
-
-
 
 function resetPlayersTime (number) {
   let tempTime = random_number + 7
@@ -291,19 +294,19 @@ function addAvatars (number) {
       player1 = stopTimeGame.add.sprite(iWidth * 0.28, iHeight * 0.57, 'avatar1')
       player2 = stopTimeGame.add.sprite(iWidth * 0.46, iHeight * 0.57, 'avatar2')
       player3 = stopTimeGame.add.sprite(iWidth * 0.63, iHeight * 0.57, 'avatar3')
-      showText(allPlayers[0].name, 0.26, 0.4)
-      showText(allPlayers[1].name, 0.44, 0.4)
-      showText(allPlayers[2].name, 0.61, 0.4)
+      showText(allPlayers[0].name, 0.26, 0.45)
+      showText(allPlayers[1].name, 0.44, 0.45)
+      showText(allPlayers[2].name, 0.61, 0.45)
       break
     case 4:
       player1 = stopTimeGame.add.sprite(iWidth * 0.19, iHeight * 0.57, 'avatar1')
       player2 = stopTimeGame.add.sprite(iWidth * 0.37, iHeight * 0.57, 'avatar2')
       player3 = stopTimeGame.add.sprite(iWidth * 0.54, iHeight * 0.57, 'avatar3')
       player4 = stopTimeGame.add.sprite(iWidth * 0.72, iHeight * 0.57, 'avatar4')
-      showText(allPlayers[0].name, 0.17, 0.4)
-      showText(allPlayers[1].name, 0.35, 0.4)
-      showText(allPlayers[2].name, 0.52, 0.4)
-      showText(allPlayers[3].name, 0.70, 0.4)
+      showText(allPlayers[0].name, 0.17, 0.45)
+      showText(allPlayers[1].name, 0.35, 0.45)
+      showText(allPlayers[2].name, 0.52, 0.45)
+      showText(allPlayers[3].name, 0.70, 0.45)
       break
     case 5:
       player1 = stopTimeGame.add.sprite(iWidth * 0.13, iHeight * 0.57, 'avatar1')
@@ -311,19 +314,19 @@ function addAvatars (number) {
       player3 = stopTimeGame.add.sprite(iWidth * 0.47, iHeight * 0.57, 'avatar3')
       player4 = stopTimeGame.add.sprite(iWidth * 0.65, iHeight * 0.57, 'avatar4')
       player5 = stopTimeGame.add.sprite(iWidth * 0.81, iHeight * 0.57, 'avatar5')
-      showText(allPlayers[0].name, 0.11, 0.4)
-      showText(allPlayers[1].name, 0.28, 0.4)
-      showText(allPlayers[2].name, 0.46, 0.4)
-      showText(allPlayers[3].name, 0.63, 0.4)
-      showText(allPlayers[4].name, 0.79, 0.4)
+      showText(allPlayers[0].name, 0.11, 0.45)
+      showText(allPlayers[1].name, 0.28, 0.45)
+      showText(allPlayers[2].name, 0.46, 0.45)
+      showText(allPlayers[3].name, 0.63, 0.45)
+      showText(allPlayers[4].name, 0.79, 0.45)
       break
     case 6:
-      player1 = stopTimeGame.add.sprite(iWidth * 0.05, iHeight * 0.57, 'avatar1')
-      player2 = stopTimeGame.add.sprite(iWidth * 0.22, iHeight * 0.57, 'avatar2')
-      player3 = stopTimeGame.add.sprite(iWidth * 0.39, iHeight * 0.57, 'avatar3')
-      player4 = stopTimeGame.add.sprite(iWidth * 0.56, iHeight * 0.57, 'avatar4')
-      player5 = stopTimeGame.add.sprite(iWidth * 0.73, iHeight * 0.57, 'avatar5')
-      player6 = stopTimeGame.add.sprite(iWidth * 0.90, iHeight * 0.57, 'avatar6')
+      player1 = stopTimeGame.add.sprite(iWidth * 0.05, iHeight * 0.45, 'avatar1')
+      player2 = stopTimeGame.add.sprite(iWidth * 0.22, iHeight * 0.45, 'avatar2')
+      player3 = stopTimeGame.add.sprite(iWidth * 0.39, iHeight * 0.45, 'avatar3')
+      player4 = stopTimeGame.add.sprite(iWidth * 0.56, iHeight * 0.45, 'avatar4')
+      player5 = stopTimeGame.add.sprite(iWidth * 0.73, iHeight * 0.45, 'avatar5')
+      player6 = stopTimeGame.add.sprite(iWidth * 0.90, iHeight * 0.45, 'avatar6')
       showText('asdf', 0.03, 0.4)
       showText('asdf', 0.21, 0.4)
       showText('asdf', 0.38, 0.4)
@@ -377,26 +380,33 @@ function stopButton (playerId) {
     case 5:
       player6.time = counter[playerId]
       player6.isStopped = true
+      button_pink.alpha = 0.4
+
       break
     case 4:
       player5.time = counter[playerId]
       player5.isStopped = true
+      button_orange.alpha = 0.4
       break
     case 3:
       player4.time = counter[playerId]
       player4.isStopped = true
+      button_green.alpha = 0.4
       break
     case 2:
       player3.time = counter[playerId]
       player3.isStopped = true
+      button_red.alpha = 0.4
       break
     case 1:
       player2.time = counter[playerId]
       player2.isStopped = true
+      button_yellow.alpha = 0.4
       break
     case 0:
       player1.time = counter[playerId]
       player1.isStopped = true
+      button_blue.alpha = 0.4
       break
   }
   numberOfPlayersStopped++
@@ -412,34 +422,34 @@ function stopButton (playerId) {
 function showResultsOnScreen () {
   switch (numberOfPlayers) {
     case 2:
-      showTextCounter(0, 0.38, 0.75, (player1.time*0.01).toFixed(2))
-      showTextCounter(1, 0.57, 0.75, (player2.time*0.01).toFixed(2))
+      showTextCounter(0, 0.38, 0.75, (player1.time * 0.01).toFixed(2))
+      showTextCounter(1, 0.57, 0.75, (player2.time * 0.01).toFixed(2))
       break
     case 3:
-      showTextCounter(0, 0.29, 0.75, (player1.time*0.01).toFixed(2))
-      showTextCounter(1, 0.47, 0.75, (player2.time*0.01).toFixed(2))
-      showTextCounter(2, 0.64, 0.75, (player3.time*0.01).toFixed(2))
+      showTextCounter(0, 0.29, 0.75, (player1.time * 0.01).toFixed(2))
+      showTextCounter(1, 0.47, 0.75, (player2.time * 0.01).toFixed(2))
+      showTextCounter(2, 0.64, 0.75, (player3.time * 0.01).toFixed(2))
       break
     case 4:
-      showTextCounter(0, 0.2, 0.75, (player1.time*0.01).toFixed(2))
-      showTextCounter(1, 0.38, 0.75, (player2.time*0.01).toFixed(2))
-      showTextCounter(2, 0.55, 0.75, (player3.time*0.01).toFixed(2))
-      showTextCounter(3, 0.73, 0.75, (player4.time*0.01).toFixed(2))
+      showTextCounter(0, 0.2, 0.75, (player1.time * 0.01).toFixed(2))
+      showTextCounter(1, 0.38, 0.75, (player2.time * 0.01).toFixed(2))
+      showTextCounter(2, 0.55, 0.75, (player3.time * 0.01).toFixed(2))
+      showTextCounter(3, 0.73, 0.75, (player4.time * 0.01).toFixed(2))
       break
     case 5:
-      showTextCounter(0, 0.14, 0.75, (player1.time*0.01).toFixed(2))
-      showTextCounter(1, 0.31, 0.75, (player2.time*0.01).toFixed(2))
-      showTextCounter(2, 0.48, 0.75, (player3.time*0.01).toFixed(2))
-      showTextCounter(3, 0.66, 0.75, (player4.time*0.01).toFixed(2))
-      showTextCounter(4, 0.82, 0.75, (player5.time*0.01).toFixed(2))
+      showTextCounter(0, 0.14, 0.75, (player1.time * 0.01).toFixed(2))
+      showTextCounter(1, 0.31, 0.75, (player2.time * 0.01).toFixed(2))
+      showTextCounter(2, 0.48, 0.75, (player3.time * 0.01).toFixed(2))
+      showTextCounter(3, 0.66, 0.75, (player4.time * 0.01).toFixed(2))
+      showTextCounter(4, 0.82, 0.75, (player5.time * 0.01).toFixed(2))
       break
     case 6:
-      showTextCounter(0, 0.05, 0.75, (player1.time*0.01).toFixed(2))
-      showTextCounter(1, 0.23, 0.75, (player2.time*0.01).toFixed(2))
-      showTextCounter(2, 0.40, 0.75, (player3.time*0.01).toFixed(2))
-      showTextCounter(3, 0.57, 0.75, (player4.time*0.01).toFixed(2))
-      showTextCounter(4, 0.74, 0.75, (player5.time*0.01).toFixed(2))
-      showTextCounter(5, 0.91, 0.75, (player6.time*0.01).toFixed(2))
+      showTextCounter(0, 0.05, 0.75, (player1.time * 0.01).toFixed(2))
+      showTextCounter(1, 0.23, 0.75, (player2.time * 0.01).toFixed(2))
+      showTextCounter(2, 0.40, 0.75, (player3.time * 0.01).toFixed(2))
+      showTextCounter(3, 0.57, 0.75, (player4.time * 0.01).toFixed(2))
+      showTextCounter(4, 0.74, 0.75, (player5.time * 0.01).toFixed(2))
+      showTextCounter(5, 0.91, 0.75, (player6.time * 0.01).toFixed(2))
       break
   }
 }
