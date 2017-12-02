@@ -73,7 +73,7 @@ StopTimeGame.create = function () {
   setTimeout(function () {
     showStartMessage()
     makeTimers(numberOfPlayers)
-     hideTimersWithDelay(numberOfPlayers)
+     //hideTimersWithDelay(numberOfPlayers)
     socket.emit('stopTimeStartTimer')
   }, 5200)
 
