@@ -79,14 +79,9 @@ StopTimeGame.create = function () {
   setTimeout(function () {
     startMessage.destroy()
   }, 6800)
-  setTimeout(function () {
-    console.log(player1.time)
-    console.log(player2.time)
-    console.log(player3.time)
-    console.log(player4.time)
-    console.log(player5.time)
-    console.log(generalCounter)
-  }, 8000)
+  // setTimeout(function () {
+  //   console.log(generalCounter)
+  // }, 8000)
 }
 
 function makeTimers (number) {
@@ -362,58 +357,47 @@ function stopButton (playerId) {
       break
   }
   numberOfPlayersStopped++
-  if (numberOfPlayersStopped === numberOfPlayers || generalCounter > random_number + 7) {
-    showResultsOnScreen(playerId)
+  if (numberOfPlayersStopped === numberOfPlayers || (generalCounter > random_number + 7)) {
+    showResultsOnScreen()
     let arrayPlayers = arrayWithResults()
     socket.emit('stopTimeResults',random_number,arrayPlayers)
+    console.log('Wyslano emit stopTimeResults')
   }
 }
 
-function showResultsOnScreen (buttonPlayerId) {
-  let numberOnFinish = random_number+7
-switch(buttonPlayerId){
-  case 0:
-    showTextCounter(0, 0.05, 0.75, player1.time)
-    showTextCounter(1, 0.23, 0.75, numberOnFinish)
-    showTextCounter(2, 0.40, 0.75, numberOnFinish)
-    showTextCounter(3, 0.57, 0.75, numberOnFinish)
-    showTextCounter(4, 0.74, 0.75, numberOnFinish)
-    showTextCounter(5, 0.91, 0.75, numberOnFinish)
-  case 1:
-    showTextCounter(0, 0.05, 0.75, numberOnFinish)
-    showTextCounter(1, 0.23, 0.75, player2.time)
-    showTextCounter(2, 0.40, 0.75, numberOnFinish)
-    showTextCounter(3, 0.57, 0.75, numberOnFinish)
-    showTextCounter(4, 0.74, 0.75, numberOnFinish)
-    showTextCounter(5, 0.91, 0.75, numberOnFinish)
+function showResultsOnScreen () {
+switch(numberOfPlayers){
   case 2:
-    showTextCounter(0, 0.05, 0.75, numberOnFinish)
-    showTextCounter(1, 0.23, 0.75, numberOnFinish)
-    showTextCounter(2, 0.40, 0.75, player3.time)
-    showTextCounter(3, 0.57, 0.75, numberOnFinish)
-    showTextCounter(4, 0.74, 0.75, numberOnFinish)
-    showTextCounter(5, 0.91, 0.75, numberOnFinish)
+    showTextCounter(0, 0.38, 0.75, player1.time)
+    showTextCounter(1, 0.57, 0.75, player2.time)
+    break
   case 3:
-    showTextCounter(0, 0.05, 0.75, numberOnFinish)
-    showTextCounter(1, 0.23, 0.75, numberOnFinish)
-    showTextCounter(2, 0.40, 0.75, numberOnFinish)
-    showTextCounter(3, 0.57, 0.75, player4.time)
-    showTextCounter(4, 0.74, 0.75, numberOnFinish)
-    showTextCounter(5, 0.91, 0.75, numberOnFinish)
+    showTextCounter(0, 0.29, 0.75, player1.time)
+    showTextCounter(1, 0.47, 0.75, player2.time)
+    showTextCounter(2, 0.64, 0.75, player3.time)
+    break
   case 4:
-    showTextCounter(0, 0.05, 0.75, numberOnFinish)
-    showTextCounter(1, 0.23, 0.75, numberOnFinish)
-    showTextCounter(2, 0.40, 0.75, numberOnFinish)
-    showTextCounter(3, 0.57, 0.75, numberOnFinish)
-    showTextCounter(4, 0.74, 0.75, player5.time)
-    showTextCounter(5, 0.91, 0.75, numberOnFinish)
+    showTextCounter(0, 0.2, 0.75, player1.time)
+    showTextCounter(1, 0.38, 0.75, player2.time)
+    showTextCounter(2, 0.55, 0.75, player3.time)
+    showTextCounter(3, 0.73, 0.75, player4.time)
+    break
   case 5:
-    showTextCounter(0, 0.05, 0.75, numberOnFinish)
-    showTextCounter(1, 0.23, 0.75, numberOnFinish)
-    showTextCounter(2, 0.40, 0.75, numberOnFinish)
-    showTextCounter(3, 0.57, 0.75, numberOnFinish)
-    showTextCounter(4, 0.74, 0.75, numberOnFinish)
+    showTextCounter(0, 0.14, 0.75, player1.time)
+    showTextCounter(1, 0.31, 0.75, player2.time)
+    showTextCounter(2, 0.48, 0.75, player3.time)
+    showTextCounter(3, 0.66, 0.75, player4.time)
+    showTextCounter(4, 0.82, 0.75, player5.time)
+    break
+  case 6:
+    showTextCounter(0, 0.05, 0.75, player1.time)
+    showTextCounter(1, 0.23, 0.75, player2.time)
+    showTextCounter(2, 0.40, 0.75, player3.time)
+    showTextCounter(3, 0.57, 0.75, player4.time)
+    showTextCounter(4, 0.74, 0.75, player5.time)
     showTextCounter(5, 0.91, 0.75, player6.time)
+    break
+
 }
 function arrayWithResults(){
   let arrayWithPlayers=[]
