@@ -60,7 +60,6 @@ StopTimeGame.create = function () {
   generalTimer = 0
   numberOfPlayersStopped = 0
   goFullScreen()
-  numberOfPlayers = 6//////////
   random_number = randomInt(7, 17)
   generateBackgroundAnimation()
   createButtonsWithAvatars(numberOfPlayers)
@@ -73,7 +72,7 @@ StopTimeGame.create = function () {
   setTimeout(function () {
     showStartMessage()
     makeTimers(numberOfPlayers)
-     hideTimersWithDelay(numberOfPlayers)
+   // hideTimersWithDelay(numberOfPlayers)
     socket.emit('stopTimeStartTimer')
   }, 5200)
 
