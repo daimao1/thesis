@@ -168,7 +168,20 @@ module.exports = function (app, passport) {
     });
 
     app.get('clicker/:id', isLoggedIn, (req, res) => {
-
+        let isError = false;
+        let players;
+        try {
+            RoomService.getById(+req.params.id, +req.user.id);
+            players = RoomService.getPlayersDTOs(+req.params.id);
+        } catch (error) {
+            isError = true;
+            console.error(error);
+            badRequest(res);
+        }
+        if (!isError) {
+            
+            //TODO cos
+        }
     });
 
     app.get('/check-system-status', (req, res) => {
