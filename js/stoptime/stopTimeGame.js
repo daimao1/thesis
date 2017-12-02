@@ -401,7 +401,7 @@ switch(numberOfPlayers) {
 }
 function arrayWithResults(){
   let arrayWithPlayers=[]
-  for(let i=0; i<5; i++)
+  for(let i=0; i<numberOfPlayers; i++)
   arrayWithPlayers[i] = counter[i]
   return arrayWithPlayers
 
