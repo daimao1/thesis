@@ -66,31 +66,25 @@ function fillEmptyResults(results){
 function collectResults(socketNamespace, results) {
     const playersDTOs = RoomService.getPlayersDTOs(socketNamespace.roomId);
     if(results.length === playersDTOs.length){
-
+        throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of results array.`);
     }
+    const sortedResults = results.slice();
+    sortedResults.sort(compareNumbers).reverse();
+
+    let playersOrder = [];
+
+    for (let i = 0; i <sortedResults.length; i++) {
+        let index = results.indexOf(sortedResults[i]);
+        results[index] = undefined;
+        playersOrder[i] = index;
+    }
+    if(playersOrder.length !== playersDTOs.length){
+        throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of playerOrder array.`);
+    }
+    RoomService.setPlayersOrderFromMiniGame(playersOrder);
+    return playersOrder;
 }
-//
-// function collectResults(quiz) {
-//     let playerScores = [];
-//     if(quiz.playerScores === undefined){
-//         throw new Error('QuizService#collectResults: playerScores undefined.');
-//     }
-//     for (let i = 0; i < quiz.playerScores.size; i++) {
-//         playerScores[i] = quiz.playerScores.get(i);
-//     }
-//     const sortedPlayerScores = playerScores.slice();
-//     sortedPlayerScores.sort(compareNumbers).reverse();
-//
-//     let playersOrder = [];
-//
-//     for (let i = 0; i < quiz.playerScores.size; i++) {
-//         let index = playerScores.indexOf(sortedPlayerScores[i]);
-//         playerScores[index] = -1;
-//         playersOrder[i] = index;
-//     }
-//     if(playersOrder.length !== RoomService.getPlayersDTOs(quiz.roomId).length){
-//         throw new Error(`QuizService[roomId:${quiz.roomId}]#ecollectResults: unexpected playersOrder.`);
-//     }
-//     quiz.playersOrder = playersOrder;
-//     return playersOrder;
-// }
+
+function compareNumbers(a, b) {
+    return a - b;
+}
