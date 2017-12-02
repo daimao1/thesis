@@ -362,7 +362,7 @@ function stopButton (playerId) {
       break
   }
   numberOfPlayersStopped++
-  if (numberOfPlayersStopped === 6 || generalCounter > random_number + 7) {
+  if (numberOfPlayersStopped === numberOfPlayers || generalCounter > random_number + 7) {
     showResultsOnScreen(playerId)
     let arrayPlayers = arrayWithResults()
     socket.emit('stopTimeResults',random_number,arrayPlayers)
