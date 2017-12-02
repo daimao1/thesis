@@ -57,6 +57,7 @@ let numberOfPlayers
 let player1, player2, player3, player4, player5, player6
 let allPlayers = []
 
+
 Board.preload = function () {
     board.load.image('plansza', '../assets/map/plansza.png') //załaduj planszę
     board.load.image('background', '../assets/map/wood_background.png')
