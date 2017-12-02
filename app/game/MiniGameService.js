@@ -1,6 +1,7 @@
 'use strict';
 const Constants = require('../Constants');
 const RoomService = require('../room/RoomService');
+const StopTime = require('./StopTimeService');
 
 exports.startMiniGame = function (miniGame, socketNamespace) {
 
@@ -8,28 +9,13 @@ exports.startMiniGame = function (miniGame, socketNamespace) {
         case Constants.MINI_GAMES.STOP_TIME:
             stopTime(socketNamespace);
             break;
-        default:  mockMiniGame(socketNamespace.roomId);
+        default:
+            mockMiniGame(socketNamespace.roomId);
     }
 };
 
 function stopTime(socketNamespace) {
-
-    const playersDTOs = RoomService.getPlayersDTOs(socketNamespace.roomId);
-    socketNamespace.gameSocket.emit('playersInfo', playersDTOs);
-    socketNamespace.gameSocket.on('stopTimeGameReady', function () {
-        console.log('MiniGameService#stopTime(): stop-time-game ready.');
-
-        const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
-        players.forEach( (player) => {
-            player.socket.on('stopButton', () => {
-                socketNamespace.gameSocket.emit('stopTime', player.in_room_id);
-            });
-        });
-    });
-
-    let orderFromMiniGame = createDefaultOrder(socketNamespace.roomId);
-    RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], socketNamespace.roomId);
-    console.log(`SocketEventService#startMiniGame(): start mini-game in room[${socketNamespace.roomId}]...`);
+    StopTime.initGame(socketNamespace);
 }
 
 function mockMiniGame(roomId) {
