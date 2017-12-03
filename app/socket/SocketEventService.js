@@ -23,7 +23,7 @@ function initBasicHandlers(socket, socketNamespace) {
     });
 
     socket.on('markQuiz', (id) => {
-        if(id === socketNamespace.roomId){
+        if (id === socketNamespace.roomId) {
             socketNamespace.gameSocket = socket;
         }
     });
@@ -44,6 +44,13 @@ function initBasicHandlers(socket, socketNamespace) {
     socket.on('markStopTimeGame', () => {
         socketNamespace.gameSocket = socket;
         MiniGameService.startMiniGame(Constants.MINI_GAMES.STOP_TIME, socketNamespace);
+    });
+
+    socket.on('markClicker', (roomId) => {
+        if (roomId === socketNamespace.roomId) {
+            socketNamespace.gameSocket = socket;
+            MiniGameService.startMiniGame(Constants.MINI_GAMES.CLICKER, socketNamespace);
+        }
     });
 }
 

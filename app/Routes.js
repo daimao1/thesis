@@ -171,16 +171,18 @@ module.exports = function (app, passport) {
         let isError = false;
         let players;
         try {
-            RoomService.getById(+req.params.id, +req.user.id);
-            players = RoomService.getPlayersDTOs(+req.params.id);
+            const room = RoomService.getById(+req.params.id, +req.user.id);
+            players = room.players;
         } catch (error) {
             isError = true;
             console.error(error);
             badRequest(res);
         }
         if (!isError) {
-            
-            //TODO cos
+            res.render('clicker.ejs', {
+                id: req.params.id,
+                players: players
+            });
         }
     });
 

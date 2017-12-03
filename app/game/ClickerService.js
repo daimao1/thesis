@@ -1,9 +1,7 @@
 'use strict';
 const RoomService = require('../room/RoomService');
 
-exports.initClicker = initClicker;
-
-function initClicker(socketNamespace) {
+exports.initClicker = function (socketNamespace) {
     const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
     let results = new Array(players.length);
     let isAllPlayersAnswered = false;
@@ -34,7 +32,7 @@ function initClicker(socketNamespace) {
             }
         }, 1000);
     });
-}
+};
 
 function checkIsAllPlayersSentResults(socketNamespace, results){
     if(results.contains(undefined)){
@@ -63,6 +61,14 @@ function fillEmptyResults(results){
     return results;
 }
 
+function sendResultsToGame(sortedResults, playersOrder, playersDTOs, socketNamespace){
+    let playerNamesInOrder = new Array(playersOrder.length);
+    for(let i=0; i<playersOrder.length; i++){
+        playerNamesInOrder[i] = playersDTOs[playersOrder[i]].name;
+    }
+    socketNamespace.gameSocket.emit('clickerResults', playerNamesInOrder, sortedResults);
+}
+
 function collectResults(socketNamespace, results) {
     const playersDTOs = RoomService.getPlayersDTOs(socketNamespace.roomId);
     if(results.length === playersDTOs.length){
@@ -81,6 +87,7 @@ function collectResults(socketNamespace, results) {
     if(playersOrder.length !== playersDTOs.length){
         throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of playerOrder array.`);
     }
+    sendResultsToGame(sortedResults, playersOrder, playersDTOs, socketNamespace);
     RoomService.setPlayersOrderFromMiniGame(playersOrder);
     return playersOrder;
 }
