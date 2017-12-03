@@ -110,7 +110,7 @@ function collectResults(socketNamespace, results) {
         throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of playerOrder array.`);
     }
     sendResultsToGame(sortedResults, playersOrder, playersDTOs, socketNamespace);
-    RoomService.setPlayersOrderFromMiniGame(playersOrder);
+    RoomService.setPlayersOrderFromMiniGame(playersOrder, socketNamespace.roomId);
     return playersOrder;
 }
 

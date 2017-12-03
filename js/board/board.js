@@ -57,6 +57,7 @@ let numberOfPlayers
 let player1, player2, player3, player4, player5, player6
 let allPlayers = []
 
+
 Board.preload = function () {
     board.load.image('plansza', '../assets/map/plansza.png') //załaduj planszę
     board.load.image('background', '../assets/map/wood_background.png')
@@ -65,7 +66,7 @@ Board.preload = function () {
     board.load.spritesheet('avatar3', '../assets/sprites/avatar3.png')
     board.load.spritesheet('avatar4', '../assets/sprites/avatar4.png')
     board.load.spritesheet('avatar5', '../assets/sprites/avatar5.png')
-    board.load.spritesheet('avatar6', '../assets/sprites/avatar6.png')//dupa123
+    board.load.spritesheet('avatar6', '../assets/sprites/avatar6.png')
     board.load.bitmapFont('desyrel', '../assets/fonts/bitmapFonts/desyrel.png', '../assets/fonts/bitmapFonts/desyrel.xml')
     board.load.bitmapFont('desyrel-pink', '../assets/fonts/bitmapFonts/desyrel-pink.png', '../assets/fonts/bitmapFonts/desyrel-pink.xml')
 
