@@ -167,6 +167,25 @@ module.exports = function (app, passport) {
         }
     });
 
+    app.get('/clicker/:id', isLoggedIn, (req, res) => {
+        let isError = false;
+        let players;
+        try {
+            const room = RoomService.getById(+req.params.id, +req.user.id);
+            players = room.players;
+        } catch (error) {
+            isError = true;
+            console.error(error);
+            badRequest(res);
+        }
+        if (!isError) {
+            res.render('clicker.ejs', {
+                id: req.params.id,
+                players: players
+            });
+        }
+    });
+
     app.get('/check-system-status', (req, res) => {
         res.status(200).send();
     });

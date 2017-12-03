@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head id=<%= id %>></head>
+<title>Clicker - Thesis</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="../../js/clicker/clicker.js"></script>
+<style>
+    body, h1 {
+        font-family: "Raleway", sans-serif
+    }
+
+    body, html {
+        height: 100%
+    }
+
+    .bgimg {
+        background-image: url('/assets/pictures/quiz/bg.jpg');
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
+</style>
+<body>
+<span id="numberOfPlayers">6</span>
+<script>document.getElementById("numberOfPlayers").style.display = "none";</script>
+<div class="bgimg w3-display-container">
+    <div id="help_modal" class="w3-modal">
+        <div class="w3-modal-content w3-animate-zoom">
+            <div class="w3-container">
+                <span onclick="onHelpModalClose()" class="w3-button w3-xxlarge w3-display-topright w3-padding">&times;</span>
+                <p>Klik klik klik klik klik</p>
+                <p>KLIK KLIK KLIK KLIK KLIK</p>
+                <p><b>Uwaga, po zamknięciu tego okna gra automatycznie się rozpocznie.</b></p>
+            </div>
+        </div>
+    </div>
+    <div class="w3-text-white w3-display-middle w3-center">
+        <h1 id="be_ready_header" style="font-size: 400%;" >Przygotuj się...</h1>
+        <p>
+            <b><span style="font-size: 600%;" id="countdown"></span></b>
+        </p>
+        <div class="w3-large" id="results_div">
+            <h3>Wyniki: </h3>
+            <ul>
+            <%for(let i = 0; i<players.length; i++){ %>
+                <li id="result<%=i%>"></li>
+            <% } %>
+            </ul>
+        </div>
+        <script>document.getElementById("results_div").style.display = "none"</script>
+    </div>
+</div>
+</body>
+</html>

@@ -25,7 +25,8 @@ const SPECIAL_GRIDS = {
 
 const MINI_GAMES = {
     STOP_TIME: 'stopTime',
-    BASIC_QUIZ: 'basicQuiz'
+    BASIC_QUIZ: 'basicQuiz',
+    CLICKER: 'clicker'
 };
 
 

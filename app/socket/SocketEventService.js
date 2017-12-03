@@ -23,7 +23,7 @@ function initBasicHandlers(socket, socketNamespace) {
     });
 
     socket.on('markQuiz', (id) => {
-        if(id === socketNamespace.roomId){
+        if (id === socketNamespace.roomId) {
             socketNamespace.gameSocket = socket;
         }
     });
@@ -45,6 +45,13 @@ function initBasicHandlers(socket, socketNamespace) {
         socketNamespace.gameSocket = socket;
         MiniGameService.startMiniGame(Constants.MINI_GAMES.STOP_TIME, socketNamespace);
     });
+
+    socket.on('markClicker', (roomId) => {
+        if (roomId === socketNamespace.roomId) {
+            socketNamespace.gameSocket = socket;
+            MiniGameService.startMiniGame(Constants.MINI_GAMES.CLICKER, socketNamespace);
+        }
+    });
 }
 
 function newPlayer(socket, socketNamespace, name, deviceName) {
@@ -64,8 +71,11 @@ function newPlayer(socket, socketNamespace, name, deviceName) {
 function addPlayerDisconnectHandler(player) {
     player.socket.on('disconnect', () => {
         console.log(`SocketIO/N/EventHandler: player disconnected. RoomID: [${player.room_id}], inRoomId: [${player.in_room_id}]`);
-        RoomService.removePlayer(player);
-        PlayerService.removeFromDb(player);
+
+        setTimeout( ()=> {
+            RoomService.removePlayer(player);
+            PlayerService.removeFromDb(player);
+        }, 100000);
     });
 }
 

@@ -1,6 +1,8 @@
 'use strict';
 const Constants = require('../Constants');
 const RoomService = require('../room/RoomService');
+const QuestionService = require('../quiz/question/QuestionService'); //DO NOT REMOVE - loading questions
+const ClickerService = require('./ClickerService');
 const StopTime = require('./StopTimeService');
 
 exports.startMiniGame = function (miniGame, socketNamespace) {
@@ -12,13 +14,19 @@ exports.startMiniGame = function (miniGame, socketNamespace) {
         case Constants.MINI_GAMES.STOP_TIME:
             stopTime(socketNamespace);
             break;
-        default:
-            mockMiniGame(socketNamespace.roomId);
+        case Constants.MINI_GAMES.CLICKER:
+            clicker(socketNamespace);
+            break;
+        default:  mockMiniGame(socketNamespace.roomId);
     }
 };
 
 function basicQuiz(socketNamespace) {
     //TODO quiz invoking
+}
+
+function clicker(socketNamespace) {
+    ClickerService.initClicker(socketNamespace);
 }
 
 function stopTime(socketNamespace) {

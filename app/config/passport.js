@@ -81,11 +81,11 @@ module.exports = function(passport) {
                         return done(err);
                     }
                     if (!rows.length) {
-                        return done(null, false, req.flash('loginMessage', 'Nie znaleźiono użytkownika.')); // req.flash is the way to set flashdata using connect-flash
+                        return done(null, false, req.flash('loginMessage', 'Nie znaleziono użytkownika.')); // req.flash is the way to set flashdata using connect-flash
                     }
                     // if the user is found but the password is wrong
                     if (!bcrypt.compareSync(password, rows[0].password)){
-                        return done(null, false, req.flash('loginMessage', 'Nie poprawne hasło.')); // create the loginMessage and save it to session as flashdata
+                        return done(null, false, req.flash('loginMessage', 'Niepoprawne hasło.')); // create the loginMessage and save it to session as flashdata
                     }
                     // all is well, return successful user
                     return done(null, rows[0]);
