@@ -26,7 +26,7 @@
     }
 </style>
 <body>
-<span id="numberOfPlayers">6</span>
+<span id="numberOfPlayers"><%= players.length %></span>
 <script>document.getElementById("numberOfPlayers").style.display = "none";</script>
 <div class="bgimg w3-display-container">
     <div id="help_modal" class="w3-modal">
@@ -44,13 +44,16 @@
         <p>
             <b><span style="font-size: 600%;" id="countdown"></span></b>
         </p>
-        <div class="w3-large" id="results_div">
-            <h3>Wyniki: </h3>
-            <ul>
+        <div class="w3-xxxlarge" id="results_div">
+            <h1>Wyniki: </h1>
+            <ol>
             <%for(let i = 0; i<players.length; i++){ %>
-                <li id="result<%=i%>"></li>
+                <li>
+                    <span id="playerName<%=i%>"></span> -
+                    <b id="result<%=i%>"></b>
+                </li>
             <% } %>
-            </ul>
+            </ol>
         </div>
         <script>document.getElementById("results_div").style.display = "none"</script>
     </div>

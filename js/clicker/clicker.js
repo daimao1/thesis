@@ -61,7 +61,11 @@ function onClickerResults(playerNamesInOrder, sortedResults) {
     document.getElementById('countdown').style.display = 'none';
 
     for (let i = 0; i < numberOfPlayers; i++) {
-        document.getElementById("result"+i).innerHTML = playerNamesInOrder[i] + " - " + sortedResults[i];
+        if (document.getElementById("result" + i) === null || document.getElementById("playerName" + 1) === null) {
+            break;
+        }
+        document.getElementById("playerName" + i).innerHTML = playerNamesInOrder[i];
+        document.getElementById("result" + i).innerHTML = sortedResults[i];
     }
     document.getElementById("results_div").style.display = "inline";
 }
