@@ -43,7 +43,7 @@ exports.initClicker = function (socketNamespace) {
 };
 
 function checkIsAllPlayersSentResults(socketNamespace, results){
-    if(results.contains(undefined)){
+    if(results.includes(undefined)){
         return false;
     } else {
         collectResults(socketNamespace, results);
