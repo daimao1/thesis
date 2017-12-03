@@ -32,21 +32,21 @@
     <div id="help_modal" class="w3-modal">
         <div class="w3-modal-content w3-animate-zoom">
             <div class="w3-container">
-                <span onclick="onHelpModalClose()" class="w3-button w3-xxxlarge w3-display-topright">&times;</span>
+                <span onclick="onHelpModalClose()" class="w3-button w3-xxlarge w3-display-topright w3-padding">&times;</span>
                 <p>Klik klik klik klik klik</p>
                 <p>KLIK KLIK KLIK KLIK KLIK</p>
-                <p>Uwaga, po zamknięciu gra automatycznie się rozpocznie.</p>
+                <p><b>Uwaga, po zamknięciu tego okna gra automatycznie się rozpocznie.</b></p>
             </div>
         </div>
     </div>
     <div class="w3-text-white w3-display-middle w3-center">
-        <h1 class="w3-xxxlarge w3-animate-top">Przygotuj się...</h1>
+        <h1 id="be_ready_header" style="font-size: 400%;" >Przygotuj się...</h1>
         <p>
-            <b><span style="font-size: 500%;" id="countdown"></span></b>
+            <b><span style="font-size: 600%;" id="countdown"></span></b>
         </p>
         <div class="w3-large" id="results_div">
             <h3>Wyniki: </h3>
-            <ul">
+            <ul>
             <%for(let i = 0; i<players.length; i++){ %>
                 <li id="result<%=i%>"></li>
             <% } %>

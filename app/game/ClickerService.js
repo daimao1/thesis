@@ -4,6 +4,8 @@ const RoomService = require('../room/RoomService');
 exports.initClicker = function (socketNamespace) {
     const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
     let results = new Array(players.length);
+    const timeout = generateClickerTimeout(socketNamespace.gameSocket);
+
     let isAllPlayersAnswered = false;
     players.forEach((player) => {
         player.socket.emit('launchClicker');
@@ -13,7 +15,7 @@ exports.initClicker = function (socketNamespace) {
             isAllPlayersAnswered = checkIsAllPlayersSentResults(socketNamespace, results);
         });
     });
-    handleClickerTimerEvents(socketNamespace);
+    startClickerTimerEvents(socketNamespace, timeout);
 
     //after handle stopClickerTime event from game check did all players send theirs results
     //if not, check every second
@@ -43,19 +45,25 @@ function checkIsAllPlayersSentResults(socketNamespace, results){
     }
 }
 
-function handleClickerTimerEvents(socketNamespace) {
+function startClickerTimerEvents(socketNamespace, time) {
     const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
     socketNamespace.gameSocket.once('startClickerTimer', () => {
         players.forEach((player) => {
-            player.socket.emit('startClickerTimer');
+            player.socket.emit('startClickerTimer', time);
         });
     });
+}
+
+function generateClickerTimeout(gameSocket){
+    let timeout = Math.floor(Math.random() * 6) + 5;
+    gameSocket.emit('clickerTimeout', timeout);
+    return timeout;
 }
 
 function fillEmptyResults(results){
     for(let i=0; i< results.length; i++){
         if(results[i] === undefined){
-            results = 0;
+            results[i] = 0;
         }
     }
     return results;
@@ -71,11 +79,15 @@ function sendResultsToGame(sortedResults, playersOrder, playersDTOs, socketNames
 
 function collectResults(socketNamespace, results) {
     const playersDTOs = RoomService.getPlayersDTOs(socketNamespace.roomId);
-    if(results.length === playersDTOs.length){
+    if(results.length !== playersDTOs.length){
         throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of results array.`);
     }
+    console.log('Results:');
+    console.log(typeof results);
+    console.log(results);
     const sortedResults = results.slice();
     sortedResults.sort(compareNumbers).reverse();
+    console.log(results);
 
     let playersOrder = [];
 

@@ -167,7 +167,7 @@ module.exports = function (app, passport) {
         }
     });
 
-    app.get('clicker/:id', isLoggedIn, (req, res) => {
+    app.get('/clicker/:id', isLoggedIn, (req, res) => {
         let isError = false;
         let players;
         try {

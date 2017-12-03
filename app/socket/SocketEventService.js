@@ -71,8 +71,11 @@ function newPlayer(socket, socketNamespace, name, deviceName) {
 function addPlayerDisconnectHandler(player) {
     player.socket.on('disconnect', () => {
         console.log(`SocketIO/N/EventHandler: player disconnected. RoomID: [${player.room_id}], inRoomId: [${player.in_room_id}]`);
-        RoomService.removePlayer(player);
-        PlayerService.removeFromDb(player);
+
+        setTimeout( ()=> {
+            RoomService.removePlayer(player);
+            PlayerService.removeFromDb(player);
+        }, 100000);
     });
 }
 
