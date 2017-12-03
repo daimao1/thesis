@@ -3,7 +3,8 @@ const RoomService = require('../room/RoomService');
 
 exports.initClicker = function (socketNamespace) {
     const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
-    let results = new Array(players.length);
+    const numberOfPlayers = RoomService.getNumberOfPlayers(socketNamespace.roomId);
+    let results = new Array(numberOfPlayers);
     const timeout = generateClickerTimeout(socketNamespace.gameSocket);
 
     let isAllPlayersAnswered = false;
@@ -11,7 +12,12 @@ exports.initClicker = function (socketNamespace) {
         player.socket.emit('launchClicker');
 
         player.socket.once('clickerResult', (result) => {
-            results[player.in_room_id] = result;
+            result = +result;
+            console.log(`ClickerService[roomId:${socketNamespace.roomId}]: receive clicker result from player: [${result}].`);
+            if(result < 0){
+                throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#initClicker: received unexpected result.`);
+            }
+            results[player.in_room_id] = +result;
             isAllPlayersAnswered = checkIsAllPlayersSentResults(socketNamespace, results);
         });
     });
@@ -49,7 +55,10 @@ function startClickerTimerEvents(socketNamespace, time) {
     const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
     socketNamespace.gameSocket.once('startClickerTimer', () => {
         players.forEach((player) => {
-            player.socket.emit('startClickerTimer', time);
+            let timeObject = {
+                time: time
+            };
+            player.socket.emit('startClickerTimer', timeObject);
         });
     });
 }
@@ -79,7 +88,8 @@ function sendResultsToGame(sortedResults, playersOrder, playersDTOs, socketNames
 
 function collectResults(socketNamespace, results) {
     const playersDTOs = RoomService.getPlayersDTOs(socketNamespace.roomId);
-    if(results.length !== playersDTOs.length){
+    const numberOfPlayers = RoomService.getNumberOfPlayers(socketNamespace.roomId);
+    if(results.length !== playersDTOs.length || results.length !== numberOfPlayers){
         throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of results array.`);
     }
     console.log('Results:');
@@ -96,7 +106,7 @@ function collectResults(socketNamespace, results) {
         results[index] = undefined;
         playersOrder[i] = index;
     }
-    if(playersOrder.length !== playersDTOs.length){
+    if(playersOrder.length !== numberOfPlayers){
         throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of playerOrder array.`);
     }
     sendResultsToGame(sortedResults, playersOrder, playersDTOs, socketNamespace);

@@ -27,6 +27,7 @@ exports.endTurn = endTurn;
 exports.getAllPlayersFromRoom = getAllPlayersFromRoom;
 exports.getCurrentPlayerId = getCurrentPlayerId;
 exports.getGameSocketFromRoom = getGameSocketFromRoom;
+exports.getNumberOfPlayers = getNumberOfPlayers;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -277,6 +278,14 @@ function getAllPlayersFromRoom(roomId){
 
 function getGameSocketFromRoom(roomId) {
     return getRoomByIdUnauthorized(roomId).socketNamespace.gameSocket;
+}
+
+function getNumberOfPlayers(roomId) {
+    const numberOfPlayers = getRoomByIdUnauthorized(roomId).numberOfPlayers;
+    if(numberOfPlayers === undefined || numberOfPlayers < 2){
+        throw new Error(`RoomService[roomId: ${roomId}]#getNumberOfPlayers: undefined or lower than 2.`);
+    }
+    return numberOfPlayers;
 }
 
 /*

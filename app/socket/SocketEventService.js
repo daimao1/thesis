@@ -48,6 +48,16 @@ function initBasicHandlers(socket, socketNamespace) {
 
     socket.on('markClicker', (roomId) => {
         if (roomId === socketNamespace.roomId) {
+
+            //TODO this block is only for test here
+            if (RoomService.isGameStarted(roomId)) {
+                console.log(`SocketEventService: room[${socketNamespace.roomId}] game (board) resumed.`);
+            } else {
+                RoomService.markGameAsStarted(roomId);
+                console.log('SocketEventService: new game started.');
+            }
+            //end
+
             socketNamespace.gameSocket = socket;
             MiniGameService.startMiniGame(Constants.MINI_GAMES.CLICKER, socketNamespace);
         }
