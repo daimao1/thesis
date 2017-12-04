@@ -47,13 +47,13 @@ function gameTimerStart(countdownSpan, header) {
     countdownSpan.style.visibility = "visible";
     let gameTime_interval = setInterval(function () {
         countdownSpan.innerHTML = --counter;
-        if (counter < 0) {
+        if (counter === 0) {
             header.innerHTML = 'STOP';
             countdownSpan.style.visibility = 'hidden';
             socket.emit('stopClickerTimer');
             clearInterval(gameTime_interval);
         }
-    }, 1050);
+    }, 1000);
 }
 
 function onClickerResults(playerNamesInOrder, sortedResults) {
@@ -67,5 +67,38 @@ function onClickerResults(playerNamesInOrder, sortedResults) {
         document.getElementById("playerName" + i).innerHTML = playerNamesInOrder[i];
         document.getElementById("result" + i).innerHTML = sortedResults[i];
     }
+    colorWinners();
     document.getElementById("results_div").style.display = "inline";
+
+    setTimeout(function () {
+        printRedirectInfo();
+    }, 3000);
+}
+
+function printRedirectInfo() {
+    document.getElementById("redirect").style.display = "inline";
+    const redirectTime = document.getElementById("redirectTime");
+    let timeout = 10;
+    let redirectInterval = setInterval(function () {
+        redirectTime.innerHTML = timeout-- + '';
+        if (timeout < 0) {
+            redirectToBoard();
+            clearInterval(redirectInterval);
+        }
+    }, 1000);
+}
+
+function redirectToBoard() {
+    setTimeout(function () {
+        window.location.href = "/board/" + roomId;
+    }, 400);
+}
+
+function colorWinners() {
+    if (numberOfPlayers === 2) {
+        document.getElementById("resultsRow0").classList.add('silverWinner');
+    } else if (numberOfPlayers > 2) {
+        document.getElementById("resultsRow0").classList.add('goldWinner');
+        document.getElementById("resultsRow1").classList.add('silverWinner');
+    }
 }

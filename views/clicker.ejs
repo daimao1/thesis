@@ -24,6 +24,28 @@
         background-position: center;
         background-size: cover;
     }
+
+    .goldWinner {
+        text-shadow: 2px 0 0 #ffd700,
+        -2px 0 0 #ffd700,
+        0 2px 0 #ffd700,
+        0 -2px 0 #ffd700,
+        1px 1px #ffd700,
+        -1px -1px 0 #ffd700,
+        1px -1px 0 #ffd700,
+        -1px 1px 0 #ffd700;
+    }
+
+    .silverWinner {
+        text-shadow: 2px 0 0 #646464,
+        -2px 0 0 #646464,
+        0 2px 0 #646464,
+        0 -2px 0 #646464,
+        1px 1px #646464,
+        -1px -1px 0 #646464,
+        1px -1px 0 #646464,
+        -1px 1px 0 #646464;
+    }
 </style>
 <body>
 <span id="numberOfPlayers"><%= players.length %></span>
@@ -32,7 +54,8 @@
     <div id="help_modal" class="w3-modal">
         <div class="w3-modal-content w3-animate-zoom">
             <div class="w3-container">
-                <span onclick="onHelpModalClose()" class="w3-button w3-xxlarge w3-display-topright w3-padding">&times;</span>
+                <span onclick="onHelpModalClose()"
+                      class="w3-button w3-xxlarge w3-display-topright w3-padding">&times;</span>
                 <p>Klik klik klik klik klik</p>
                 <p>KLIK KLIK KLIK KLIK KLIK</p>
                 <p><b>Uwaga, po zamknięciu tego okna gra automatycznie się rozpocznie.</b></p>
@@ -40,20 +63,23 @@
         </div>
     </div>
     <div class="w3-text-white w3-display-middle w3-center">
-        <h1 id="be_ready_header" style="font-size: 400%;" >Przygotuj się...</h1>
+        <h1 id="be_ready_header" style="font-size: 400%;">Przygotuj się...</h1>
         <p>
             <b><span style="font-size: 600%;" id="countdown"></span></b>
         </p>
-        <div class="w3-xxxlarge" id="results_div">
+        <div class="w3-xxlarge" id="results_div">
             <h1>Wyniki: </h1>
             <ol>
-            <%for(let i = 0; i<players.length; i++){ %>
-                <li>
-                    <span id="playerName<%=i%>"></span> -
-                    <b id="result<%=i%>"></b>
+                <% for(let i = 0; i < players.length; i++){ %>
+                <li id="resultsRow<%= i %>">
+                    <span id="playerName<%= i %>"></span> -
+                    <b id="result<%= i %>"></b>
                 </li>
-            <% } %>
+                <% } %>
             </ol>
+            <p class="w3-large" id="redirect">Powrót do planszy nastąpi za <b style="color:red" id="redirectTime">10</b>
+                sekund.</p>
+            <script>document.getElementById("redirect").style.display = "none"</script>
         </div>
         <script>document.getElementById("results_div").style.display = "none"</script>
     </div>

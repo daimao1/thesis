@@ -44,12 +44,7 @@ exports.initClicker = function (socketNamespace) {
 };
 
 function checkIsAllPlayersSentResults(socketNamespace, results){
-    if(results.includes(undefined)){
-        return false;
-    } else {
-        //collectResults(socketNamespace, results); //if game did not send stopClickerTimer
-        return true;
-    }
+    return !results.includes(undefined);
 }
 
 function startClickerTimerEvents(socketNamespace, time) {
