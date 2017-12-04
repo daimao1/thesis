@@ -31,6 +31,7 @@ exports.initClicker = function (socketNamespace) {
         let interval = setInterval( () => {
             if(isAllPlayersAnswered){
                 clearInterval(interval);
+                collectResults(socketNamespace, results);
             } else {
                 if(intervalCounter++ > 10){
                    clearInterval(interval);
@@ -46,7 +47,7 @@ function checkIsAllPlayersSentResults(socketNamespace, results){
     if(results.includes(undefined)){
         return false;
     } else {
-        collectResults(socketNamespace, results);
+        //collectResults(socketNamespace, results); //if game did not send stopClickerTimer
         return true;
     }
 }
