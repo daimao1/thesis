@@ -169,7 +169,8 @@ function checkIfAllPlayersAnswered(quiz, numberOfPlayers) {
 
 function endGame(quiz) {
     const playersOrder = QuizService.collectResults(quiz);
-    RoomService.setPlayersOrderFromMiniGame([...playersOrder], quiz.roomId);
+    RoomService.setPlayersOrder([...playersOrder], quiz.roomId);
+    RoomService.setExtraDices(quiz.roomId, playersOrder, quiz.sortedResults);
     setTimeout(()=>{
         console.log(`BasicQuizGame[roomId:${quiz.roomId}]: deleting finished quiz.`);
         gamesMap.delete(quiz.roomId);

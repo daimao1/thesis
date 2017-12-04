@@ -1,11 +1,14 @@
 'use strict';
 const Constants = require('../utils/Constants');
 const RoomService = require('../room/RoomService');
-const QuestionService = require('../quiz/question/QuestionService'); //DO NOT REMOVE - loading questions
+const QuestionService = require('../quiz/question/QuestionService'); //DO NOT REMOVE - loading questions from DB
 const ClickerService = require('./ClickerService');
 const StopTime = require('./StopTimeService');
 
-exports.startMiniGame = function (miniGame, socketNamespace) {
+exports.createDefaultOrder = createDefaultOrder;
+exports.startMiniGame = startMiniGame;
+
+function startMiniGame(miniGame, socketNamespace) {
 
     switch (miniGame) {
         case Constants.MINI_GAMES.BASIC_QUIZ:
@@ -19,7 +22,7 @@ exports.startMiniGame = function (miniGame, socketNamespace) {
             break;
         default:  mockMiniGame(socketNamespace.roomId);
     }
-};
+}
 
 function basicQuiz(socketNamespace) {
     //TODO quiz invoking
@@ -35,7 +38,7 @@ function stopTime(socketNamespace) {
 
 function mockMiniGame(roomId) {
     let orderFromMiniGame = createDefaultOrder(roomId);
-    RoomService.setPlayersOrderFromMiniGame([...orderFromMiniGame], roomId);
+    RoomService.setPlayersOrder([...orderFromMiniGame], roomId);
 }
 
 function createDefaultOrder(roomId) {

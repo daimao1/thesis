@@ -36,6 +36,11 @@ const GAMES_URLS = {
     BOARD: "board"
 };
 
+
+/**
+ * If true, mini game has been started before first round*/
+const MINI_GAME_ON_START = false;
+
 /**
  * Time for answering for a question in seconds
  * */
@@ -48,3 +53,4 @@ exports.SPECIAL_GRIDS = SPECIAL_GRIDS;
 exports.MINI_GAMES = MINI_GAMES;
 exports.QUESTION_TIME = QUESTION_TIME;
 exports.GAMES_URLS = GAMES_URLS;
+exports.MINI_GAME_ON_START = MINI_GAME_ON_START;

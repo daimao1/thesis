@@ -88,6 +88,7 @@ function collectResults(socketNamespace, results) {
     if(results.length !== playersDTOs.length || results.length !== numberOfPlayers){
         throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of results array.`);
     }
+    //TODO delete or descript this logs
     console.log('Results:');
     console.log(typeof results);
     console.log(results);
@@ -106,7 +107,8 @@ function collectResults(socketNamespace, results) {
         throw new Error(`ClickerService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of playerOrder array.`);
     }
     sendResultsToGame(sortedResults, playersOrder, playersDTOs, socketNamespace);
-    RoomService.setPlayersOrderFromMiniGame(playersOrder, socketNamespace.roomId);
+    RoomService.setPlayersOrder(playersOrder, socketNamespace.roomId);
+    RoomService.setExtraDices(socketNamespace.roomId, playersOrder, sortedResults);
     return playersOrder;
 }
 

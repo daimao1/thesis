@@ -3,7 +3,6 @@ const RoomDao = require('./RoomDao');
 const Room = require('./Room');
 const SocketNamespace = require('../socket/SocketNamespace');
 const Constants = require('../utils/Constants');
-//const SocketEventService = require('../socket/SocketEventService');
 
 let roomList = [];
 loadDataFromDb();
@@ -18,7 +17,8 @@ exports.removePlayer = removePlayer;
 exports.getPlayersDTOs = getPlayersDTOs;
 exports.getPlayerFromRoom = getPlayerFromRoom;
 exports.nextPlayerTurn = nextPlayerTurn;
-exports.setPlayersOrderFromMiniGame = setPlayersOrderFromMiniGame;
+exports.setPlayersOrder = setPlayersOrder;
+exports.setExtraDices = setExtraDices;
 exports.endRound = endRound;
 exports.saveGameState = saveGameState;
 exports.markGameAsStarted = markGameAsStarted;
@@ -158,32 +158,46 @@ function getPlayerFromRoom(roomId, playerInRoomId) {
     return player;
 }
 
-function setPlayersOrderFromMiniGame(orderFromMiniGame, roomId) {
+function setPlayersOrder(order, roomId) {
 
     const room = getRoomByIdUnauthorized(roomId);
+    clearExtraDices(room);
 
-    if (orderFromMiniGame === undefined || orderFromMiniGame.length > room.players.length) {
+    if (order === undefined || order.length > room.players.length) {
         throw new Error(`Room[${room.id}]#setNewPlayersOrder(): order incorrect.`);
     }
     if (room.currentPlayerId !== -1) {
         throw new Error(`Room[${room.id}]#setNewPlayersOrder(): current round is not finished.`);
     }
-    setPlayersSpecialOrder(orderFromMiniGame, room);
+
     if (Constants.PLAYER_ORDER === Constants.PLAYER_ORDERS_OPTIONS.FIRST_TO_LAST) {
-        room.setNewPlayersOrder(orderFromMiniGame); // Array is loaded from the end, so first player from mini game will be last.
+        room.setNewPlayersOrder(order); // Array is loaded from the end, so first player from mini game will be last.
     } else {
         // FIRST_TO_FIRST, first player from mini game will be first in board game
-        room.setNewPlayersOrder(orderFromMiniGame.reverse());
+        room.setNewPlayersOrder(order.reverse());
     }
 }
 
-//Set 'special' order for first 2 players from mini game - this players get extra dices
-function setPlayersSpecialOrder(playersOrder, room) {
-    if(room.numberOfPlayers === 2){
-        room.players[playersOrder[0]].extraDices = 1;
+/**
+ * @param {number} roomId
+ * @param {number[]} sortedResults
+ * @param {number[]} playersOrder - array of in_room_id parameters sorted by results from the mini game (from the best)
+ */
+function setExtraDices(roomId, playersOrder, sortedResults) {
+    //if something undefined
+    const players = getRoomByIdUnauthorized(roomId).players;
+    if(players.length > 2) {
+        players[playersOrder[0]].extraDices = 2;
+        players[playersOrder[1]].extraDices = 1;
     } else {
-        room.players[playersOrder[0]].extraDices = 2;
-        room.players[playersOrder[1]].extraDices = 1;
+        players[playersOrder[0]].extraDices = 1;
+    }
+    //TODO algorytm
+}
+
+function clearExtraDices(players) {
+    for(let i=0; i<players.length; i++){
+        players[i] = undefined;
     }
 }
 

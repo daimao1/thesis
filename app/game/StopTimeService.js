@@ -72,7 +72,8 @@ function collectResults(socketNamespace, goal, results) {
     if (playersOrder.length !== numberOfPlayers) {
         throw new Error(`StopTimeService[roomId:${socketNamespace.roomId}]#collectResults: unexpected size of playersOrder.`);
     }
-    RoomService.setPlayersOrderFromMiniGame(playersOrder, socketNamespace.roomId);
+    RoomService.setPlayersOrder(playersOrder, socketNamespace.roomId);
+    RoomService.setExtraDices(socketNamespace.roomId, playersOrder, sortedResults);
     return playersOrder;
 }
 

@@ -100,6 +100,7 @@ function collectResults(quiz) {
     }
     const sortedPlayerScores = playerScores.slice();
     sortedPlayerScores.sort(compareNumbers).reverse();
+    quiz.sortedResults = sortedPlayerScores;
 
     let playersOrder = [];
 
