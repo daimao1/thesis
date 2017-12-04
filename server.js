@@ -9,7 +9,7 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const io = require('socket.io').listen(server);
 
-//resources TODO nie wiadomo czy nam to potrzebne
+//resources
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
 app.use('/assets', express.static(__dirname + '/assets'));
@@ -20,7 +20,7 @@ app.use(morgan('dev')); //log every request to the console
 
 app.set('view engine', 'ejs'); // set up ejs for templating
 
-app.use(cookieParser()); // read cookies (needed for auth)
+app.use(cookieParser()); // read cookies (need for auth)
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -37,7 +37,7 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
-require('./app/Routes.js')(app, passport); //ROUTING
+require('./app/utils/Routes.js')(app, passport); //ROUTING
 
 server.listen(process.env.PORT || 8081, function () {
     console.log('Listening on *: ' + server.address().port);

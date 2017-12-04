@@ -2,7 +2,7 @@
 const RoomDao = require('./RoomDao');
 const Room = require('./Room');
 const SocketNamespace = require('../socket/SocketNamespace');
-const Constants = require('../Constants');
+const Constants = require('../utils/Constants');
 //const SocketEventService = require('../socket/SocketEventService');
 
 let roomList = [];
@@ -28,6 +28,7 @@ exports.getAllPlayersFromRoom = getAllPlayersFromRoom;
 exports.getCurrentPlayerId = getCurrentPlayerId;
 exports.getGameSocketFromRoom = getGameSocketFromRoom;
 exports.getNumberOfPlayers = getNumberOfPlayers;
+exports.isRoomExist = isRoomExist;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -286,6 +287,19 @@ function getNumberOfPlayers(roomId) {
         throw new Error(`RoomService[roomId: ${roomId}]#getNumberOfPlayers: undefined or lower than 2.`);
     }
     return numberOfPlayers;
+}
+
+function isRoomExist(roomId) {
+    let room;
+    try {
+        room = getRoomByIdUnauthorized(roomId);
+    } catch(err) {
+        console.log('RoomService#isRoomExist: catch error: \n start --- [');
+        console.log(err);
+        console.log("] -- end");
+        return false;
+    }
+    return room !== undefined;
 }
 
 /*

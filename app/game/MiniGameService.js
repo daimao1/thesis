@@ -1,5 +1,5 @@
 'use strict';
-const Constants = require('../Constants');
+const Constants = require('../utils/Constants');
 const RoomService = require('../room/RoomService');
 const QuestionService = require('../quiz/question/QuestionService'); //DO NOT REMOVE - loading questions
 const ClickerService = require('./ClickerService');

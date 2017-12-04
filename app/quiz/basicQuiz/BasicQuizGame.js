@@ -1,7 +1,7 @@
 "use strict";
 const QuizService = require('../QuizService');
 const RoomService = require('../../room/RoomService');
-const QUESTION_TIME = require('../../Constants').QUESTION_TIME;
+const QUESTION_TIME = require('../../utils/Constants').QUESTION_TIME;
 
 let gamesMap = new Map();
 
