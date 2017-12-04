@@ -10,17 +10,13 @@ function initGame(socketNamespace) {
 
     const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
 
-    players.forEach((player) => {
-        player.socket.emit('stopTimeGame');
-    });
+    socketNamespace.namespace.to('players').emit('stopTimeGame');
     console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: notify players about stop-time-game.`);
 
     socketNamespace.gameSocket.once('stopTimeStartTimer', () => {
 
         console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: stop-time-game timer start counting.`);
-        players.forEach((player) => {
-            player.socket.emit('startTimer');
-        });
+        socketNamespace.namespace.to('players').emit('startTimer');
         console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: emit 'startTimer' event to players.`);
 
         players.forEach((player) => {

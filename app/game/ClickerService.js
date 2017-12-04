@@ -8,9 +8,8 @@ exports.initClicker = function (socketNamespace) {
     const timeout = generateClickerTimeout(socketNamespace.gameSocket);
 
     let isAllPlayersAnswered = false;
+    socketNamespace.namespace.to('players').emit('launchClicker');
     players.forEach((player) => {
-        player.socket.emit('launchClicker');
-
         player.socket.once('clickerResult', (result) => {
             result = +result;
             console.log(`ClickerService[roomId:${socketNamespace.roomId}]: receive clicker result from player: [${result}].`);
@@ -48,14 +47,11 @@ function checkIsAllPlayersSentResults(socketNamespace, results){
 }
 
 function startClickerTimerEvents(socketNamespace, time) {
-    const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
+    const timeObject = {
+        time: time
+    };
     socketNamespace.gameSocket.once('startClickerTimer', () => {
-        players.forEach((player) => {
-            let timeObject = {
-                time: time
-            };
-            player.socket.emit('startClickerTimer', timeObject);
-        });
+        socketNamespace.namespace.to('players').emit('startClickerTimer', timeObject);
     });
 }
 

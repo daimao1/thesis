@@ -59,6 +59,7 @@ function getNextQuestion(quiz) {
 
         const quizId = {quizId: quiz.id};
         const players = RoomService.getAllPlayersFromRoom(quiz.roomId);
+        //TODO change to nsp.to(players).emit
         players.forEach((player) => {
             player.socket.emit('newQuizQuestion', quizId);
         });
@@ -90,6 +91,7 @@ function checkAnswers(quiz){
 function sendEndQuestionTimeToPlayers(quiz) {
     const players = RoomService.getAllPlayersFromRoom(quiz.roomId);
     console.log(`BasicQuizGame[roomId:${quiz.roomId}]: emitting \'endQuestionTime\' event to players.`);
+    //TODO change to nsp.to(players).emit
     players.forEach((player) => {
         player.socket.emit('endQuestionTime');
     });
