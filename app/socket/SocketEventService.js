@@ -1,8 +1,9 @@
 'use strict';
 const RoomService = require('../room/RoomService');
 const PlayerService = require('../player/PlayerService');
-const Constants = require('../Constants');
+const Constants = require('../utils/Constants');
 const MiniGameService = require('../game/MiniGameService');
+const Redirector = require('../utils/Redirector');
 
 exports.initBasicHandlers = initBasicHandlers;
 exports.sendPlayersInfoToGame = sendPlayersInfoToGame;
@@ -147,8 +148,11 @@ function nextPlayerTurn(socketNamespace) {
     let player = RoomService.nextPlayerTurn(socketNamespace.roomId);
     if (player === undefined) {
         RoomService.endRound(socketNamespace.roomId);
-        MiniGameService.startMiniGame('default', socketNamespace);
-        player = RoomService.nextPlayerTurn(socketNamespace.roomId);
+        socketNamespace.gameSocket.emit('endRound');
+        Redirector.redirectToMiniGame(Constants.MINI_GAMES.CLICKER, socketNamespace);
+        return;
+        //MiniGameService.startMiniGame('default', socketNamespace);
+        //player = RoomService.nextPlayerTurn(socketNamespace.roomId);
     }
     if (player.in_room_id > -1 && player.in_room_id < Constants.MAX_PLAYERS) {
         socketNamespace.gameSocket.emit('nextPlayerTurn', player.in_room_id);
