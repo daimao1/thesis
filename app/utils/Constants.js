@@ -29,9 +29,15 @@ const MINI_GAMES = {
     CLICKER: 'clicker'
 };
 
+const GAMES_URLS = {
+    STOP_TIME: "stoptimegame",
+    BASIC_QUIZ: "quiz",
+    CLICKER: "clicker",
+    BOARD: "board"
+};
 
 /**
- * Time for answer a question in seconds
+ * Time for answering for a question in seconds
  * */
 const QUESTION_TIME = 20;
 
@@ -41,3 +47,4 @@ exports.MAX_PLAYERS = MAX_PLAYERS;
 exports.SPECIAL_GRIDS = SPECIAL_GRIDS;
 exports.MINI_GAMES = MINI_GAMES;
 exports.QUESTION_TIME = QUESTION_TIME;
+exports.GAMES_URLS = GAMES_URLS;

@@ -1,5 +1,5 @@
 //ROUTES
-const RoomService = require('./room/RoomService');
+const RoomService = require('../room/RoomService');
 
 module.exports = function (app, passport) {
 
@@ -145,7 +145,7 @@ module.exports = function (app, passport) {
         }
         if (!isError) {
 
-            const bqg = require('./quiz/basicQuiz/BasicQuizGame');
+            const bqg = require('../quiz/basicQuiz/BasicQuizGame');
             const quiz = bqg.startGame(+req.params.id);
             const qstn = bqg.getNextQuestion(quiz);
             let winners = bqg.getNamesOfQuizQuestionWinners(quiz); //return undefined when question not finished
