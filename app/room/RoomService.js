@@ -112,7 +112,7 @@ function addPlayerToRoom(player) {
     if (room === undefined) {
         throw new Error('RoomService#addPlayerToRoom(): Room undefined');
     }
-    else if(room.isGameStarted === true) {
+    else if (room.isGameStarted === true) {
         throw new Error('RoomService#addPlayerToRoom(): cannot add new player, game is already started.');
     } else {
         room.addPlayer(player);
@@ -141,18 +141,18 @@ function getRoomBySocketNamespace(socketNamespace) {
     if (roomToReturn === undefined) {
         throw new Error(`RoomService: cannot find room with socketNamespace.roomId[${socketNamespace.roomId}].`);
     }
-    if(roomToReturn.id !== socketNamespace.roomId) {
+    if (roomToReturn.id !== socketNamespace.roomId) {
         throw new Error(`RoomService: really unexpected state. Go home.`);
     }
     return roomToReturn;
 }
 
 function getPlayerFromRoom(roomId, playerInRoomId) {
-    if(roomId === undefined || playerInRoomId === undefined){
+    if (roomId === undefined || playerInRoomId === undefined) {
         throw new Error('RoomService#getPlayerFromRoom(): roomId or playerId undefined.');
     }
     const player = getRoomByIdUnauthorized(roomId).players[playerInRoomId];
-    if(player === undefined){
+    if (player === undefined) {
         throw new Error(`RoomService#getPlayerFromRoom(): cannot find player with id[${playerInRoomId}] in room[${roomId}].`);
     }
     return player;
@@ -186,17 +186,48 @@ function setPlayersOrder(order, roomId) {
 function setExtraDices(roomId, playersOrder, sortedResults) {
     //if something undefined
     const players = getRoomByIdUnauthorized(roomId).players;
-    if(players.length > 2) {
-        players[playersOrder[0]].extraDices = 2;
-        players[playersOrder[1]].extraDices = 1;
+
+    if (playersOrder.length === 2) {
+        if (sortedResults[0] === sortedResults[1] && sortedResults[0] !== 0) {
+            players[playersOrder[0]].extraDices = 1;
+            players[playersOrder[1]].extraDices = 1;
+        } else if (sortedResults[0] !== sortedResults[1]) {
+            players[playersOrder[0]].extraDices = 1;
+        }
+    } else if (playersOrder.length > 2 && playersOrder.length <= Constants.MAX_PLAYERS) {
+        const distinctResults = [...new Set(sortedResults)];
+        if (distinctResults.length === 1 && distinctResults[0] !== 0) {
+            for (let i = 0; i < players.length; i++) {
+                players[i].extraDices = 1;
+            }
+        } else if (distinctResults.length === 2 && distinctResults[1] === 0) {
+            for (let i = 0; i < players.length; i++) {
+                if (sortedResults[i] === distinctResults[0]) {
+                    players[playersOrder[i]].extraDices = 1;
+                }
+            }
+        } else if (distinctResults.length > 2) {
+            for (let i = 0; i < 2; i++) {
+                for (let k = 0; k < sortedResults.length; k++) { //todo while
+                    if(sortedResults[k] === distinctResults[i]) {
+                        if (i === 0) {
+                            players[playersOrder[k]].extraDices = 2;
+                        } else if(i === 1){
+                            players[playersOrder[k]].extraDices = 1;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
     } else {
-        players[playersOrder[0]].extraDices = 1;
+        throw new Error(`RoomService#setExtraDices: unexpected size of playersOrder: [playersOrder: ${playersOrder}]`);
     }
-    //TODO algorytm
 }
 
 function clearExtraDices(players) {
-    for(let i=0; i<players.length; i++){
+    for (let i = 0; i < players.length; i++) {
         players[i] = undefined;
     }
 }
@@ -204,13 +235,13 @@ function clearExtraDices(players) {
 function nextPlayerTurn(roomId) {
     const room = getRoomByIdUnauthorized(roomId);
     let playerId;
-    if(room.turnInProgress === true) {
+    if (room.turnInProgress === true) {
         playerId = room.currentPlayerId;
     } else {
         room.turnInProgress = true;
         playerId = room.nextPlayerTurn();
     }
-    if(playerId === -1){
+    if (playerId === -1) {
         return undefined;
     }
     return room.players[playerId];
@@ -233,7 +264,7 @@ function endRound(roomId) {
 }
 
 function saveGameState(playerId, field, roomId) {
-    if(field === undefined) {
+    if (field === undefined) {
         throw new Error('RoomService#saveGameState(): field undefined.');
     }
 
@@ -257,20 +288,20 @@ function saveGameState(playerId, field, roomId) {
 // }
 
 function getPlayersDTOs(roomId) {
-    if(roomId === undefined){
+    if (roomId === undefined) {
         throw new Error('RoomService#getPlayersInfoDTO(): roomId undefined.');
     }
 
     const room = getRoomByIdUnauthorized(roomId);
 
     let playersDTOs = [];
-    room.players.forEach( (player, index) => {
-        playersDTOs[index] = { id: player.in_room_id, name: player.name, field: player.field_number };
+    room.players.forEach((player, index) => {
+        playersDTOs[index] = {id: player.in_room_id, name: player.name, field: player.field_number};
     });
-    if(playersDTOs.length === 0){
+    if (playersDTOs.length === 0) {
         throw new Error('RoomService#getPlayersInfoDTO(): there are no players in the room.');
     }
-    if(playersDTOs.length !== room.players.length){
+    if (playersDTOs.length !== room.players.length) {
         throw new Error('RoomService#getPlayersInfoDTO(): creating DTO failed.');
     } else {
         return playersDTOs;
@@ -281,13 +312,13 @@ function isGameStarted(roomId) {
     return getRoomByIdUnauthorized(roomId).isGameStarted;
 }
 
-function markGameAsStarted(roomId){
+function markGameAsStarted(roomId) {
     const room = getRoomByIdUnauthorized(roomId);
     room.isGameStarted = true;
     room.numberOfPlayers = room.players.length;
 }
 
-function getAllPlayersFromRoom(roomId){
+function getAllPlayersFromRoom(roomId) {
     return getRoomByIdUnauthorized(roomId).players;
 }
 
@@ -297,7 +328,7 @@ function getGameSocketFromRoom(roomId) {
 
 function getNumberOfPlayers(roomId) {
     const numberOfPlayers = getRoomByIdUnauthorized(roomId).numberOfPlayers;
-    if(numberOfPlayers === undefined || numberOfPlayers < 2){
+    if (numberOfPlayers === undefined || numberOfPlayers < 2) {
         throw new Error(`RoomService[roomId: ${roomId}]#getNumberOfPlayers: undefined or lower than 2.`);
     }
     return numberOfPlayers;
@@ -307,7 +338,7 @@ function isRoomExist(roomId) {
     let room;
     try {
         room = getRoomByIdUnauthorized(roomId);
-    } catch(err) {
+    } catch (err) {
         console.log('RoomService#isRoomExist: catch error: \n start --- [');
         console.log(err);
         console.log("] -- end");
@@ -319,7 +350,7 @@ function isRoomExist(roomId) {
 /*
 * Private function
 */
-function getRoomByIdUnauthorized(roomId){
+function getRoomByIdUnauthorized(roomId) {
     let roomToReturn;
     for (let room of roomList) {
         if (room.id === roomId) {
