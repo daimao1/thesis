@@ -7,46 +7,10 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="css/style.css">
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="../../js/clicker/clicker.js"></script>
-<style>
-    body, h1 {
-        font-family: "Raleway", sans-serif
-    }
 
-    body, html {
-        height: 100%
-    }
-
-    .bgimg {
-        background-image: url('/assets/pictures/quiz/bg.jpg');
-        min-height: 100%;
-        background-position: center;
-        background-size: cover;
-    }
-
-    .goldWinner {
-        text-shadow: 2px 0 0 #ffd700,
-        -2px 0 0 #ffd700,
-        0 2px 0 #ffd700,
-        0 -2px 0 #ffd700,
-        1px 1px #ffd700,
-        -1px -1px 0 #ffd700,
-        1px -1px 0 #ffd700,
-        -1px 1px 0 #ffd700;
-    }
-
-    .silverWinner {
-        text-shadow: 2px 0 0 #646464,
-        -2px 0 0 #646464,
-        0 2px 0 #646464,
-        0 -2px 0 #646464,
-        1px 1px #646464,
-        -1px -1px 0 #646464,
-        1px -1px 0 #646464,
-        -1px 1px 0 #646464;
-    }
-</style>
 <body>
 <span id="numberOfPlayers"><%= players.length %></span>
 <script>document.getElementById("numberOfPlayers").style.display = "none";</script>
