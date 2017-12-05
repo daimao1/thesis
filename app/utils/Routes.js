@@ -182,7 +182,7 @@ module.exports = function (app, passport) {
 
 function badRequest(res) {
     res.setHeader('Content-Type', 'text/plain');
-    res.status(404).send('Not found');
+    res.status(404).send('404 - Not found');
 }
 
 function isLoggedIn(req, res, next) {
