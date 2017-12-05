@@ -1,7 +1,7 @@
 "use strict";
-const QuizService = require('../QuizService');
-const RoomService = require('../../room/RoomService');
-const QUESTION_TIME = require('../../utils/Constants').QUESTION_TIME;
+const QuizService = require('../quiz/QuizService');
+const RoomService = require('../room/RoomService');
+const QUESTION_TIME = require('../utils/Constants').QUESTION_TIME;
 
 let gamesMap = new Map();
 
@@ -10,7 +10,8 @@ exports.getNextQuestion = getNextQuestion;
 exports.getQuizGameByRoomId = getQuizGameByRoomId;
 exports.getNamesOfQuizQuestionWinners = getNamesOfQuizQuestionWinners;
 
-function startGame(roomId) {
+function startGame(socketNamespace) {
+    const roomId = socketNamespace.roomId;
     if (gamesMap.has(roomId)) {
         console.log('BasicQuizGame#startGame: this game already have a started quiz.');
         return QuizService.getQuizById(gamesMap.get(roomId));
@@ -21,7 +22,14 @@ function startGame(roomId) {
     gamesMap.set(roomId, quiz.id);
     createEventHandlers(roomId, quiz);
     quiz.playerAnswers.clear();
+
+    sendNextQuestion(quiz, socketNamespace);
     return quiz;
+}
+
+function sendNextQuestion(quiz, socketNamespace) {
+    const question = getNextQuestion(quiz, socketNamespace);
+    socketNamespace.gameSocket.emit('nextQuestion', question);
 }
 
 function getQuizGameByRoomId(roomId) {
@@ -34,11 +42,11 @@ function getQuizGameByRoomId(roomId) {
 }
 
 function getNamesOfQuizQuestionWinners(quiz) {
-    if(quiz.currentQuestion === undefined) {
+    if (quiz.currentQuestion === undefined) {
         throw new Error(`BasicQuizGame[roomId:${quiz.roomId}]#getNamesOfQuizQuestionWinners: current question closed.`);
     }
     const playersDTOs = RoomService.getPlayersDTOs(quiz.roomId);
-    if(playersDTOs.length === quiz.playerAnswers.size) {
+    if (playersDTOs.length === quiz.playerAnswers.size) {
         const winners = quiz.currentQuestionWinners;
         QuizService.endQuestion(quiz);
         return winners;
@@ -47,30 +55,28 @@ function getNamesOfQuizQuestionWinners(quiz) {
     }
 }
 
-function getNextQuestion(quiz) {
+function getNextQuestion(quiz, socketNamespace) {
     const currentQuestion = quiz.currentQuestion;
     const question = QuizService.getNextQuestion(quiz);
     if (question === undefined) {
         endGame(quiz);
         return currentQuestion;
     }
-    if(question !== currentQuestion) {
+    if (question !== currentQuestion) {
         console.log(`BasicQuizGame[roomId:${quiz.roomId}]#getNextQuestion: new question.`);
 
         const quizId = {quizId: quiz.id};
-        const players = RoomService.getAllPlayersFromRoom(quiz.roomId);
-        //TODO change to nsp.to(players).emit
-        players.forEach((player) => {
-            player.socket.emit('newQuizQuestion', quizId);
-        });
 
-        startQuestionTimer(quiz);
+        socketNamespace.namespace.to('players').emit('newQuizQuestion', quizId);
+        socketNamespace.gameSocket.once('startQuestionTimer', () => {
+            startQuestionTimer(quiz);
+        });
     }
     return question;
 }
 
 function endQuestionTimer(quiz) {
-    if(quiz.currentQuestion !== undefined) {
+    if (quiz.currentQuestion !== undefined) {
         const gameSocket = RoomService.getGameSocketFromRoom(quiz.roomId);
         console.log(`BasicQuizGame[roomId:${quiz.roomId}]: emit \'endQuestionTimeServer\' event.`);
         gameSocket.emit('endQuestionTimeServer');
@@ -80,18 +86,20 @@ function endQuestionTimer(quiz) {
     }
 }
 
-function checkAnswers(quiz){
+function checkAnswers(quiz) {
     sendEndQuestionTimeToPlayers(quiz);
     QuizService.checkAnswers(quiz);
     const gameSocket = RoomService.getGameSocketFromRoom(quiz.roomId);
-    console.log(`BasicQuizGame[roomId:${quiz.roomId}]: emit \'questionResultsPrepared\' event.`);
-    gameSocket.emit('questionResultsPrepared');
+    console.log(`BasicQuizGame[roomId:${quiz.roomId}]: emit \'questionResults\' event.`);
+    endGame(quiz);
+    const winners = getNamesOfQuizQuestionWinners(quiz);
+    gameSocket.emit('questionResults', winners);
 }
 
 function sendEndQuestionTimeToPlayers(quiz) {
     const players = RoomService.getAllPlayersFromRoom(quiz.roomId);
     console.log(`BasicQuizGame[roomId:${quiz.roomId}]: emitting \'endQuestionTime\' event to players.`);
-    //TODO change to nsp.to(players).emit
+
     players.forEach((player) => {
         player.socket.emit('endQuestionTime');
     });
@@ -104,9 +112,9 @@ function startQuestionTimer(quiz) {
         endQuestionTimer(quiz);
     }, time);
 
-    let interval = setInterval(()=>{
+    let interval = setInterval(() => {
         const gameSocket = RoomService.getGameSocketFromRoom(quiz.roomId);
-        if(gameSocket !== undefined) {
+        if (gameSocket !== undefined) {
             clearInterval(interval);
             gameSocket.once('endQuestionTimeFE', () => {
                 console.log(`BasicQuizGame[roomId:${quiz.roomId}]: handle \'endQuestionTimeFE\' event.`);
@@ -130,28 +138,27 @@ function createEventHandlers(roomId, quiz) {
 function quizAnswerHandler(player, quiz, numberOfPlayers) {
     player.socket.once('quizAnswer', (quizAnswerData) => {
         console.log(`BasicQuizGame[roomId:${quiz.roomId}]: handle \'quizAnswer\' event - saving quiz answer.`);
-        //if (+quizAnswerData.quizId === quiz.id) { //TODO set quiz id
-        let answerId;
-        switch (quizAnswerData.answer) {
-            case "a":
-                answerId = 0;
-                break;
-            case "b":
-                answerId = 1;
-                break;
-            case "c":
-                answerId = 2;
-                break;
-            case "d":
-                answerId = 3;
-                break;
-            default:
-                answerId = -1;
+        if (+quizAnswerData.quizId === quiz.id) {
+            let answerId;
+            switch (quizAnswerData.answer) {
+                case "a":
+                    answerId = 0;
+                    break;
+                case "b":
+                    answerId = 1;
+                    break;
+                case "c":
+                    answerId = 2;
+                    break;
+                case "d":
+                    answerId = 3;
+                    break;
+                default:
+                    answerId = -1;
+            }
+            emitSocketToQuiz(player.in_room_id, player.room_id);
+            quiz.playerAnswers.set(player.in_room_id, answerId);
         }
-
-        emitSocketToQuiz(player.in_room_id, player.room_id);
-        quiz.playerAnswers.set(player.in_room_id, answerId);
-        //}
         checkIfAllPlayersAnswered(quiz, numberOfPlayers);
     });
 }
@@ -173,7 +180,7 @@ function endGame(quiz) {
     const playersOrder = QuizService.collectResults(quiz);
     RoomService.setPlayersOrder([...playersOrder], quiz.roomId);
     RoomService.setExtraDices(quiz.roomId, playersOrder, quiz.sortedResults);
-    setTimeout(()=>{
+    setTimeout(() => {
         console.log(`BasicQuizGame[roomId:${quiz.roomId}]: deleting finished quiz.`);
         gamesMap.delete(quiz.roomId);
     }, 60000); //delete quiz after 60 seconds

@@ -25,7 +25,7 @@ function initBasicHandlers(socket, socketNamespace) {
     socket.on('markQuiz', (id) => {
         if (id === socketNamespace.roomId) {
             socketNamespace.gameSocket = socket;
-            //TODO minigame init
+            MiniGameService.startMiniGame(Constants.MINI_GAMES.BASIC_QUIZ, socketNamespace);
         }
     });
 

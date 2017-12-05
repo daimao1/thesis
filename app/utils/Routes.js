@@ -5,7 +5,7 @@ module.exports = function (app, passport) {
 
     //Home page
     app.get('/', function (req, res) {
-        if(req.isAuthenticated()) {
+        if (req.isAuthenticated()) {
             const rooms = RoomService.getByAdminId(req.user.id); //Load rooms list
             res.render('index.ejs', {user: req.user, rooms: rooms, isUserLogged: true});
         } else {
@@ -144,25 +144,9 @@ module.exports = function (app, passport) {
             badRequest(res);
         }
         if (!isError) {
-
-            const bqg = require('../quiz/basicQuiz/BasicQuizGame');
-            const quiz = bqg.startGame(+req.params.id);
-            const qstn = bqg.getNextQuestion(quiz);
-            let winners = bqg.getNamesOfQuizQuestionWinners(quiz); //return undefined when question not finished
-
-            const question = {
-                content: qstn.content,
-                answer1: qstn.answers[0],
-                answer2: qstn.answers[1],
-                answer3: qstn.answers[2],
-                answer4: qstn.answers[3],
-                winners: winners
-            };
-
             res.render('quiz/basic_question.ejs', {
                 id: req.params.id,
-                players: players,
-                question: question
+                players: players
             });
         }
     });

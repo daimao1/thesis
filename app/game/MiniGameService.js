@@ -4,6 +4,7 @@ const RoomService = require('../room/RoomService');
 const QuestionService = require('../quiz/question/QuestionService'); //DO NOT REMOVE - loading questions from DB
 const ClickerService = require('./ClickerService');
 const StopTime = require('./StopTimeService');
+const BasicQuizGame = require('./BasicQuizGame');
 
 exports.createDefaultOrder = createDefaultOrder;
 exports.startMiniGame = startMiniGame;
@@ -25,7 +26,7 @@ function startMiniGame(miniGame, socketNamespace) {
 }
 
 function basicQuiz(socketNamespace) {
-    //TODO quiz invoking
+    BasicQuizGame.startGame(socketNamespace);
 }
 
 function clicker(socketNamespace) {

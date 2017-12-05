@@ -39,7 +39,8 @@ function nextPlayerTurn(socketNamespace) {
     if (player === undefined) {
         RoomService.endRound(socketNamespace.roomId);
         socketNamespace.gameSocket.emit('endRound');
-        Redirector.redirectToMiniGame(Constants.MINI_GAMES.CLICKER, socketNamespace);
+        //TODO minigame type
+        Redirector.redirectToMiniGame(Constants.MINI_GAMES.BASIC_QUIZ, socketNamespace);
         return;
         //MiniGameService.startMiniGame('default', socketNamespace);
         //player = RoomService.nextPlayerTurn(socketNamespace.roomId);
