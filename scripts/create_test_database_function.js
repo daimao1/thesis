@@ -31,7 +31,7 @@ function dropAndCreateDatabase() {
             }
         });
 
-        connection.query('CREATE DATABASE ' + db.name, function (error) {
+        connection.query('CREATE DATABASE ' + db.name + ' CHARACTER SET utf8 COLLATE utf8_polish_ci;', function (error) {
             if (error) {
                 throw error;
             }

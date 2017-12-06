@@ -9,11 +9,11 @@ const db = {
     admins_table: 'administrators',
     players_table: 'players',
     rooms_table: 'rooms',
-    quiz_table: 'quiz'
+    questions_table: 'questions'
 };
 
 connection.query('DROP DATABASE IF EXISTS ' + db.name);
-connection.query('CREATE DATABASE ' + db.name);
+connection.query('CREATE DATABASE ' + db.name + ' CHARACTER SET utf8 COLLATE utf8_polish_ci;');
 
 //create administrators table
 connection.query(`
@@ -90,13 +90,13 @@ connection.query(`
 
 //create quiz table
 connection.query(`
-    CREATE TABLE \`${db.name}\`.\`${db.quiz_table}\` (
+    CREATE TABLE \`${db.name}\`.\`${db.questions_table}\` (
         \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         \`content\` VARCHAR(300) NOT NULL,
-        \`correct_answer\` VARCHAR(20) NOT NULL,
-        \`variant1\` VARCHAR(20) NOT NULL,
-        \`variant2\` VARCHAR(20) NOT NULL,
-        \`variant3\` VARCHAR(20) NOT NULL,
+        \`correct_answer\` VARCHAR(40) NOT NULL,
+        \`answer2\` VARCHAR(40) NOT NULL,
+        \`answer3\` VARCHAR(40) NOT NULL,
+        \`answer4\` VARCHAR(40) NOT NULL,
         PRIMARY KEY (\`id\`),
         UNIQUE INDEX \`id_UNIQUE\` (\`id\` ASC)
     )`,
@@ -105,7 +105,7 @@ connection.query(`
             console.error(err.message);
         }
         else {
-            console.log('Success: table ' + db.quiz_table + ' created!');
+            console.log('Success: table ' + db.question_table + ' created!');
         }
     }
 );

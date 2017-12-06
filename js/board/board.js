@@ -109,8 +109,24 @@ let setEventHandlers = function () {
     socket.on('playerDice', movePlayer)
     socket.on('playersInfo', receivePlayersInfo)
     socket.on('nextPlayerTurn', receiveNextPlayerTurn)
-    // socket.on('challengePass', )
-    // socket.on('challengeNotPass')
+
+    socket.on('endRound', receiveEndRound)
+}
+
+function receiveEndRound() {
+    console.log('End round - waiting for redirect...');
+    socket.once('redirect', function (url) {
+        if(url.includes(roomId) && url.charAt(0) === '/'){
+            console.log('Redirecting to: [ ' + url + ' ]... (3 seconds)');
+            setTimeout( function () {
+                window.location.href = url;
+            }, 3 * 1000);
+        } else {
+            let reason = "incorrect url";
+            console.log('Redirect rejected, reason: ' + reason);
+            socket.emit('redirectRejected', reason);
+        }
+    });
 }
 
 function addPlayersToBoard(number) {

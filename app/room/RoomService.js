@@ -2,8 +2,7 @@
 const RoomDao = require('./RoomDao');
 const Room = require('./Room');
 const SocketNamespace = require('../socket/SocketNamespace');
-const Constants = require('../Constants');
-//const SocketEventService = require('../socket/SocketEventService');
+const Constants = require('../utils/Constants');
 
 let roomList = [];
 loadDataFromDb();
@@ -18,7 +17,8 @@ exports.removePlayer = removePlayer;
 exports.getPlayersDTOs = getPlayersDTOs;
 exports.getPlayerFromRoom = getPlayerFromRoom;
 exports.nextPlayerTurn = nextPlayerTurn;
-exports.setPlayersOrderFromMiniGame = setPlayersOrderFromMiniGame;
+exports.setPlayersOrder = setPlayersOrder;
+exports.setExtraDices = setExtraDices;
 exports.endRound = endRound;
 exports.saveGameState = saveGameState;
 exports.markGameAsStarted = markGameAsStarted;
@@ -26,6 +26,9 @@ exports.isGameStarted = isGameStarted;
 exports.endTurn = endTurn;
 exports.getAllPlayersFromRoom = getAllPlayersFromRoom;
 exports.getCurrentPlayerId = getCurrentPlayerId;
+exports.getGameSocketFromRoom = getGameSocketFromRoom;
+exports.getNumberOfPlayers = getNumberOfPlayers;
+exports.isRoomExist = isRoomExist;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -36,7 +39,7 @@ function loadDataFromDb() {
         rows.forEach((row) => {
             roomList.push(new Room(row.id, row.name, row.administrator_id));
         });
-        console.log(`Data loaded from database successfully (Rooms table, set [${rows.length}] rows).`);
+        console.log(`Data loaded from database successfully (Rooms table, get [${rows.length}] rows).`);
     }).catch(reject => {
         throw reject;
     });
@@ -109,7 +112,9 @@ function addPlayerToRoom(player) {
     if (room === undefined) {
         throw new Error('RoomService#addPlayerToRoom(): Room undefined');
     }
-    else {
+    else if(room.isGameStarted === true) {
+        throw new Error('RoomService#addPlayerToRoom(): cannot add new player, game is already started.');
+    } else {
         room.addPlayer(player);
     }
 }
@@ -148,37 +153,51 @@ function getPlayerFromRoom(roomId, playerInRoomId) {
     }
     const player = getRoomByIdUnauthorized(roomId).players[playerInRoomId];
     if(player === undefined){
-        throw new Error('RoomService#getPlayerFromRoom(): cannot find player.');
+        throw new Error(`RoomService#getPlayerFromRoom(): cannot find player with id[${playerInRoomId}] in room[${roomId}].`);
     }
     return player;
 }
 
-function setPlayersOrderFromMiniGame(orderFromMiniGame, roomId) {
+function setPlayersOrder(order, roomId) {
 
     const room = getRoomByIdUnauthorized(roomId);
+    clearExtraDices(room);
 
-    if (orderFromMiniGame === undefined || orderFromMiniGame.length > room.players.length) {
+    if (order === undefined || order.length > room.players.length) {
         throw new Error(`Room[${room.id}]#setNewPlayersOrder(): order incorrect.`);
     }
     if (room.currentPlayerId !== -1) {
         throw new Error(`Room[${room.id}]#setNewPlayersOrder(): current round is not finished.`);
     }
-    setPlayersSpecialOrder(orderFromMiniGame, room);
+
     if (Constants.PLAYER_ORDER === Constants.PLAYER_ORDERS_OPTIONS.FIRST_TO_LAST) {
-        room.setNewPlayersOrder(orderFromMiniGame); // Array is loaded from the end, so first player from mini game will be last.
+        room.setNewPlayersOrder(order); // Array is loaded from the end, so first player from mini game will be last.
     } else {
         // FIRST_TO_FIRST, first player from mini game will be first in board game
-        room.setNewPlayersOrder(orderFromMiniGame.reverse());
+        room.setNewPlayersOrder(order.reverse());
     }
 }
 
-//Set 'special' order for first 2 players from mini game - this players get extra dices
-function setPlayersSpecialOrder(playersOrder, room) {
-    if(room.numberOfPlayers === 2){
-        room.players[playersOrder[0]].extraDices = 1;
+/**
+ * @param {number} roomId
+ * @param {number[]} sortedResults
+ * @param {number[]} playersOrder - array of in_room_id parameters sorted by results from the mini game (from the best)
+ */
+function setExtraDices(roomId, playersOrder, sortedResults) {
+    //if something undefined
+    const players = getRoomByIdUnauthorized(roomId).players;
+    if(players.length > 2) {
+        players[playersOrder[0]].extraDices = 2;
+        players[playersOrder[1]].extraDices = 1;
     } else {
-        room.players[playersOrder[0]].extraDices = 2;
-        room.players[playersOrder[1]].extraDices = 1;
+        players[playersOrder[0]].extraDices = 1;
+    }
+    //TODO algorytm
+}
+
+function clearExtraDices(players) {
+    for(let i=0; i<players.length; i++){
+        players[i] = undefined;
     }
 }
 
@@ -270,6 +289,31 @@ function markGameAsStarted(roomId){
 
 function getAllPlayersFromRoom(roomId){
     return getRoomByIdUnauthorized(roomId).players;
+}
+
+function getGameSocketFromRoom(roomId) {
+    return getRoomByIdUnauthorized(roomId).socketNamespace.gameSocket;
+}
+
+function getNumberOfPlayers(roomId) {
+    const numberOfPlayers = getRoomByIdUnauthorized(roomId).numberOfPlayers;
+    if(numberOfPlayers === undefined || numberOfPlayers < 2){
+        throw new Error(`RoomService[roomId: ${roomId}]#getNumberOfPlayers: undefined or lower than 2.`);
+    }
+    return numberOfPlayers;
+}
+
+function isRoomExist(roomId) {
+    let room;
+    try {
+        room = getRoomByIdUnauthorized(roomId);
+    } catch(err) {
+        console.log('RoomService#isRoomExist: catch error: \n start --- [');
+        console.log(err);
+        console.log("] -- end");
+        return false;
+    }
+    return room !== undefined;
 }
 
 /*

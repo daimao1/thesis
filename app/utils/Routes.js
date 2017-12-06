@@ -1,11 +1,11 @@
 //ROUTES
-const RoomService = require('./room/RoomService');
+const RoomService = require('../room/RoomService');
 
 module.exports = function (app, passport) {
 
     //Home page
     app.get('/', function (req, res) {
-        if(req.isAuthenticated()) {
+        if (req.isAuthenticated()) {
             const rooms = RoomService.getByAdminId(req.user.id); //Load rooms list
             res.render('index.ejs', {user: req.user, rooms: rooms, isUserLogged: true});
         } else {
@@ -132,6 +132,44 @@ module.exports = function (app, passport) {
         }
     });
 
+    app.get('/quiz/:id', isLoggedIn, function (req, res) {
+        let isError = false;
+        let players;
+        try {
+            RoomService.getById(+req.params.id, +req.user.id);
+            players = RoomService.getPlayersDTOs(+req.params.id);
+        } catch (error) {
+            isError = true;
+            console.error(error);
+            badRequest(res);
+        }
+        if (!isError) {
+            res.render('quiz/basic_question.ejs', {
+                id: req.params.id,
+                players: players
+            });
+        }
+    });
+
+    app.get('/clicker/:id', isLoggedIn, (req, res) => {
+        let isError = false;
+        let players;
+        try {
+            const room = RoomService.getById(+req.params.id, +req.user.id);
+            players = room.players;
+        } catch (error) {
+            isError = true;
+            console.error(error);
+            badRequest(res);
+        }
+        if (!isError) {
+            res.render('clicker.ejs', {
+                id: req.params.id,
+                players: players
+            });
+        }
+    });
+
     app.get('/check-system-status', (req, res) => {
         res.status(200).send();
     });
@@ -144,7 +182,7 @@ module.exports = function (app, passport) {
 
 function badRequest(res) {
     res.setHeader('Content-Type', 'text/plain');
-    res.status(404).send('Not found');
+    res.status(404).send('404 - Not found');
 }
 
 function isLoggedIn(req, res, next) {
@@ -155,7 +193,7 @@ function isLoggedIn(req, res, next) {
     }
 
     // if they aren't redirect them to the home page
-    console.log("Routes: someone trying to get unathorized access!");
+    console.log("Routes: someone trying to get unauthorized access!");
     res.redirect('/');
 }
 

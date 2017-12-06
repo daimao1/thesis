@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head id=<%= id %>></head>
+<title>Clicker - Thesis</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="../../js/clicker/clicker.js"></script>
+
+<body>
+<span id="numberOfPlayers"><%= players.length %></span>
+<script>document.getElementById("numberOfPlayers").style.display = "none";</script>
+<div class="bgimg w3-display-container">
+    <div id="help_modal" class="w3-modal">
+        <div class="w3-modal-content w3-animate-zoom">
+            <div class="w3-container">
+                <span onclick="onHelpModalClose()"
+                      class="w3-button w3-xxlarge w3-display-topright w3-padding">&times;</span>
+                <p>Klik klik klik klik klik</p>
+                <p>KLIK KLIK KLIK KLIK KLIK</p>
+                <p><b>Uwaga, po zamknięciu tego okna gra automatycznie się rozpocznie.</b></p>
+            </div>
+        </div>
+    </div>
+    <div class="w3-text-white w3-display-middle w3-center">
+        <h1 id="be_ready_header" style="font-size: 400%;">Przygotuj się...</h1>
+        <p>
+            <b><span style="font-size: 600%;" id="countdown"></span></b>
+        </p>
+        <div class="w3-xxlarge" id="results_div">
+            <h1>Wyniki: </h1>
+            <ol>
+                <% for(let i = 0; i < players.length; i++){ %>
+                <li id="resultsRow<%= i %>">
+                    <span id="playerName<%= i %>"></span> -
+                    <b id="result<%= i %>"></b>
+                </li>
+                <% } %>
+            </ol>
+            <p class="w3-large" id="redirect">Powrót do planszy nastąpi za <b style="color:red" id="redirectTime">10</b>
+                sekund.</p>
+            <script>document.getElementById("redirect").style.display = "none"</script>
+        </div>
+        <script>document.getElementById("results_div").style.display = "none"</script>
+    </div>
+</div>
+</body>
+</html>

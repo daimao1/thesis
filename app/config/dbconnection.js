@@ -76,5 +76,5 @@ module.exports = {
     admins_table: 'administrators',
     players_table: 'players',
     rooms_table: 'rooms',
-    quiz_table: 'quiz'
+    questions_table: 'questions'
 };

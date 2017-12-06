@@ -1,28 +1,12 @@
 <!DOCTYPE html>
 <html>
-<title>Thesis</title>
+<title>Pokój gry - Thesis</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-    body, h1 {
-        font-family: "Raleway", sans-serif
-    }
-
-    body, html {
-        height: 100%
-    }
-
-    .bgimg {
-        background-image: url('/img/forestbridge.jpg');
-        min-height: 100%;
-        background-position: center;
-        background-size: cover;
-    }
-</style>
+<link rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css">
 <body>
 
 <div class="bgimg w3-display-container w3-text-white">
@@ -35,21 +19,21 @@
                 <i class="fa fa-user-circle w3-margin-right"></i>
                 <%= user.email %>
             </span>
-            <a href="/" class="w3-rightbar  w3-padding">Home</a>
-            <a href="/logout" class="w3-rightbar w3-padding">Sign out</a>
+            <a href="/" class="w3-rightbar  w3-padding">Strona główna</a>
+            <a href="/logout" class="w3-rightbar w3-padding">Wyloguj się</a>
         </p>
     </div>
     <div class="w3-display-middle">
         <h1 class="w3-jumbo w3-center"><%= room.name %></h1>
         <hr class="w3-border-grey" style="margin:auto;width:70%">
-        <h2 class="w3-animate-top w3-center">Game room:
+        <h2 class="w3-animate-top w3-center">Numer gry:
             <% if(room.id != undefined){ %>
             <%= room.id %>
             <% } %>
         </h2>
-        <p class="w3-medium w3-center">Connect android devices and press refresh button</p>
+        <p class="w3-medium w3-center">Podłącz urządzenia z systemem android i naciśnij przycisk Odśwież.</p>
         <% if(room.players != undefined && room.players.length > 0) { %>
-        <p class="w3-large w3-center">Connected players:</p>
+        <p class="w3-large w3-center">Podłączeni gracze:</p>
         <div class="w3-panel w3-rightbar w3-leftbar">
             <ul class="w3-ul  w3-card-4">
                 <% room.players.forEach(function(player) { %>
@@ -61,9 +45,9 @@
         </div>
         <% } %>
         <p class="w3-center">
-            <a class="w3-button w3-border w3-round-large" onClick="window.location.reload()">Refresh</a>
+            <a class="w3-button w3-border w3-round-large" onClick="window.location.reload()">Odśwież</a>
             <% if(room.players.length > 1) { %>
-                <a href="/board/<%=room.id%>" class="w3-button w3-border w3-round-large">Enter game</a>
+                <a href="/board/<%=room.id%>" class="w3-button w3-border w3-round-large">Rozpocznij grę</a>
             <% } %>
         </p>
     </div>
