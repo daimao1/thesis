@@ -8,6 +8,7 @@ const BasicQuizGame = require('./BasicQuizGame');
 
 exports.createDefaultOrder = createDefaultOrder;
 exports.startMiniGame = startMiniGame;
+exports.getRandomMiniGame = getRandomMiniGame;
 
 
 /**
@@ -27,6 +28,14 @@ function startMiniGame(socketNamespace, miniGame) {
             clicker(socketNamespace);
             break;
         default:  startRandomMinigame(socketNamespace.roomId);
+    }
+}
+
+function getRandomMiniGame() {
+    const rand = Math.floor(Math.random() * 2 + 1);
+    switch(rand) {
+        case 1: return Constants.MINI_GAMES.BASIC_QUIZ;
+        case 2: return Constants.MINI_GAMES.CLICKER;
     }
 }
 

@@ -15,7 +15,7 @@ function initGame(socketNamespace) {
     socketNamespace.gameSocket.on('gameReady', function () {
         if(Constants.MINI_GAME_ON_START){
             try {
-                Redirector.redirectToMiniGame(socketNamespace);
+                Redirector.redirectToMiniGame(socketNamespace, MiniGameService.getRandomMiniGame());
             } catch (error) {
                 console.error(error);
             }
@@ -40,7 +40,7 @@ function nextPlayerTurn(socketNamespace) {
         RoomService.endRound(socketNamespace.roomId);
         socketNamespace.gameSocket.emit('endRound');
         //TODO minigame type
-        Redirector.redirectToMiniGame(socketNamespace);
+        Redirector.redirectToMiniGame(socketNamespace, MiniGameService.getRandomMiniGame());
         return;
         //MiniGameService.startMiniGame('default', socketNamespace);
         //player = RoomService.nextPlayerTurn(socketNamespace.roomId);
