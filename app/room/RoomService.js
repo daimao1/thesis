@@ -188,7 +188,7 @@ function setExtraDices(roomId, playersOrder, sortedResults) {
     const players = getRoomByIdUnauthorized(roomId).players;
 
     if (playersOrder.length === 2) {
-        if (sortedResults[0] === sortedResults[1] && sortedResults[0] !== 0) {
+        if (sortedResults[0] === sortedResults[1] && sortedResults[0] > 0) {
             players[playersOrder[0]].extraDices = 1;
             players[playersOrder[1]].extraDices = 1;
         } else if (sortedResults[0] !== sortedResults[1]) {
@@ -201,23 +201,14 @@ function setExtraDices(roomId, playersOrder, sortedResults) {
                 players[i].extraDices = 1;
             }
         } else if (distinctResults.length === 2 && distinctResults[1] === 0) {
-            for (let i = 0; i < players.length; i++) {
-                if (sortedResults[i] === distinctResults[0]) {
-                    players[playersOrder[i]].extraDices = 1;
-                }
+            for (let i = 0; sortedResults[i] === distinctResults[0]; i++) {
+                players[playersOrder[i]].extraDices = 1;
+
             }
         } else if (distinctResults.length > 2) {
             for (let i = 0; i < 2; i++) {
-                for (let k = 0; k < sortedResults.length; k++) { //todo while
-                    if(sortedResults[k] === distinctResults[i]) {
-                        if (i === 0) {
-                            players[playersOrder[k]].extraDices = 2;
-                        } else if(i === 1){
-                            players[playersOrder[k]].extraDices = 1;
-                        }
-                    } else {
-                        break;
-                    }
+                for (let k = 0; sortedResults[k] === distinctResults[i]; k++) {
+                    players[playersOrder[k]].extraDices = 2 - i;
                 }
             }
         }
