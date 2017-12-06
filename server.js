@@ -11,10 +11,6 @@ const io = require('socket.io').listen(server);
 
 //resources
 app.use(express.static('public'));
-//app.use('/css', express.static(__dirname + 'css'));
-//app.use('/js', express.static(__dirname + 'js'));
-//app.use('/assets', express.static(__dirname + 'assets'));
-
 app.use(express.static(__dirname + '/views'));
 
 app.use(morgan('dev')); //log every request to the console
