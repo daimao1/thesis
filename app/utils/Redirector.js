@@ -2,7 +2,7 @@
 const Constants = require('./Constants');
 const RoomService = require('../room/RoomService');
 
-exports.redirectToMiniGame = function (miniGameType, socketNamespace) {
+exports.redirectToMiniGame = function (socketNamespace, miniGameType) {
     const url = createUrl(socketNamespace.roomId, miniGameType);
     if(socketNamespace.gameSocket === undefined){
         throw new Error(`Redirector#redirectToBoard: gameSocket undefined.`);
