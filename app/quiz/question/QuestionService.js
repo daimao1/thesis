@@ -27,7 +27,7 @@ function getNextQuestion() {
     if(questions.length === 0) {
         throw new Error(`QuestionService#getNextQuestion: questions array empty.`);
     }
-    if(lastQuestionPointer === questions.length){
+    if(lastQuestionPointer === questions.length - 1){
         lastQuestionPointer = -1;
         console.log(`QuestionService#getNextQuestion: end of questions array, first question will be delivered.`);
     }

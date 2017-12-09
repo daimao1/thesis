@@ -51,13 +51,13 @@ function startQuestionTimer() {
 }
 
 function playerQuizAnswer(id) {
-    console.log("Socket.io: receive playerQuizAnswerEvent");
+    console.log("Socket.io: receive playerQuizAnswer event");
     document.getElementById("spin_icon" + id).style.display = "none";
     document.getElementById("ok_icon" + id).style.display = "inline";
     if (++playerAnswers === numberOfPlayers) {
         document.getElementById("progressBarFragment").style.display = "none";
-        document.getElementById("loadingFragmentText").innerHTML = "Ładowanie wyników.";
-        document.getElementById("loadingFragment").style.display = "inline";
+        //document.getElementById("loadingFragmentText").innerHTML = "Ładowanie wyników.";
+        //document.getElementById("loadingFragment").style.display = "inline";
     }
 }
 
@@ -89,7 +89,7 @@ function endQuestionTime() {
         }
     }
     document.getElementById("progressBarFragment").style.display = "none";
-    document.getElementById("loadingFragment").style.display = "inline";
+    //document.getElementById("loadingFragment").style.display = "inline";
 }
 
 /**
