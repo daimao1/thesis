@@ -31,7 +31,12 @@
             <%= room.id %>
             <% } %>
         </h2>
-        <p class="w3-medium w3-center">Podłącz urządzenia z systemem android i naciśnij przycisk Odśwież.</p>
+        <div class="w3-medium w3-center">
+            <p>Aby pobrać aplikację należy na urządzeniu z systemem android wpisać w przeglądarkę następujący adres:</p>
+                <b class="w3-large">pollub-boardgame.herokuapps.com/apk</b>
+            <p>a następnie zainstalować pobraną aplikację.</p>
+            <p>Jeśli aplikacja została już zainstalowana, otwórz ją i dołącz do pokoju, a następnie wykorzystaj poniższy przycisk <i>Odśwież</i>.</p>
+        </div>
         <% if(room.players != undefined && room.players.length > 0) { %>
         <p class="w3-large w3-center">Podłączeni gracze:</p>
         <div class="w3-panel w3-rightbar w3-leftbar">
