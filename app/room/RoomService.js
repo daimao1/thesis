@@ -184,7 +184,9 @@ function setPlayersOrder(order, roomId) {
  * @param {number[]} playersOrder - array of in_room_id parameters sorted by results from the mini game (from the best)
  */
 function setExtraDices(roomId, playersOrder, sortedResults) {
-    //if something undefined
+    if(roomId === undefined || playersOrder === undefined || sortedResults === undefined){
+        throw new Error(`RoomService#setExtraDices(): undefined arguments.`);
+    }
     const players = getRoomByIdUnauthorized(roomId).players;
 
     if (playersOrder.length === 2) {
@@ -219,7 +221,7 @@ function setExtraDices(roomId, playersOrder, sortedResults) {
 
 function clearExtraDices(players) {
     for (let i = 0; i < players.length; i++) {
-        players[i] = undefined;
+        players[i].extraDices = undefined;
     }
 }
 
