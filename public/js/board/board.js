@@ -59,26 +59,28 @@ let allPlayers = []
 
 
 Board.preload = function () {
-    board.load.image('board', '../assets/map/plansza.png') //załaduj planszę
-    board.load.image('background', '../assets/map/wood_background.png')
-    board.load.spritesheet('avatar1', '../assets/sprites/avatar1.png') //załaduj awatary
-    board.load.spritesheet('avatar2', '../assets/sprites/avatar2.png')
-    board.load.spritesheet('avatar3', '../assets/sprites/avatar3.png')
-    board.load.spritesheet('avatar4', '../assets/sprites/avatar4.png')
-    board.load.spritesheet('avatar5', '../assets/sprites/avatar5.png')
-    board.load.spritesheet('avatar6', '../assets/sprites/avatar6.png')
-    board.load.bitmapFont('desyrel', '../assets/fonts/bitmapFonts/desyrel.png', '../assets/fonts/bitmapFonts/desyrel.xml')
-    board.load.bitmapFont('desyrel-pink', '../assets/fonts/bitmapFonts/desyrel-pink.png', '../assets/fonts/bitmapFonts/desyrel-pink.xml')
+    board.load.image('plansza', '../../assets/map/plansza.png') //załaduj planszę
+    board.load.image('background', '../../assets/map/wood_background.png')
+    board.load.spritesheet('avatar1', '../../assets/sprites/avatar1.png') //załaduj awatary
+    board.load.spritesheet('avatar2', '../../assets/sprites/avatar2.png')
+    board.load.spritesheet('avatar3', '../../assets/sprites/avatar3.png')
+    board.load.spritesheet('avatar4', '../../assets/sprites/avatar4.png')
+    board.load.spritesheet('avatar5', '../../assets/sprites/avatar5.png')
+    board.load.spritesheet('avatar6', '../../assets/sprites/avatar6.png')
+    board.load.bitmapFont('desyrel', '../../assets/fonts/bitmapFonts/desyrel.png', '../../assets/fonts/bitmapFonts/desyrel.xml')
+    board.load.bitmapFont('desyrel-pink', '../../assets/fonts/bitmapFonts/desyrel-pink.png', '../../assets/fonts/bitmapFonts/desyrel-pink.xml')
 
-    board.load.audio('background_sound', '../assets/audio/background_sound.mp3')
-    board.load.audio('effect_special', '../assets/audio/effect_special.wav')
+    board.load.audio('background_sound', '../../assets/audio/background_sound.mp3')
+    board.load.audio('effect_special', '../../assets/audio/effect_special.wav')
 
     socket = io.connect('/' + roomId)
     socket.emit('markGame', showMarkGame())
     setEventHandlers()
 }
-//board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
+
 Board.create = function () {
+    //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
+
     effect_special = board.add.audio('effect_special')
     effect_special.volume = 0.2
     mapBackground = board.add.tileSprite(0, 0, 4573 * 0.9, 4605 * 0.9, 'background')

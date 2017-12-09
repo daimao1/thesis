@@ -8,8 +8,14 @@ const BasicQuizGame = require('./BasicQuizGame');
 
 exports.createDefaultOrder = createDefaultOrder;
 exports.startMiniGame = startMiniGame;
+exports.getRandomMiniGame = getRandomMiniGame;
 
-function startMiniGame(miniGame, socketNamespace) {
+
+/**
+ * @param {object} socketNamespace
+ * @param {string=} miniGame, if empty, random minigame will be invoked
+ */
+function startMiniGame(socketNamespace, miniGame) {
 
     switch (miniGame) {
         case Constants.MINI_GAMES.BASIC_QUIZ:
@@ -21,7 +27,23 @@ function startMiniGame(miniGame, socketNamespace) {
         case Constants.MINI_GAMES.CLICKER:
             clicker(socketNamespace);
             break;
-        default:  mockMiniGame(socketNamespace.roomId);
+        default:  startRandomMiniGame(socketNamespace);
+    }
+}
+
+function getRandomMiniGame() {
+    const rand = Math.floor(Math.random() * 2 + 1);
+    switch(rand) {
+        case 1: return Constants.MINI_GAMES.BASIC_QUIZ;
+        case 2: return Constants.MINI_GAMES.CLICKER;
+    }
+}
+
+function startRandomMiniGame(socketNamespace) {
+    const rand = Math.floor(Math.random() * 2 + 1);
+    switch(rand) {
+        case 1: basicQuiz(socketNamespace); break;
+        case 2: clicker(socketNamespace); break;
     }
 }
 
@@ -37,10 +59,10 @@ function stopTime(socketNamespace) {
     StopTime.initGame(socketNamespace);
 }
 
-function mockMiniGame(roomId) {
-    let orderFromMiniGame = createDefaultOrder(roomId);
-    RoomService.setPlayersOrder([...orderFromMiniGame], roomId);
-}
+// function mockMiniGame(roomId) {
+//     let orderFromMiniGame = createDefaultOrder(roomId);
+//     RoomService.setPlayersOrder([...orderFromMiniGame], roomId);
+// }
 
 function createDefaultOrder(roomId) {
     const playersOrder = [];
