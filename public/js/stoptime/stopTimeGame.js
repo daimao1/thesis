@@ -23,6 +23,20 @@ let numberOfPlayersStopped
 let timerSound
 let socketResultsEmitted = false
 
+WebFontConfig = {
+
+  //  'active' means all requested fonts have finished loading
+  //  We set a 1 second delay before calling 'createText'.
+  //  For some reason if we don't the browser cannot render the text the first time it's created.
+  //active: function() { stopTimeGame.time.events.add(Phaser.Timer.SECOND, createText, this); },
+
+  //  The Google Fonts we want to load (specify as many as you like in the array)
+  google: {
+    families: ['Revalia']
+  }
+
+};
+
 StopTimeGame.preload = function () {
   stopTimeGame.load.spritesheet('button_blue', '../../assets/buttons/circle_blue.png')
   stopTimeGame.load.spritesheet('button_yellow', '../../assets/buttons/circle_yellow.png')
