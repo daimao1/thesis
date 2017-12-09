@@ -70,9 +70,13 @@ StopTimeGame.create = function () {
 }
 
 StopTimeGame.render = function () {
-    for (let i = 0; i < numberOfPlayers; i++) {
-        textCounter[i].setText((counter[i] * 0.01).toFixed(2))
-    }
+  if(numberOfPlayers !== undefined) {
+      for (let i = 0; i < numberOfPlayers; i++) {
+          if(textCounter[i] !== undefined && counter[i] !== undefined) {
+              textCounter[i].setText((counter[i] * 0.01).toFixed(2))
+          }
+      }
+  }
 }
 
 function startGame(){
