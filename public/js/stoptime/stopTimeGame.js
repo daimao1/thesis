@@ -8,14 +8,6 @@ let iWidth
 let button_blue, button_yellow, button_green, button_red, button_orange, button_pink
 let test
 let random_number
-let distance = 400
-let speed = 2.7
-let stars
-
-let max = 130
-let xx = []
-let yy = []
-let zz = []
 
 let allPlayers
 let numberOfPlayers
@@ -39,7 +31,6 @@ StopTimeGame.preload = function () {
   stopTimeGame.load.spritesheet('button_orange', '../../assets/buttons/circle_orange.png')
   stopTimeGame.load.spritesheet('button_pink', '../../assets/buttons/circle_pink.png')
   stopTimeGame.load.spritesheet('wood', '../../assets/buttons/wood.png')
-  stopTimeGame.load.image('star', '../../assets/pictures/stoptime/star.png')
   stopTimeGame.load.bitmapFont('desyrel-pink', '../../assets/fonts/bitmapFonts/desyrel-pink.png', '../../assets/fonts/bitmapFonts/desyrel-pink.xml')
   stopTimeGame.load.bitmapFont('desyrel', '../../assets/fonts/bitmapFonts/desyrel.png', '../../assets/fonts/bitmapFonts/desyrel.xml')
 
@@ -49,6 +40,7 @@ StopTimeGame.preload = function () {
   stopTimeGame.load.spritesheet('avatar4', '../../assets/sprites/avatar4.png')
   stopTimeGame.load.spritesheet('avatar5', '../../assets/sprites/avatar5.png')
   stopTimeGame.load.spritesheet('avatar6', '../../assets/sprites/avatar6.png')
+  stopTimeGame.load.image('bg', '../../assets/pictures/bg.jpg')
 
   stopTimeGame.load.audio('timerSound', '../../assets/audio/timerSound.mp3')
 
@@ -58,19 +50,24 @@ StopTimeGame.preload = function () {
 }
 
 StopTimeGame.create = function () {
+
   iHeight = window.innerHeight
   iWidth = window.innerWidth
   timerSound = stopTimeGame.add.audio('timerSound')
   timerSound.volume = 0.3
   generalCounter = 0
   numberOfPlayersStopped = 0
+  stopTimeGame.add.tileSprite('background')//
 
   goFullScreen()
   random_number = randomInt(7, 17)
-  generateBackgroundAnimation()
   createButtonsWithAvatars(numberOfPlayers)
   resetPlayersTime(numberOfPlayers)
   showInitMessage()
+  startGame()//do usunięcia jak android będzie miał event
+}
+
+function startGame(){
   setTimeout(function () {
     showTimeDestinationText(random_number)
   }, 2700)
@@ -100,6 +97,7 @@ StopTimeGame.create = function () {
       let arrayPlayers = arrayWithResults()
       console.log('random_number_ms ' + random_number_ms + 'arrayPlayers ' + arrayPlayers)
       socket.emit('stopTimeResults', random_number_ms, arrayPlayers)
+      redirectToBoard()
       // console.log('Wyslano emit stopTimeResults')
     }
   }, temp)
@@ -186,23 +184,12 @@ function resetPlayersTime (number) {
 }
 
 StopTimeGame.update = function () {
-  for (let i = 0; i < max; i++) {
-    stars[i].perspective = distance / (distance - zz[i])
-    stars[i].x = stopTimeGame.world.centerX + xx[i] * stars[i].perspective
-    stars[i].y = stopTimeGame.world.centerY + yy[i] * stars[i].perspective
-    zz[i] += speed
-    if (zz[i] > 290) {
-      zz[i] -= 600
-    }
-    stars[i].alpha = Math.min(stars[i].perspective / 2, 1)
-    stars[i].scale.set(stars[i].perspective / 2)
-    stars[i].rotation += 0.1
-  }
 }
 
 function setHandlers () {
   socket.on('playersInfo', playersInfo)
   socket.on('stopPlayerButton', stopButton)
+  socket.on('clientReady',startGame)
 }
 
 function playersInfo (players) {
@@ -218,7 +205,7 @@ function goFullScreen () {
 }
 
 function hideTimersWithDelay (num) {
-  const hide = Math.ceil(random_number / 3) * 1000
+  const hide = Math.ceil(random_number / 2) * 1000
   console.log(hide)
   setTimeout(function () {
     for (let i = 0; i < num; i++) {
@@ -262,23 +249,6 @@ function createButtonsWithAvatars (numberOfPlayers) {
   }
   addAvatars(numberOfPlayers)
 
-}
-
-function generateBackgroundAnimation () {
-  if (stopTimeGame.renderType === Phaser.WEBGL) {
-    max = 2000
-  }
-  let sprites = stopTimeGame.add.spriteBatch()
-  stars = []
-  for (let i = 0; i < max; i++) {
-    xx[i] = Math.floor(Math.random() * 800) - 400
-    yy[i] = Math.floor(Math.random() * 600) - 300
-    zz[i] = Math.floor(Math.random() * 1700) - 100
-    let star = stopTimeGame.make.sprite(0, 0, 'star')
-    star.anchor.set(0.5)
-    sprites.addChild(star)
-    stars.push(star)
-  }
 }
 
 function randomInt (low, high) {
@@ -504,4 +474,10 @@ function arrayWithResults () {
 
   return arrayWithPlayers
 
+}
+
+function redirectToBoard() {
+  setTimeout(function () {
+    window.location.href = "/board/" + roomId;
+  }, 4000);
 }
