@@ -44,6 +44,8 @@ StopTimeGame.preload = function () {
 
   stopTimeGame.load.audio('timerSound', '../../assets/audio/timerSound.mp3')
 
+  stopTimeGame.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+
   socket = io.connect('/' + roomId)
   socket.emit('markStopTimeGame')
   setHandlers()
@@ -57,7 +59,7 @@ StopTimeGame.create = function () {
   timerSound.volume = 0.3
   generalCounter = 0
   numberOfPlayersStopped = 0
-  stopTimeGame.add.tileSprite('bg')
+  stopTimeGame.add.image('bg').anchor.set(0.5)
 
   goFullScreen()
   random_number = randomInt(7, 17)
@@ -312,7 +314,8 @@ function addAvatars (number) {
 
 function showTextCounter (num, x, y, text) {
   textCounter[num] = stopTimeGame.add.text(iWidth * x, iHeight * y, text, {
-    font: '45px Arial',
+    font: 'Raleway',
+    fontSize: 45,
     fill: '#ffffff',
     align: 'center'
   })
@@ -320,7 +323,8 @@ function showTextCounter (num, x, y, text) {
 
 function showText (text, x, y) {
   stopTimeGame.add.text(iWidth * x, iHeight * y, text, {
-    font: '38px Arial',
+    font: 'Raleway',
+    fontSize: 45,
     fill: '#ffffff',
     align: 'center'
   })
@@ -480,5 +484,5 @@ function arrayWithResults () {
 function redirectToBoard() {
   setTimeout(function () {
     window.location.href = "/board/" + roomId;
-  }, 4000);
+  }, 7000);
 }
