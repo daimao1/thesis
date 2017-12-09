@@ -69,6 +69,12 @@ StopTimeGame.create = function () {
   startGame()//do usunięcia jak android będzie miał event
 }
 
+StopTimeGame.render = function () {
+    for (let i = 0; i < numberOfPlayers; i++) {
+        textCounter[i].setText((counter[i] * 0.01).toFixed(2))
+    }
+}
+
 function startGame(){
   setTimeout(function () {
     showTimeDestinationText(random_number)
@@ -158,7 +164,7 @@ function updateGeneralCounter () {
 
 function updateCounter (index) {
   counter[index]++
-  textCounter[index].setText((counter[index] * 0.01).toFixed(2))
+  //textCounter[index].setText((counter[index] * 0.01).toFixed(2))
   //console.log(counter[index])
 }
 
