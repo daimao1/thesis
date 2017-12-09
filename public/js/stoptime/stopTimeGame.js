@@ -57,7 +57,7 @@ StopTimeGame.create = function () {
   timerSound.volume = 0.3
   generalCounter = 0
   numberOfPlayersStopped = 0
-  stopTimeGame.add.tileSprite('background')//
+  stopTimeGame.add.tileSprite('bg')
 
   goFullScreen()
   random_number = randomInt(7, 17)
@@ -428,6 +428,7 @@ function showResultsOnScreen () {
       showTextCounter(5, 0.91, 0.75, player6.time.toFixed(2))
       break
   }
+  redirectToBoard();
 }
 
 function arrayWithResults () {
