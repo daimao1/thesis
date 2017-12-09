@@ -10,13 +10,14 @@ exports.createDefaultOrder = createDefaultOrder;
 exports.startMiniGame = startMiniGame;
 exports.getRandomMiniGame = getRandomMiniGame;
 
-
 /**
  * @param {object} socketNamespace
  * @param {string=} miniGame, if empty, random minigame will be invoked
  */
 function startMiniGame(socketNamespace, miniGame) {
-
+    if(miniGame === undefined){
+        miniGame = getRandomMiniGame();
+    }
     switch (miniGame) {
         case Constants.MINI_GAMES.BASIC_QUIZ:
             basicQuiz(socketNamespace);
@@ -27,23 +28,16 @@ function startMiniGame(socketNamespace, miniGame) {
         case Constants.MINI_GAMES.CLICKER:
             clicker(socketNamespace);
             break;
-        default:  startRandomMiniGame(socketNamespace);
+        default: basicQuiz(socketNamespace);
     }
 }
 
 function getRandomMiniGame() {
-    const rand = Math.floor(Math.random() * 2 + 1);
+    const rand = Math.floor(Math.random() * 3 + 1);
     switch(rand) {
         case 1: return Constants.MINI_GAMES.BASIC_QUIZ;
         case 2: return Constants.MINI_GAMES.CLICKER;
-    }
-}
-
-function startRandomMiniGame(socketNamespace) {
-    const rand = Math.floor(Math.random() * 2 + 1);
-    switch(rand) {
-        case 1: basicQuiz(socketNamespace); break;
-        case 2: clicker(socketNamespace); break;
+        case 3: return Constants.MINI_GAMES.STOP_TIME;
     }
 }
 
