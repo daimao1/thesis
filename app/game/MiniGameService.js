@@ -27,7 +27,7 @@ function startMiniGame(socketNamespace, miniGame) {
         case Constants.MINI_GAMES.CLICKER:
             clicker(socketNamespace);
             break;
-        default:  startRandomMinigame(socketNamespace.roomId);
+        default:  startRandomMiniGame(socketNamespace);
     }
 }
 
@@ -39,7 +39,7 @@ function getRandomMiniGame() {
     }
 }
 
-function startRandomMinigame(socketNamespace) {
+function startRandomMiniGame(socketNamespace) {
     const rand = Math.floor(Math.random() * 2 + 1);
     switch(rand) {
         case 1: basicQuiz(socketNamespace); break;
