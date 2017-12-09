@@ -105,7 +105,7 @@ connection.query(`
             console.error(err.message);
         }
         else {
-            console.log('Success: table ' + db.question_table + ' created!');
+            console.log('Success: table ' + db.questions_table + ' created!');
         }
     }
 );

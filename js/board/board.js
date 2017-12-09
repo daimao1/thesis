@@ -59,7 +59,7 @@ let allPlayers = []
 
 
 Board.preload = function () {
-    board.load.image('plansza', '../assets/map/plansza.png') //załaduj planszę
+    board.load.image('board', '../assets/map/plansza.png') //załaduj planszę
     board.load.image('background', '../assets/map/wood_background.png')
     board.load.spritesheet('avatar1', '../assets/sprites/avatar1.png') //załaduj awatary
     board.load.spritesheet('avatar2', '../assets/sprites/avatar2.png')
@@ -77,10 +77,8 @@ Board.preload = function () {
     socket.emit('markGame', showMarkGame())
     setEventHandlers()
 }
-
+//board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
 Board.create = function () {
-    //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
-
     effect_special = board.add.audio('effect_special')
     effect_special.volume = 0.2
     mapBackground = board.add.tileSprite(0, 0, 4573 * 0.9, 4605 * 0.9, 'background')
