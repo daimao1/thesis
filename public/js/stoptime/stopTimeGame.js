@@ -171,7 +171,8 @@ function makeTimers (number) {
 
     }
     timerEvents[i] = stopTimeGame.time.create(false)
-    timerEvents[i].loop(Phaser.Timer.SECOND / 100, updateCounter, this, i)
+    //timerEvents[i].loop(Phaser.Timer.SECOND / 100, updateCounter, this, i)
+      timerEvents[i].loop(Phaser.Timer.SECOND, updateCounter, this, i)
     timerEvents[i].start()
   }
 }
