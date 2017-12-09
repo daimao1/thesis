@@ -29,6 +29,7 @@ let initMessage
 let startMessage
 let numberOfPlayersStopped
 let timerSound
+let socketResultsEmitted = false
 
 StopTimeGame.preload = function () {
   stopTimeGame.load.spritesheet('button_blue', '../assets/buttons/circle_blue.png')
@@ -90,15 +91,17 @@ StopTimeGame.create = function () {
   let temp = 6800 + (random_number * 1000) + 7000
 
   setTimeout(function () {
-    let random_number_ms = random_number * 1000
-    for (let i = 0; i < numberOfPlayers; i++)
-      timerEvents[i].stop()
-    // console.log('COUNTER: ' + generalCounter)
-    showResultsOnScreen()
-    let arrayPlayers = arrayWithResults()
-    socket.emit('stopTimeResults', random_number_ms, arrayPlayers)
-    // console.log('Wyslano emit stopTimeResults')
-
+    if(socketResultsEmitted === false) {
+      let random_number_ms = random_number * 1000
+      for (let i = 0; i < numberOfPlayers; i++)
+        timerEvents[i].stop()
+      // console.log('COUNTER: ' + generalCounter)
+      showResultsOnScreen()
+      let arrayPlayers = arrayWithResults()
+      console.log('random_number_ms ' + random_number_ms + 'arrayPlayers ' + arrayPlayers)
+      socket.emit('stopTimeResults', random_number_ms, arrayPlayers)
+      // console.log('Wyslano emit stopTimeResults')
+    }
   }, temp)
 }
 
@@ -156,12 +159,11 @@ function updateGeneralCounter () {
 function updateCounter (index) {
   counter[index]++
   textCounter[index].setText((counter[index] * 0.01).toFixed(2))
-  console.log(counter[index])
+  //console.log(counter[index])
 }
 
 function resetPlayersTime (number) {
   let tempTime = (random_number + 7) * 100
-  tempTime = tempTime.toFixed(2)
   switch (number) {
     case 6:
       player6.time = tempTime
@@ -415,6 +417,7 @@ function stopButton (playerId) {
     let arrayPlayers = arrayWithResults()
     let random_number_ms = random_number * 1000
     socket.emit('stopTimeResults', random_number_ms, arrayPlayers)
+    socketResultsEmitted = true;
     console.log('Wyslano emit stopTimeResults ' + 'random_number_ms: ' + random_number_ms + ' arrayPlayers' + arrayPlayers)
     console.log('Pierwszy gracz czas: ' + counter[0])
     console.log()
@@ -424,43 +427,81 @@ function stopButton (playerId) {
 function showResultsOnScreen () {
   switch (numberOfPlayers) {
     case 2:
+      console.log('player1.time: ' +player1.time.toFixed(2) / 100)
       showTextCounter(0, 0.38, 0.75, player1.time.toFixed(2) / 100)
       showTextCounter(1, 0.57, 0.75, player2.time.toFixed(2) / 100)
       break
     case 3:
-      showTextCounter(0, 0.29, 0.75, player1.time.toFixed(2) / 100)
-      showTextCounter(1, 0.47, 0.75, player2.time.toFixed(2) / 100)
-      showTextCounter(2, 0.64, 0.75, player3.time.toFixed(2) / 100)
+      showTextCounter(0, 0.29, 0.75, player1.time)
+      showTextCounter(1, 0.47, 0.75, player2.time)
+      showTextCounter(2, 0.64, 0.75, player3.time)
       break
     case 4:
-      showTextCounter(0, 0.2, 0.75, player1.time.toFixed(2) / 100)
-      showTextCounter(1, 0.38, 0.75, player2.time.toFixed(2) / 100)
-      showTextCounter(2, 0.55, 0.75, player3.time.toFixed(2) / 100)
-      showTextCounter(3, 0.73, 0.75, player4.time.toFixed(2) / 100)
+      showTextCounter(0, 0.2, 0.75, player1.time.toFixed(2))
+      showTextCounter(1, 0.38, 0.75, player2.time.toFixed(2))
+      showTextCounter(2, 0.55, 0.75, player3.time.toFixed(2))
+      showTextCounter(3, 0.73, 0.75, player4.time.toFixed(2))
       break
     case 5:
-      showTextCounter(0, 0.14, 0.75, player1.time.toFixed(2) / 100)
-      showTextCounter(1, 0.31, 0.75, player2.time.toFixed(2) / 100)
-      showTextCounter(2, 0.48, 0.75, player3.time.toFixed(2) / 100)
-      showTextCounter(3, 0.66, 0.75, player4.time.toFixed(2) / 100)
-      showTextCounter(4, 0.82, 0.75, player5.time.toFixed(2) / 100)
+      showTextCounter(0, 0.14, 0.75, player1.time.toFixed(2))
+      showTextCounter(1, 0.31, 0.75, player2.time.toFixed(2))
+      showTextCounter(2, 0.48, 0.75, player3.time.toFixed(2))
+      showTextCounter(3, 0.66, 0.75, player4.time.toFixed(2))
+      showTextCounter(4, 0.82, 0.75, player5.time.toFixed(2))
       break
     case 6:
-      showTextCounter(0, 0.05, 0.75, player1.time.toFixed(2) / 100)
-      showTextCounter(1, 0.23, 0.75, player2.time.toFixed(2) / 100)
-      showTextCounter(2, 0.40, 0.75, player3.time.toFixed(2) / 100)
-      showTextCounter(3, 0.57, 0.75, player4.time.toFixed(2) / 100)
-      showTextCounter(4, 0.74, 0.75, player5.time.toFixed(2) / 100)
-      showTextCounter(5, 0.91, 0.75, player6.time.toFixed(2) / 100)
+      showTextCounter(0, 0.05, 0.75, player1.time.toFixed(2))
+      showTextCounter(1, 0.23, 0.75, player2.time.toFixed(2))
+      showTextCounter(2, 0.40, 0.75, player3.time.toFixed(2))
+      showTextCounter(3, 0.57, 0.75, player4.time.toFixed(2))
+      showTextCounter(4, 0.74, 0.75, player5.time.toFixed(2))
+      showTextCounter(5, 0.91, 0.75, player6.time.toFixed(2))
       break
   }
 }
 
 function arrayWithResults () {
   let arrayWithPlayers = []
+  let temp = (random_number + 7) * 1000
   for (let i = 0; i < numberOfPlayers; i++) {
     arrayWithPlayers[i] = counter[i] * 10
   }
+
+  switch(numberOfPlayers){
+    case 6:
+      if(player6.isStopped === false){
+        player6.time = temp
+        arrayWithPlayers[5] = temp;
+      }
+    case 5:
+      if(player5.isStopped === false){
+        player5.time = temp
+        arrayWithPlayers[4] = temp;
+      }
+    case 4:
+
+      if(player4.isStopped === false){
+        player4.time = temp
+        arrayWithPlayers[3] = temp;
+      }
+    case 3:
+      if(player3.isStopped === false){
+        player3.time = temp
+        arrayWithPlayers[2] = temp;
+      }
+    case 2:
+      if(player1.isStopped === false){
+        player1.time = temp
+        arrayWithPlayers[1] = temp;
+      }
+      console.log('temp '+temp)
+      if(player2.isStopped === false){
+        player2.time = temp
+        arrayWithPlayers[0] = temp;
+      }
+      break
+  }
+
   return arrayWithPlayers
 
 }
