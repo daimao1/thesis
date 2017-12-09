@@ -1,5 +1,5 @@
 //ROUTES
-const RoomService = require('../room/RoomService');
+const RoomService = require('./room/RoomService');
 
 module.exports = function (app, passport) {
 
@@ -172,6 +172,11 @@ module.exports = function (app, passport) {
 
     app.get('/check-system-status', (req, res) => {
         res.status(200).send();
+    });
+
+    app.get('/apk', function(req, res){
+        const file = __dirname + '/../public/download/pollub-boardgame.apk';
+        res.download(file);
     });
 
     //404
