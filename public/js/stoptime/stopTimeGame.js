@@ -86,8 +86,9 @@ StopTimeGame.create = function () {
 StopTimeGame.render = function () {
   if(numberOfPlayers !== undefined) {
       for (let i = 0; i < numberOfPlayers; i++) {
-          if(textCounter[i] !== undefined && counter[i] !== undefined) {
-              textCounter[i].setText((counter[i] * 0.01).toFixed(2))
+          if(textCounter[i] !== undefined) {
+              counter[i] = timerEvents[i].duration.toFixed(0);
+              textCounter[i].setText((counter[i]))
           }
       }
   }
@@ -172,7 +173,7 @@ function makeTimers (number) {
     }
     timerEvents[i] = stopTimeGame.time.create(false)
     //timerEvents[i].loop(Phaser.Timer.SECOND / 100, updateCounter, this, i)
-      timerEvents[i].loop(Phaser.Timer.SECOND, updateCounter, this, i)
+      timerEvents[i].loop(random_number * 1000 + 7000, updateCounter, this, i)
     timerEvents[i].start()
   }
 }
@@ -182,7 +183,8 @@ function updateGeneralCounter () {
 }
 
 function updateCounter (index) {
-  counter[index]++
+  console.log('timer end'); //TODO remove
+  //counter[index]++
   //textCounter[index].setText((counter[index] * 0.01).toFixed(2))
   //console.log(counter[index])
 }
