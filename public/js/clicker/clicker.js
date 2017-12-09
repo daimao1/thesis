@@ -2,6 +2,7 @@ const roomId = +document.head.id;
 const socket = io.connect('/' + roomId);
 socket.emit('markClicker', roomId);
 let timeout = 10;
+socket.once('playersReady', onPlayersReady);
 socket.once('clickerTimeout', (clickerTimeout) => {
     timeout = clickerTimeout;
 });
@@ -13,10 +14,15 @@ document.addEventListener('DOMContentLoaded', function () {
     numberOfPlayers = +document.getElementById("numberOfPlayers").innerHTML;
 });
 
-function onHelpModalClose() {
+function onPlayersReady() {
     document.getElementById('help_modal').style.display = 'none';
     startCountdown();
 }
+
+// function onHelpModalClose() {
+//     document.getElementById('help_modal').style.display = 'none';
+//     startCountdown();
+// }
 
 function startCountdown() {
     let countdownSpan = document.getElementById('countdown');

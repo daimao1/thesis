@@ -9,6 +9,8 @@ exports.initClicker = function (socketNamespace) {
 
     let isAllPlayersAnswered = false;
     socketNamespace.namespace.to('players').emit('launchClicker');
+    onPlayerReady(players, socketNamespace.gameSocket);
+
     players.forEach((player) => {
         player.socket.once('clickerResult', (result) => {
             result = +result;
@@ -41,6 +43,19 @@ exports.initClicker = function (socketNamespace) {
         }, 1000);
     });
 };
+
+function onPlayerReady(players, gameSocket) {
+    const numberOfPlayers = players.length;
+    let playersReady = 0;
+    players.forEach((player) => {
+        player.socket.on('playerReady', () => {
+            playersReady++;
+            if(playersReady === numberOfPlayers){
+                gameSocket.emit('playersReady');
+            }
+        });
+    });
+}
 
 function checkIsAllPlayersSentResults(socketNamespace, results){
     return !results.includes(undefined);
