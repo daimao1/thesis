@@ -57,7 +57,7 @@ StopTimeGame.create = function () {
   timerSound.volume = 0.3
   generalCounter = 0
   numberOfPlayersStopped = 0
-  stopTimeGame.add.tileSprite('bg')
+  stopTimeGame.add.image('bg').anchor.set(0.5)
 
   goFullScreen()
   random_number = randomInt(7, 17)
@@ -480,5 +480,5 @@ function arrayWithResults () {
 function redirectToBoard() {
   setTimeout(function () {
     window.location.href = "/board/" + roomId;
-  }, 4000);
+  }, 7000);
 }
