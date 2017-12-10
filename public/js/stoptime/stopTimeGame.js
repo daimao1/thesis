@@ -66,7 +66,7 @@ StopTimeGame.preload = function () {
 }
 
 StopTimeGame.create = function () {
-
+  stopTimeGame.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
   iHeight = window.innerHeight
   iWidth = window.innerWidth
   timerSound = stopTimeGame.add.audio('timerSound')
