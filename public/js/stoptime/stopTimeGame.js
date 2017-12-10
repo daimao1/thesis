@@ -84,11 +84,13 @@ StopTimeGame.create = function () {
 }
 
 StopTimeGame.render = function () {
+
   if(numberOfPlayers !== undefined && random_number !== undefined) {
       for (let i = 0; i < numberOfPlayers; i++) {
           if(textCounter[i] !== undefined) {
-              counter[i] = Math.abs(random_number*1000 - timerEvents[i].duration.toFixed(0));
+              counter[i] = Math.abs(random_number*1000 + 7000 - timerEvents[i].duration.toFixed(0));
               textCounter[i].setText((counter[i]))
+              generalCounter = generalTimer.duration
           }
       }
   }
@@ -132,7 +134,7 @@ function startGame(){
 
 function makeTimers (number) {
   generalTimer = stopTimeGame.time.create(false)
-  generalTimer.loop(Phaser.Timer.SECOND, updateGeneralCounter, this)
+  generalTimer.loop(random_number * 1000 + 7000, updateGeneralCounter, this)
   generalTimer.start()
 
   for (let i = 0; i < number; i++) {
@@ -179,7 +181,7 @@ function makeTimers (number) {
 }
 
 function updateGeneralCounter () {
-  generalCounter++
+
 }
 
 function updateCounter (index) {
