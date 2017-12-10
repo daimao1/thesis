@@ -1,12 +1,12 @@
 let StopTimeGame = {}
 let roomId = document.head.id
+let socket
 
 let players = []
 let text
 let iHeight
 let iWidth
 let button_blue, button_yellow, button_green, button_red, button_orange, button_pink
-let test
 let random_number
 
 let allPlayers
@@ -66,7 +66,7 @@ StopTimeGame.create = function () {
     showAllTextCounters(numberOfPlayers)
     initTextCountersWithZeros(numberOfPlayers)
 
-    resetPlayersTime(numberOfPlayers)
+    resetPlayersTime()
     showInitMessage()
     startGame()//do usunięcia jak android będzie miał event
 }
@@ -190,7 +190,7 @@ StopTimeGame.update = function () {
 
 function setHandlers() {
     socket.once('playersInfo', playersInfo)
-    socket.once('stopPlayerButton', stopButton)
+    socket.on('stopPlayerButton', stopButton)
     socket.once('clientReady', startGame)
 }
 
@@ -384,9 +384,8 @@ function stopButton(playerId) {
             button_blue.alpha = 0.4
             break
     }
-
-    numberOfPlayersStopped++
     if (numberOfPlayersStopped === numberOfPlayers) {
+        socket.removeAllListeners('stopPlayerButton');
         showResultsOnScreen()
         let arrayPlayers = arrayWithResults()
         let random_number_ms = random_number * 100
