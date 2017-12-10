@@ -1,7 +1,6 @@
 let StopTimeGame = {}
 let roomId = document.head.id
 
-// let player1, player2, player3, player4, player5, player6
 let players = []
 let text
 let iHeight
@@ -14,7 +13,6 @@ let allPlayers
 let numberOfPlayers
 let counter = []
 let textCounter = []
-let timerEvents = []
 
 let generalTimer
 let generalCounter
@@ -26,17 +24,9 @@ let socketResultsEmitted = false
 let extraTimeForCounter
 
 WebFontConfig = {
-
-  //  'active' means all requested fonts have finished loading
-  //  We set a 1 second delay before calling 'createText'.
-  //  For some reason if we don't the browser cannot render the text the first time it's created.
-  //active: function() { stopTimeGame.time.events.add(Phaser.Timer.SECOND, createText, this); },
-
-  //  The Google Fonts we want to load (specify as many as you like in the array)
   google: {
     families: ['Raleway']
   }
-
 }
 
 StopTimeGame.preload = function () {
@@ -75,7 +65,7 @@ StopTimeGame.create = function () {
   timerSound.volume = 0.3
   generalCounter = 0
   numberOfPlayersStopped = 0
-  stopTimeGame.add.image('bg').anchor.set(0.5)
+  stopTimeGame.add.sprite(0,0,'bg')
 
 
   goFullScreen()
@@ -390,7 +380,7 @@ function stopButton (playerId) {
     console.log('Wyslano emit stopTimeResults ' + 'random_number_ms: ' + random_number_ms + ' arrayPlayers' + arrayPlayers)
     console.log('Pierwszy gracz czas: ' + counter[0])
     console.log()
-    //redirectToBoard();
+    redirectToBoard();
   }
 }
 

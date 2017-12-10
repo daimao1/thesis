@@ -79,7 +79,7 @@ Board.preload = function () {
 }
 
 Board.create = function () {
-    board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
+    //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
 
     effect_special = board.add.audio('effect_special')
     effect_special.volume = 0.2
