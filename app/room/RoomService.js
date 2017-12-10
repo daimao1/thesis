@@ -161,7 +161,6 @@ function getPlayerFromRoom(roomId, playerInRoomId) {
 function setPlayersOrder(order, roomId) {
 
     const room = getRoomByIdUnauthorized(roomId);
-    clearExtraDices(room);
 
     if (order === undefined || order.length > room.players.length) {
         throw new Error(`Room[${room.id}]#setNewPlayersOrder(): order incorrect.`);
@@ -169,7 +168,7 @@ function setPlayersOrder(order, roomId) {
     if (room.currentPlayerId !== -1) {
         throw new Error(`Room[${room.id}]#setNewPlayersOrder(): current round is not finished.`);
     }
-
+    clearExtraDices(room);
     if (Constants.PLAYER_ORDER === Constants.PLAYER_ORDERS_OPTIONS.FIRST_TO_LAST) {
         room.setNewPlayersOrder(order); // Array is loaded from the end, so first player from mini game will be last.
     } else {
