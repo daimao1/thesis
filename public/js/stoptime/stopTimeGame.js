@@ -30,6 +30,8 @@ WebFontConfig = {
 }
 
 StopTimeGame.preload = function () {
+  stopTimeGame.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js')
+
   stopTimeGame.load.spritesheet('button_blue', '../../assets/buttons/circle_blue.png')
   stopTimeGame.load.spritesheet('button_yellow', '../../assets/buttons/circle_yellow.png')
   stopTimeGame.load.spritesheet('button_red', '../../assets/buttons/circle_red.png')
@@ -49,8 +51,6 @@ StopTimeGame.preload = function () {
   stopTimeGame.load.image('bg', '../../assets/pictures/bg.jpg')
 
   stopTimeGame.load.audio('timerSound', '../../assets/audio/timerSound.mp3')
-
-  stopTimeGame.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js')
 
   socket = io.connect('/' + roomId)
   socket.emit('markStopTimeGame')
@@ -244,7 +244,6 @@ function createButtonsWithAvatars (numberOfPlayers) {
       break
   }
   addAvatars(numberOfPlayers)
-
 }
 
 function randomInt (low, high) {
@@ -303,16 +302,15 @@ function addAvatars (number) {
       showText(allPlayers[4].name, 0.71, 0.4)
       showText(allPlayers[5].name, 0.88, 0.4)
   }
-
 }
 
 function showTextCounter (num, x, y, text) {
   textCounter[num] = stopTimeGame.add.text(iWidth * x, iHeight * y, text, {
-    font: 'Raleway',
-    fontSize: 45,
-    fill: '#ffffff',
-    align: 'center'
-  })
+      font: 'Raleway',
+      fontSize: 45,
+      fill: '#ffffff',
+      align: 'center'
+  });
 }
 
 function showText (text, x, y) {
@@ -321,7 +319,7 @@ function showText (text, x, y) {
     fontSize: 45,
     fill: '#ffffff',
     align: 'center'
-  })
+  });
 }
 
 function showInitMessage () {
