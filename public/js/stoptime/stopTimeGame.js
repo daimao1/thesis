@@ -120,7 +120,7 @@ function startGame(){
     if(socketResultsEmitted === false) {
       let random_number_ms = random_number * 1000
       for (let i = 0; i < numberOfPlayers; i++)
-        timerEvents[i].stop()
+        timerEvents[i].pause()
       // console.log('COUNTER: ' + generalCounter)
       showResultsOnScreen()
       let arrayPlayers = arrayWithResults()
@@ -381,7 +381,7 @@ function showStartMessage () {
 }
 
 function stopButton (playerId) {
-  timerEvents[playerId].stop()
+  timerEvents[playerId].pause()
   switch (playerId) {
     case 5:
       player6.time = counter[playerId]
@@ -414,6 +414,7 @@ function stopButton (playerId) {
       button_blue.alpha = 0.4
       break
   }
+  timerEvents[playerId].destroy(); //TODO nie wiem czy to będzie dobre
   numberOfPlayersStopped++
   if (numberOfPlayersStopped === numberOfPlayers) {
     showResultsOnScreen()
