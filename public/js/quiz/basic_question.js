@@ -1,7 +1,8 @@
 const roomId = +document.head.id;
 const socket = io.connect('/' + roomId);
 socket.emit('markQuiz', roomId);
-let timeLeft = 20;
+let questionTime = 15;
+let timeLeft = questionTime;
 let endQuestionTimeServerFlag = false;
 let numberOfPlayers = 6;
 let playerAnswers = 0;
@@ -38,7 +39,7 @@ function startQuestionTimer() {
     socket.once('questionResults', onQuestionResults);
     document.getElementById("progressBarFragment").style.display = "inline";
     let questionTimer = setInterval(function () {
-        document.getElementById("progressBar").value = 20 - --timeLeft;
+        document.getElementById("progressBar").value = questionTime - --timeLeft;
         document.getElementById("timeValue").textContent = timeLeft + "";
         if (timeLeft === 5) {
             document.getElementById("timeValue").style.color = "red";
