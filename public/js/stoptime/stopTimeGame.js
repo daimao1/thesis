@@ -84,10 +84,10 @@ StopTimeGame.create = function () {
 }
 
 StopTimeGame.render = function () {
-  if(numberOfPlayers !== undefined) {
+  if(numberOfPlayers !== undefined && random_number !== undefined) {
       for (let i = 0; i < numberOfPlayers; i++) {
           if(textCounter[i] !== undefined) {
-              counter[i] = timerEvents[i].duration.toFixed(0);
+              counter[i] = Math.abs(random_number*1000 - timerEvents[i].duration.toFixed(0));
               textCounter[i].setText((counter[i]))
           }
       }
