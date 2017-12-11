@@ -69,7 +69,7 @@ connection.query(`
         \`room_id\` INT UNSIGNED,
         \`in_room_id\` INT UNSIGNED NOT NULL,
         \`field_number\` INT UNSIGNED,
-        
+        \`device_name\` VARCHAR(50),        
         PRIMARY KEY (\`id\`,\`room_id\`),
         INDEX \`FK_PLAYERS_ROOMS_IDX\` (\`room_id\` ASC),
         CONSTRAINT \`FK_PLAYERS_ROOMS\` FOREIGN KEY (\`room_id\`) REFERENCES \`${db.name}\`.\`rooms\` (\`id\`)
