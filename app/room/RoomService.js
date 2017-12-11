@@ -45,6 +45,22 @@ function loadDataFromDb() {
     });
 }
 
+function updateEntity(id, room){
+    if(room === undefined) {
+        room = getRoomByIdUnauthorized(id);
+    }
+    if(room === undefined){
+        throw new Error('RoomService#updateEntity: room undefined.');
+    }
+    RoomDao.updateRoom(room).then((rows) => {
+        if(rows[0] !== undefined) {
+            console.log(`RoomService#updateEntity: query returned object: ${rows[0]}.`);
+        }
+    }).catch(reject => {
+        throw reject;
+    });
+}
+
 function newRoom(roomName, adminId) {
     if (roomName === undefined || adminId === undefined) {
         throw new Error('RoomService: room name or adminId undefined.');
@@ -252,6 +268,7 @@ function endRound(roomId) {
     const room = getRoomByIdUnauthorized(roomId);
     room.currentPlayerId = -1;
     room.playersOrder = [];
+    updateEntity(roomId, room);
     console.log('RoomService#endRound().');
 }
 

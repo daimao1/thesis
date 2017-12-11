@@ -40,6 +40,23 @@ exports.getAll = function (){
     });
 };
 
+exports.updateRoom = function (room) {
+    return new Promise((resolve, reject) => {
+        dbconnection.query(`UPDATE ${table_name} SET ? WHERE id = ${room.id}`,
+            {numberOfPlayers: room.numberOfPlayers, isGameStarted: room.isGameStarted},
+            function (error, results) {
+            if (error) {
+                console.error("Database "  + error);
+                reject(error); //send error to promise, have to be catched
+            }
+            else {
+                console.log(`Database#[${table_name}]: updated room with id[${room.id}].`);
+                resolve(results);
+            }
+        });
+    });
+};
+
 exports.deleteById = function (id){
 
     return new Promise((resolve, reject) => {
