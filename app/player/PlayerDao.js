@@ -50,6 +50,23 @@ function getAll(){
     });
 }
 
+exports.updatePlayer = function (player) {
+    return new Promise((resolve, reject) => {
+        dbConnection.query(`UPDATE ${table_name} SET ? WHERE id = ${player.id}`,
+            {field_number: player.field_number},
+            function (error, results) {
+                if (error) {
+                    console.error("Database "  + error);
+                    reject(error); //send error to promise, have to be catched
+                }
+                else {
+                    console.log(`Database#[${table_name}]: updated player with id[${player.id}].`);
+                    resolve(results);
+                }
+            });
+    });
+};
+
 exports.deleteById = function (id){
 
     return new Promise((resolve, reject) => {

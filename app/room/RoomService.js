@@ -269,6 +269,8 @@ function endRound(roomId) {
     room.currentPlayerId = -1;
     room.playersOrder = [];
     updateEntity(roomId, room);
+    let updatePlayers = require('../player/PlayerService').updateAllPlayersFromRoom;
+    updatePlayers(roomId);
     console.log('RoomService#endRound().');
 }
 
