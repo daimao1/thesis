@@ -116,7 +116,7 @@ module.exports = function (app, passport) {
     });
 
     //Stop-time minigame
-    app.get('/stoptimegame/:id', function (req, res) {
+    app.get('/stoptimegame/:id', isLoggedIn, function (req, res) {
         let isError = false;
         try {
             RoomService.getById(+req.params.id, +req.user.id);
