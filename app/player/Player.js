@@ -1,15 +1,15 @@
 class Player {
 
-    constructor(roomId, socket, name, deviceName) {
+    constructor(id, roomId, socket, name, deviceName, fieldNumber) {
         /**
          * Fields must have the same names as fields in database
          */
-        this.id = undefined;
+        this.id = id;
         this.room_id = roomId;
         this.socket = socket;
         this.name = name;
         this.in_room_id = undefined;
-        this.field_number = 0;
+        this.field_number = fieldNumber;
         this.extraDices = undefined; //this player get extra dices - 1 or 2
         this.device_name = deviceName;
     }

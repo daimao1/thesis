@@ -15,10 +15,20 @@ function initBasicHandlers(socket, socketNamespace) {
     });
 
     socket.on('player', (playerData) => {
-        try {
-            newPlayer(socket, socketNamespace, playerData.name, playerData.device_name);
-        } catch (error) {
-            console.error(error);
+        if (RoomService.isGameStarted(socketNamespace.roomId)) {
+            try {
+                resumeConnectionWithPlayer(socket, socketNamespace, playerData.name, playerData.device_name);
+            } catch (error) {
+                console.error(error);
+                console.log('SocketEventService#onPlayerEvent: disconnect unknown player.');
+                socket.disconnect();
+            }
+        } else {
+            try {
+                newPlayer(socket, socketNamespace, playerData.name, playerData.device_name);
+            } catch (error) {
+                console.error(error);
+            }
         }
     });
 
@@ -66,18 +76,26 @@ function initBasicHandlers(socket, socketNamespace) {
 
 function newPlayer(socket, socketNamespace, name, deviceName) {
     socket.join('players');
-    console.log('SocketEventHandler: handle \'playerName\' event - creating new player.');
+    console.log('SocketEventHandler: handle \'player\' event - creating new player.');
     const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name, deviceName);
     addPlayerDisconnectHandler(player);
-
     BoardService.onPlayerDiceValue(player, socketNamespace);
+}
+
+function resumeConnectionWithPlayer(socket, socketNamespace, playerName, playerDeviceName) {
+    const player = PlayerService.connectSocketToExistingPlayer(socket, socketNamespace.roomId, playerName, playerDeviceName);
+    socket.join('players');
+    addPlayerDisconnectHandler(player);
+    BoardService.onPlayerDiceValue(player, socketNamespace);
+    RoomService.areAllPlayersConnected(socketNamespace.roomId);
+    console.log('SocketEventService#onPlayerEvent: resumed connection with player.');
 }
 
 function addPlayerDisconnectHandler(player) {
     player.socket.on('disconnect', () => {
         console.log(`SocketIO/N/EventHandler: player disconnected. RoomID: [${player.room_id}], inRoomId: [${player.in_room_id}]`);
 
-        setTimeout( ()=> {
+        setTimeout(() => {
             RoomService.removePlayer(player);
             PlayerService.removeFromDb(player);
         }, 60 * 1000);

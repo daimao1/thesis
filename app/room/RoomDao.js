@@ -42,7 +42,7 @@ exports.getAll = function (){
 
 exports.updateRoom = function (room) {
     return new Promise((resolve, reject) => {
-        dbconnection.query(`UPDATE ${table_name} SET ? WHERE id = ${room.id}`,
+        dbconnection.query(`UPDATE ${table_name} SET ? WHERE id = ${room.id} LIMIT 1`,
             {numberOfPlayers: room.numberOfPlayers, isGameStarted: room.isGameStarted},
             function (error, results) {
             if (error) {

@@ -29,6 +29,7 @@ exports.getCurrentPlayerId = getCurrentPlayerId;
 exports.getGameSocketFromRoom = getGameSocketFromRoom;
 exports.getNumberOfPlayers = getNumberOfPlayers;
 exports.isRoomExist = isRoomExist;
+exports.areAllPlayersConnected = areAllPlayersConnected;
 
 function logDeleteSuccess(results) {
     console.log(`Deleted [${results.affectedRows}] rows from rooms table.`);
@@ -37,7 +38,7 @@ function logDeleteSuccess(results) {
 function loadDataFromDb() {
     RoomDao.getAll().then((rows) => {
         rows.forEach((row) => {
-            roomList.push(new Room(row.id, row.name, row.administrator_id));
+            roomList.push(new Room(row.id, row.name, row.administrator_id, undefined, row.numberOfPlayers, row.isGameStarted));
         });
         console.log(`Data loaded from database successfully (Rooms table, get [${rows.length}] rows).`);
     }).catch(reject => {
@@ -115,8 +116,12 @@ function getById(roomId, adminId) {
     if (roomToReturn.administrator_id !== adminId) {
         throw new Error(`RoomService: admin[${adminId}] is not the owner of room[${roomId}]`);
     }
-    else if (roomToReturn.socketNamespace === undefined) {
+    if (roomToReturn.socketNamespace === undefined) {
         roomToReturn.addSocketNamespace(new SocketNamespace(roomToReturn.id));
+    }
+    if(roomToReturn.isGameStarted && roomToReturn.players.length === 0){
+
+        roomToReturn.players = require('../player/PlayerService').findPlayersFromRoomInDatabase(roomId);
     }
     return roomToReturn;
 }
@@ -126,9 +131,9 @@ function addPlayerToRoom(player) {
     const room = getRoomByIdUnauthorized(player.room_id);
 
     if (room === undefined) {
-        throw new Error('RoomService#addPlayerToRoom(): Room undefined');
+        throw new Error('RoomService#addPlayerToRoom(): room undefined');
     }
-    else if (room.isGameStarted === true) {
+    else if (room.isGameStarted === true && player.socket !== undefined) {
         throw new Error('RoomService#addPlayerToRoom(): cannot add new player, game is already started.');
     } else {
         room.addPlayer(player);
@@ -356,6 +361,20 @@ function isRoomExist(roomId) {
         return false;
     }
     return room !== undefined;
+}
+
+function areAllPlayersConnected(roomId) {
+    const room = getRoomByIdUnauthorized(roomId);
+    if(room === undefined || room.players === undefined || room.players.length < 2) {
+        throw new Error(`RoomService#areAllPlayersConnected[${roomId}]: undefined players array.`);
+    }
+    room.allPlayersConnected = true;
+    room.players.forEach(player => {
+        if(player.socket === undefined){
+            room.allPlayersConnected = false;
+        }
+    });
+    return room.allPlayersConnected;
 }
 
 /*
