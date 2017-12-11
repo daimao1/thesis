@@ -40,17 +40,15 @@ connection.query(`
         \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         \`name\` VARCHAR(20),
         \`administrator_id\` INT NOT NULL,
-        \`game_number\` INT,
         \`numberOfPlayers\` INT,
-        \`currentPlayerId\` INT,
         \`isGameStarted\` TINYINT,
+        \`turnInProgress\` TINYINT,
         PRIMARY KEY (\`id\`,\`administrator_id\`),
-        UNIQUE INDEX \`game_number_UNIQUE\` (\`game_number\`),
         INDEX \`FK_ROOMS_ADMINISTRATORS_IDX\` (\`administrator_id\` ASC),
         CONSTRAINT \`FK_ROOMS_ADMINISTRATORS\`
         FOREIGN KEY (\`administrator_id\`)
         REFERENCES \`${db.name}\`.\`administrators\` (\`id\`)
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
         ON UPDATE NO ACTION
     )`,
     function (err) {
@@ -71,11 +69,11 @@ connection.query(`
         \`room_id\` INT UNSIGNED,
         \`in_room_id\` INT UNSIGNED NOT NULL,
         \`field_number\` INT UNSIGNED,
-        
+        \`device_name\` VARCHAR(50),        
         PRIMARY KEY (\`id\`,\`room_id\`),
         INDEX \`FK_PLAYERS_ROOMS_IDX\` (\`room_id\` ASC),
         CONSTRAINT \`FK_PLAYERS_ROOMS\` FOREIGN KEY (\`room_id\`) REFERENCES \`${db.name}\`.\`rooms\` (\`id\`)
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
         ON UPDATE NO ACTION
     )`,
     function (err) {

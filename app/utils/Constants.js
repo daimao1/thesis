@@ -44,7 +44,7 @@ const MINI_GAME_ON_START = false;
 /**
  * Time for answering for a question in seconds
  * */
-const QUESTION_TIME = 20;
+const QUESTION_TIME = 15;
 
 exports.PLAYER_ORDERS_OPTIONS = PLAYER_ORDERS_OPTIONS;
 exports.PLAYER_ORDER = PLAYER_ORDER;

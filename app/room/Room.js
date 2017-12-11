@@ -3,7 +3,16 @@ const Constants = require('../utils/Constants');
 
 class Room {
 
-    constructor(id, name, adminId, socketNamespace) {
+    /**
+     *
+     * @param id
+     * @param name
+     * @param adminId
+     * @param {object=} socketNamespace
+     * @param {number=} numberOfPlayers
+     * @param {number=} isGameStarted
+     */
+    constructor(id, name, adminId, socketNamespace, numberOfPlayers, isGameStarted) {
         /**
          * Fields must have the same names as fields in database
          */
@@ -12,12 +21,12 @@ class Room {
         this.administrator_id = adminId;
         this.socketNamespace = socketNamespace;
         this.players = [];
-        this.numberOfPlayers = undefined;
+        this.numberOfPlayers = numberOfPlayers;
         this.playersOrder = [];
         this.currentPlayerId = -1;
-        this.isGameStarted = false;
+        this.isGameStarted = !!(isGameStarted || isGameStarted === 1);
         this.turnInProgress = false;
-        //this.game_number = Room.generateGameNumber();
+        this.allPlayersConnected = false;
 
         if (socketNamespace === undefined) {
             console.log(`Room[${this.id}]#constructor(): new room: [${this.name}], administrator_id: [${this.administrator_id}], socketNamespace: undefined yet.`);
@@ -31,11 +40,27 @@ class Room {
     }
 
     addPlayer(player) {
-        if (this.players.length >= Room.MAX_PLAYERS) {
+        if (this.players !== undefined && this.players.length >= Room.MAX_PLAYERS) {
             throw new Error(`Room[${this.id}]#addPlayer(): room full, cannot add new player.`);
         }
-        player.in_room_id = this.players.length;
-        this.players.push(player);
+        if(player.in_room_id === undefined){
+            if(this.players === undefined){
+                player.in_room_id = 0;
+                this.players = [];
+            } else {
+                player.in_room_id = this.players.length;
+            }
+            this.players.push(player);
+        } else if(this.players.length === 0 && this.numberOfPlayers !== undefined && this.isGameStarted){
+            this.players = new Array(this.numberOfPlayers);
+            this.players[player.in_room_id] = player;
+        } else if(this.numberOfPlayers !== undefined && this.isGameStarted){
+            if(this.players[player.in_room_id] !== undefined){
+                this.players[player.in_room_id] = player;
+            } else {
+                throw new Error(`Room[${this.id}]#addPlayer(): player with this 'in_room_id' already exist.`);
+            }
+        }
         console.log(`Room[${this.id}]#addPlayer(): new player added. InRoomId: [${player.in_room_id}]`);
     }
 

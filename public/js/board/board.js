@@ -117,10 +117,10 @@ function receiveEndRound() {
     console.log('End round - waiting for redirect...');
     socket.once('redirect', function (url) {
         if(url.includes(roomId) && url.charAt(0) === '/'){
-            console.log('Redirecting to: [ ' + url + ' ]... (3 seconds)');
+            console.log('Redirecting to: [ ' + url + ' ]... (2.5 seconds)');
             setTimeout( function () {
                 window.location.href = url;
-            }, 3 * 1000);
+            }, 2.5 * 1000);
         } else {
             let reason = "incorrect url";
             console.log('Redirect rejected, reason: ' + reason);

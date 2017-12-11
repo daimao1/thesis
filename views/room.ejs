@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Raleway">
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="/css/style.css">
 <body>
-
+<%if(room.isGameStarted !== undefined && room.isGameStarted && room.players === undefined) {%>
+<script>setTimeout(function () {window.location.reload()}, 500);</script>
+<% } %>
 <div class="bgimg w3-display-container w3-text-white">
     <div class="w3-display-topleft w3-padding-large w3-large">
         <p class="w3-rightbar w3-leftbar w3-padding">Thesis</p>
@@ -26,24 +29,47 @@
     <div class="w3-display-middle">
         <h1 class="w3-jumbo w3-center"><%= room.name %></h1>
         <hr class="w3-border-grey" style="margin:auto;width:70%">
-        <h2 class="w3-animate-top w3-center">Numer gry:
+        <h2 class="w3-animate-top w3-center">Numer pokoju gry:
             <% if(room.id != undefined){ %>
             <%= room.id %>
             <% } %>
         </h2>
-        <div class="w3-medium w3-center">
-            <p>Aby pobrać aplikację należy na urządzeniu z systemem android wpisać w przeglądarkę następujący adres:</p>
-                <b class="w3-large">pollub-boardgame.herokuapps.com/apk</b>
-            <p>a następnie zainstalować pobraną aplikację.</p>
-            <p>Jeśli aplikacja została już zainstalowana, otwórz ją i dołącz do pokoju, a następnie wykorzystaj poniższy przycisk <i>Odśwież</i>.</p>
+        <% if (room.isGameStarted !== undefined && room.isGameStarted) { %>
+        <div class="w3-center">
+            <p class="w3-center">Aby wznowić grę, wszyscy gracze powinni się połączyć ponownie - używając tych samych urządzeń i nicków.</p>
+            <p>Aplikację można pobrać pod adresem:</p>
+            <b>pollub-boardgame.herokuapp.com/apk</b>
         </div>
-        <% if(room.players != undefined && room.players.length > 0) { %>
-        <p class="w3-large w3-center">Podłączeni gracze:</p>
+        <% } else {%>
+        <div class="w3-center">
+            <p>Aplikacja na urządzenie z systemem android jest dostępna do pobrania pod adresem:</p>
+            <b class="w3-large">pollub-boardgame.herokuapp.com/apk</b>
+            <p>Jeśli aplikacja została już zainstalowana, otwórz ją i dołącz do pokoju, a następnie wykorzystaj poniższy
+                przycisk <i>Odśwież</i>.</p>
+        </div>
+        <% } %>
+        <% if(room.isGameStarted !== undefined && room.isGameStarted && room.players != undefined && room.players.length > 0) { %>
+        <p class="w3-xxlarge w3-center">Gracze:</p>
         <div class="w3-panel w3-rightbar w3-leftbar">
-            <ul class="w3-ul  w3-card-4">
+            <ul class="w3-ul w3-card-4">
                 <% room.players.forEach(function(player) { %>
                 <li class="w3-display-container">
-                    <%= player.in_room_id + 1 + ". " + player.name %>, <%= player.device_name%>
+                    <%= player.in_room_id + 1 + ". " + player.name %>, <%= player.device_name %>
+                    <% if(player.socket === undefined){%><span class="w3-margin-left w3-spin fa fa-spinner"></span>
+                    <%} else { %>
+                        <span style="color:green;" class="w3-margin-left w3-animate-top fa fa-check-circle-o"></span>
+                    <% } %>
+                </li>
+                <% }); %>
+            </ul>
+        </div>
+        <% } else if(room.players != undefined && room.players.length > 0) { %>
+        <p class="w3-large w3-center">Podłączeni gracze:</p>
+        <div class="w3-panel w3-rightbar w3-leftbar">
+            <ul class="w3-ul w3-card-4">
+                <% room.players.forEach(function(player) { %>
+                <li class="w3-display-container">
+                    <%= player.in_room_id + 1 + ". " + player.name %>, <%= player.device_name %>
                 </li>
                 <% }); %>
             </ul>
@@ -51,8 +77,12 @@
         <% } %>
         <p class="w3-center">
             <a class="w3-button w3-border w3-round-large" onClick="window.location.reload()">Odśwież</a>
-            <% if(room.players.length > 1) { %>
-                <a href="/board/<%=room.id%>" class="w3-button w3-border w3-round-large">Rozpocznij grę</a>
+            <% if(room.players !== undefined && room.players.length > 1) { %>
+                <% if(room.isGameStarted !== undefined && room.isGameStarted && room.allPlayersConnected) { %>
+                    <a href="/board/<%= room.id %>" class="w3-button w3-border w3-round-large">Wznów grę</a>
+                <% } else if (!room.isGameStarted) { %>
+                    <a href="/board/<%= room.id %>" class="w3-button w3-border w3-round-large">Rozpocznij grę</a>
+                <% } %>
             <% } %>
         </p>
     </div>
