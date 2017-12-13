@@ -86,7 +86,7 @@ connection.query(`
     }
 );
 
-//create quiz table
+//create questions table
 connection.query(`
     CREATE TABLE \`${db.name}\`.\`${db.questions_table}\` (
         \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
