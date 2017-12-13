@@ -67,7 +67,12 @@ StopTimeGame.create = function () {
 
     resetPlayersTime()
     showInitMessage()
-    startGame()//do usunięcia jak android będzie miał event
+    //startGame()//do usunięcia jak android będzie miał event
+}
+
+function onPlayersReady() {
+    //document.getElementById('help_modal').style.display = 'none';
+    startGame();
 }
 
 function initTextCountersWithZeros(number) {
@@ -189,7 +194,7 @@ StopTimeGame.update = function () {
 function setHandlers() {
     socket.once('playersInfo', playersInfo)
     socket.on('stopPlayerButton', stopButton)
-    socket.once('clientReady', startGame)
+    socket.once('playersReady', onPlayersReady)
 }
 
 function playersInfo(players) {

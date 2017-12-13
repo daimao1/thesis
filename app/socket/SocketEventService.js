@@ -82,6 +82,8 @@ function resumeConnectionWithPlayer(socket, socketNamespace, playerName, playerD
 }
 
 function addPlayerDisconnectHandler(player) {
+
+    //TODO wyłączać grę!!!
     player.socket.on('disconnect', () => {
         console.log(`SocketIO/N/EventHandler: player disconnected. RoomID: [${player.room_id}], inRoomId: [${player.in_room_id}]`);
 

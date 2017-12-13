@@ -241,7 +241,7 @@ function setExtraDices(roomId, playersOrder, sortedResults) {
 
 function clearExtraDices(players) {
     for (let i = 0; i < players.length; i++) {
-        players[i].extraDices = undefined;
+        players[i].extraDices = 0;
     }
 }
 
