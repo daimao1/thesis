@@ -9,6 +9,7 @@ function initGame(socketNamespace) {
     console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: emitting playerDTOs to game.`);
 
     const players = RoomService.getAllPlayersFromRoom(socketNamespace.roomId);
+    onPlayerReady(players,socketNamespace.gameSocket);
 
     socketNamespace.namespace.to('players').emit('stopTimeGame');
     console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: notify players about stop-time-game.`);
@@ -26,6 +27,19 @@ function initGame(socketNamespace) {
         socketNamespace.gameSocket.once('stopTimeResults', (goal, results) => {
             console.log(`StopTimeService[roomId:${socketNamespace.roomId}]: handle 'stopTimeResults' event.`);
             collectResults(socketNamespace, goal, results);
+        });
+    });
+}
+
+function onPlayerReady(players, gameSocket) {
+    const numberOfPlayers = players.length;
+    let playersReady = 0;
+    players.forEach((player) => {
+        player.socket.on('playerReady', () => {
+            playersReady++;
+            if(playersReady === numberOfPlayers){
+                gameSocket.emit('playersReady');
+            }
         });
     });
 }
