@@ -58,16 +58,6 @@ function initBasicHandlers(socket, socketNamespace) {
 
     socket.on('markClicker', (roomId) => {
         if (roomId === socketNamespace.roomId) {
-
-            //TODO this block is only for test here
-            if (RoomService.isGameStarted(roomId)) {
-                console.log(`SocketEventService: room[${socketNamespace.roomId}] game (board) resumed.`);
-            } else {
-                RoomService.markGameAsStarted(roomId);
-                console.log('SocketEventService: new game started.');
-            }
-            //end
-
             socketNamespace.gameSocket = socket;
             MiniGameService.startMiniGame(socketNamespace, Constants.MINI_GAMES.CLICKER);
         }
@@ -78,14 +68,14 @@ function newPlayer(socket, socketNamespace, name, deviceName) {
     socket.join('players');
     console.log('SocketEventHandler: handle \'player\' event - creating new player.');
     const player = PlayerService.newPlayer(socketNamespace.roomId, socket, name, deviceName);
-    addPlayerDisconnectHandler(player);
+    //addPlayerDisconnectHandler(player);
     BoardService.onPlayerDiceValue(player, socketNamespace);
 }
 
 function resumeConnectionWithPlayer(socket, socketNamespace, playerName, playerDeviceName) {
     const player = PlayerService.connectSocketToExistingPlayer(socket, socketNamespace.roomId, playerName, playerDeviceName);
     socket.join('players');
-    addPlayerDisconnectHandler(player);
+    //addPlayerDisconnectHandler(player);
     BoardService.onPlayerDiceValue(player, socketNamespace);
     RoomService.areAllPlayersConnected(socketNamespace.roomId);
     console.log('SocketEventService#onPlayerEvent: resumed connection with player.');
