@@ -2,7 +2,6 @@ let Board = {}
 let roomId = document.head.id
 let map
 
-//pole START ma współrzędne grids[0][0], grids[0][1]; Pole META ma współrzędne grids[288][0], grids[288][1]
 let grids = [[120, 3929.94], [248, 3929.94], [398, 3929.94], [540, 3929.94], [682, 3929.94], [824, 3929.94], [972, 3929.94], [1117, 3929.94],
     [1264, 3929.94], [1406, 3929.94], [1406, 3779.94], [1406, 3634.94], [1406, 3494.94], [1272, 3494.94], [1127, 3494.94], [1127, 3634.94],
     [982, 3634.94], [837, 3634.94], [837, 3494.94], [692, 3494.94], [548, 3494.94], [404, 3494.94], [260, 3494.94], [116, 3494.94],
@@ -59,9 +58,9 @@ let allPlayers = []
 
 
 Board.preload = function () {
-    board.load.image('plansza', '../../assets/map/plansza.png') //załaduj planszę
+  board.load.image('plansza', '../../assets/map/plansza.png')
     board.load.image('background', '../../assets/map/wood_background.png')
-    board.load.spritesheet('avatar1', '../../assets/sprites/avatar1.png') //załaduj awatary
+  board.load.spritesheet('avatar1', '../../assets/sprites/avatar1.png')
     board.load.spritesheet('avatar2', '../../assets/sprites/avatar2.png')
     board.load.spritesheet('avatar3', '../../assets/sprites/avatar3.png')
     board.load.spritesheet('avatar4', '../../assets/sprites/avatar4.png')
@@ -79,14 +78,14 @@ Board.preload = function () {
 }
 
 Board.create = function () {
-    //board.stage.disableVisibilityChange = true; //gra działa gdy okno przeglądarki jest nieaktywne
+  board.stage.disableVisibilityChange = true
 
     effect_special = board.add.audio('effect_special')
     effect_special.volume = 0.2
     mapBackground = board.add.tileSprite(0, 0, 4573 * 0.9, 4605 * 0.9, 'background')
     board.world.setBounds(0, 0, 4573 * 0.9, 4605 * 0.9)
     map = board.add.image(4573 * 0.9, 4605 * 0.9, 'plansza')
-    map.anchor.setTo(1, 1) //położenie lewej górnej krawędzi obrazka
+  map.anchor.setTo(1, 1)
     map.scale.setTo(0.9)
     board.physics.startSystem(Phaser.Physics.P2JS)
     addPlayersToBoard(numberOfPlayers)
@@ -95,14 +94,6 @@ Board.create = function () {
 
 function showMarkGame() {
     console.log('Wysłano socket markGame na serwer.')
-}
-
-Board.update = function () {
-
-}
-
-Board.render = function () {
-
 }
 
 let setEventHandlers = function () {
@@ -175,42 +166,42 @@ function addPlayersToBoard(number) {
     else {
         let returnedField
         switch (number) {
-            case 6:
-                returnedField = allPlayers[5].field
-                player6 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1] + 47, 'avatar6')
-                player6.fieldNumber = returnedField
-                board.physics.p2.enable(player6)
-                player6.body.clearCollision()
-            case 5:
-                returnedField = allPlayers[4].field
-                player5 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1] + 47, 'avatar5')
-                player5.fieldNumber = returnedField
-                board.physics.p2.enable(player5)
-                player5.body.clearCollision()
-            case 4:
-                returnedField = allPlayers[3].field
-                player4 = board.add.sprite(grids[returnedField][0], grids[returnedField][1] + 47, 'avatar4')
-                player4.fieldNumber = returnedField
-                board.physics.p2.enable(player4)
-                player4.body.clearCollision()
-            case 3:
-                returnedField = allPlayers[2].field
-                player3 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1], 'avatar3')
-                player3.fieldNumber = returnedField
-                board.physics.p2.enable(player3)
-                player3.body.clearCollision()
-            case 2:
-                returnedField = allPlayers[1].field
-                player2 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1], 'avatar2')
-                player2.fieldNumber = returnedField
-                board.physics.p2.enable(player2)
-                player2.body.clearCollision()
-            case 1:
-                returnedField = allPlayers[0].field
-                player1 = board.add.sprite(grids[returnedField][0], grids[returnedField][1], 'avatar1')
-                player1.fieldNumber = returnedField
-                board.physics.p2.enable(player1)
-                player1.body.clearCollision()
+          case 6:
+            returnedField = allPlayers[5].field
+            player6 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1] + 47, 'avatar6')
+            player6.fieldNumber = returnedField
+            board.physics.p2.enable(player6)
+            player6.body.clearCollision()
+          case 5:
+            returnedField = allPlayers[4].field
+            player5 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1] + 47, 'avatar5')
+            player5.fieldNumber = returnedField
+            board.physics.p2.enable(player5)
+            player5.body.clearCollision()
+          case 4:
+            returnedField = allPlayers[3].field
+            player4 = board.add.sprite(grids[returnedField][0], grids[returnedField][1] + 47, 'avatar4')
+            player4.fieldNumber = returnedField
+            board.physics.p2.enable(player4)
+            player4.body.clearCollision()
+          case 3:
+            returnedField = allPlayers[2].field
+            player3 = board.add.sprite(grids[returnedField][0] + 70, grids[returnedField][1], 'avatar3')
+            player3.fieldNumber = returnedField
+            board.physics.p2.enable(player3)
+            player3.body.clearCollision()
+          case 2:
+            returnedField = allPlayers[1].field
+            player2 = board.add.sprite(grids[returnedField][0] + 35, grids[returnedField][1], 'avatar2')
+            player2.fieldNumber = returnedField
+            board.physics.p2.enable(player2)
+            player2.body.clearCollision()
+          case 1:
+            returnedField = allPlayers[0].field
+            player1 = board.add.sprite(grids[returnedField][0], grids[returnedField][1], 'avatar1')
+            player1.fieldNumber = returnedField
+            board.physics.p2.enable(player1)
+            player1.body.clearCollision()
         }
     }
 }
@@ -218,7 +209,6 @@ function addPlayersToBoard(number) {
 function movePlayer(diceValue) {
     currentPlayer.value = diceValue
     currentPlayer.name = allPlayers[currentPlayer.id].name
-    console.log('Odebrano socketa z serwera. Id ' + currentPlayer.id + ' ilość wyrzuconych oczek: ' + currentPlayer.value)
     let destination = +currentPlayer.fieldNumber + +diceValue
     let newDestination = lookForChallenges(+currentPlayer.fieldNumber, destination)
     console.log('newDestination' + newDestination)
@@ -298,7 +288,6 @@ function endPlayerTurn() {
       if(message !== undefined)
       message.destroy()
     }, 3000)
-
     console.log('Wysłano socket endPlayerTurn do serwera')
 }
 
@@ -315,7 +304,6 @@ function lookForChallenges(currentField, dest) {
 
 function receivePlayersInfo(playersInfo) {
     console.log('Odebrano socket playersInfo')
-
     allPlayers = playersInfo
     allPlayers.forEach((player) => console.log('PlayerName: ' +
         player.name + ' PlayerInRoomId ' + player.id + ' playerField' + player.field))
@@ -326,7 +314,6 @@ function receivePlayersInfo(playersInfo) {
 function receiveNextPlayerTurn(id) {
     console.log('Odebrano socket nextPlayerTurn')
     console.log('ID: ' + id)
-
     switch (id) {
         case 0:
             setCurrentPlayer(player1)
@@ -460,7 +447,6 @@ function challengeHandler() {
             } else {
                 console.log('ChallengeNotPass')
                 difference = 0;
-                //go one field back
               tween = board.add.tween(currentPlayer.body)
               tween.to({
                 x: grids[currentPlayer.fieldNumber - 1][0] + shiftX,
