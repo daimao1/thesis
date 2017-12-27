@@ -57,13 +57,10 @@ function playerQuizAnswer(id) {
     document.getElementById("ok_icon" + id).style.display = "inline";
     if (++playerAnswers === numberOfPlayers) {
         document.getElementById("progressBarFragment").style.display = "none";
-        //document.getElementById("loadingFragmentText").innerHTML = "Ładowanie wyników.";
-        //document.getElementById("loadingFragment").style.display = "inline";
     }
 }
 
 function checkIsServerTimerEnd() {
-    //if server timer is still counting - interrupt and send frontend timer end signal
     if (endQuestionTimeServerFlag === false) {
         console.log('Emit \'endQuestionTimeFE\' event.');
         socket.emit('endQuestionTimerOnClient');
@@ -90,7 +87,6 @@ function endQuestionTime() {
         }
     }
     document.getElementById("progressBarFragment").style.display = "none";
-    //document.getElementById("loadingFragment").style.display = "inline";
 }
 
 /**
