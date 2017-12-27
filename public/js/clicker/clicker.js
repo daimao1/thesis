@@ -19,11 +19,6 @@ function onPlayersReady() {
     startCountdown();
 }
 
-// function onHelpModalClose() {
-//     document.getElementById('help_modal').style.display = 'none';
-//     startCountdown();
-// }
-
 function startCountdown() {
     let countdownSpan = document.getElementById('countdown');
     let counter = 6;
